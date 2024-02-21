@@ -1,0 +1,72 @@
+{
+  "book": [
+    { "id": "PHB", "name": "Player's Handbook", "group": "core" },
+    { "id": "MM", "name": "Monster Manual", "group": "core" },
+    { "id": "DMG", "name": "Dungeon Master's Guide", "group": "core" },
+    {
+      "id": "SCAG",
+      "name": "Sword Coast Adventurer's Guide",
+      "group": "setting"
+    },
+    { "id": "VGM", "name": "Volo's Guide to Monsters", "group": "supplement" },
+    {
+      "id": "XGE",
+      "name": "Xanathar's Guide to Everything",
+      "group": "supplement"
+    },
+    {
+      "id": "MTF",
+      "name": "Mordenkainen's Tome of Foes",
+      "group": "supplement"
+    },
+    {
+      "id": "GGR",
+      "name": "Guildmasters' Guide to Ravnica",
+      "group": "setting"
+    },
+    { "id": "AI", "name": "Acquisitions Incorporated", "group": "supplement" },
+    {
+      "id": "RMR",
+      "name": "Dungeons & Dragons vs. Rick and Morty: Basic Rules",
+      "group": "supplement"
+    },
+    {
+      "id": "ERLW",
+      "name": "Eberron: Rising from the Last War",
+      "group": "setting"
+    },
+    {
+      "id": "EGW",
+      "name": "Explorer's Guide to Wildemount",
+      "group": "setting"
+    },
+    { "id": "MOT", "name": "Mythic Odysseys of Theros", "group": "setting" },
+    {
+      "id": "TCE",
+      "name": "Tasha's Cauldron of Everything",
+      "group": "supplement"
+    },
+    {
+      "id": "VRGR",
+      "name": "Van Richten's Guide to Ravenloft",
+      "group": "setting"
+    },
+    {
+      "id": "FTD",
+      "name": "Fizban's Treasury of Dragons",
+      "group": "supplement"
+    },
+    {
+      "id": "SCC",
+      "name": "Strixhaven: A Curriculum of Chaos",
+      "group": "setting"
+    },
+    {
+      "id": "MPMM",
+      "name": "Mordenkainen Presents: Monsters of the Multiverse",
+      "group": "supplement"
+    },
+    { "id": "AAG", "name": "Astral Adventurer's Guide", "group": "supplement" },
+    { "id": "BAM", "name": "Boo's Astral Menagerie", "group": "supplement" }
+  ]
+}
