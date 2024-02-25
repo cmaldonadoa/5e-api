@@ -2,11 +2,13 @@
   "type": "module",
   "scripts": {
     "compile": "tsc",
-    "start": "npm run compile && node ./dist/index.js"
+    "start": "npm run compile && node ./dist/index.js",
+    "generate-schemas": "npx ts-node --esm ./scripts/json2graphql.ts"
   },
   "dependencies": {
     "@apollo/server": "^4.10.0",
-    "graphql": "^16.8.1"
+    "graphql": "^16.8.1",
+    "minimist": "^1.2.8"
   },
   "devDependencies": {
     "@types/node": "^20.11.19",
