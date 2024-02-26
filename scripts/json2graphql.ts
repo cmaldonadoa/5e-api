@@ -304,7 +304,7 @@ for (let filename of filenames) {
     if (!/.json$/.test(filename) || excluded.includes(filename)) continue;
 
     const file = fs.readFileSync(`${input}/${filename}`, "utf-8");
-    new Parser(JSON.parse(file), path.basename(input)).parse();
+    new Parser(JSON.parse(file), path.win32.basename(input)).parse();
 }
 
 Array.from(warnings)
@@ -312,7 +312,7 @@ Array.from(warnings)
     .forEach((w: string) => console.warn(w));
 
 fs.writeFileSync(
-    `${output}/${path.basename(input)}.graphql`,
+    `${output}/${path.win32.basename(input)}.graphql`,
     Object.entries(types)
         .map(
             ([typeName, typeData]) =>
@@ -323,4 +323,4 @@ fs.writeFileSync(
         .join("\n\n")
 );
 
-console.log(`Created schema ${path.basename(input)}.graphql`);
+console.log(`Created schema ${path.win32.basename(input)}.graphql`);
