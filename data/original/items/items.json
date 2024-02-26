@@ -25455,7 +25455,7 @@
       "hasFluffImages": true
     }
   ],
-  "baseitem": [
+  "baseItem": [
     {
       "name": "Antimatter Rifle",
       "source": "DMG",
