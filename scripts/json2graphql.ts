@@ -83,17 +83,22 @@ class Parser {
         return Array.isArray(this.object);
     }
 
+    public static fixInconsistencies(types: string[]) {
+        if (types.every(type => ["Int", "Float"].includes(type)))
+            return "Float";
+        if (types.every(type => ["[Int]", "[Float]"].includes(type)))
+            return "[Float]";
+    }
+
     private addType() {
         if (this.typeName in types) {
             const oldType = types[this.typeName];
             Object.entries(this.typeData).forEach(([key, value]) => {
                 if (key in oldType) {
                     if (value !== oldType[key]) {
-                        delete oldType[key];
-                        warn(
-                            `${this.typeName}.${key} has inconsistent types`,
-                            WarningTypeEnum.IGNORE_FIELD
-                        );
+                        if (Array.isArray(oldType[key]))
+                            oldType[key] = [...oldType[key], value];
+                        else oldType[key] = [oldType[key], value];
                     }
                 } else oldType[key] = value;
             });
@@ -192,18 +197,26 @@ class Parser {
             const type = parsers[0].type;
 
             if (parsers.some((parser: Parser) => parser.type !== type)) {
-                this.isParsed = false;
-                warn(
-                    `${this.typeName} has inconsistent scalar types`,
-                    WarningTypeEnum.IGNORE_FIELD
+                const fix = Parser.fixInconsistencies(
+                    parsers.map(parser => parser.type)
                 );
-                return;
+                if (fix) {
+                    parsers.forEach(parser => (parser.type = fix));
+                } else {
+                    this.isParsed = false;
+                    warn(
+                        `${this.typeName} has inconsistent scalar types`,
+                        WarningTypeEnum.IGNORE_FIELD
+                    );
+                    return;
+                }
             }
 
             this.isParsed = true;
             this.type = `[${type}]`;
         } else if (parsers.every((parser: Parser) => !parser.isScalar())) {
             let enableParsing = false;
+            let saveList = false;
 
             if (parsers.every((parser: Parser) => parser.isArray())) {
                 parsers = this.object.map(list => {
@@ -220,6 +233,7 @@ class Parser {
                     return parser;
                 });
                 enableParsing = true;
+                saveList = true;
             } else if (parsers.every((parser: Parser) => !parser.isArray())) {
                 enableParsing = true;
             }
@@ -258,12 +272,18 @@ class Parser {
                 let ignoredFields = [];
                 Object.entries(this.typeData).forEach(([key, value]) => {
                     if (Array.isArray(value)) {
-                        ignoredFields.push(key);
+                        const fix = Parser.fixInconsistencies(value);
+                        if (fix) this.typeData[key] = fix;
+                        else ignoredFields.push(key);
                     }
                 });
                 ignoredFields.forEach(field => {
                     warn(
-                        `${this.typeName}.${field} has inconsistent types`,
+                        `${
+                            this.typeName
+                        }.${field} has inconsistent types ${Array.from(
+                            new Set(this.typeData[field])
+                        )}`,
                         WarningTypeEnum.IGNORE_FIELD
                     );
                     delete this.typeData[field];
@@ -281,7 +301,10 @@ class Parser {
                 this.type = `[${type}]`;
                 this.isParsed = true;
 
-                if (!this.silent) this.addType();
+                if (!this.silent) {
+                    this.addType();
+                    if (saveList) types[type] = { items: `[${this.typeName}]` };
+                }
             } else {
                 this.isParsed = false;
                 warn(
@@ -307,20 +330,36 @@ for (let filename of filenames) {
     new Parser(JSON.parse(file), path.win32.basename(input)).parse();
 }
 
-Array.from(warnings)
-    .reverse()
-    .forEach((w: string) => console.warn(w));
-
 fs.writeFileSync(
     `${output}/${path.win32.basename(input)}.graphql`,
     Object.entries(types)
         .map(
             ([typeName, typeData]) =>
                 `type ${typeName} {\n${Object.entries(typeData)
-                    .map(([key, value]) => `${key}: ${value}`)
+                    .map(([key, value]) => {
+                        if (Array.isArray(value)) {
+                            const fix = Parser.fixInconsistencies(value);
+                            if (fix) value = fix;
+                            else {
+                                warn(
+                                    `${typeName}.${key} has inconsistent types ${Array.from(
+                                        new Set(value)
+                                    )}`,
+                                    WarningTypeEnum.IGNORE_FIELD
+                                );
+                                return;
+                            }
+                        }
+                        return `${key}: ${value}`;
+                    })
+                    .filter(Boolean)
                     .join("\n")}\n}`
         )
         .join("\n\n")
 );
+
+Array.from(warnings)
+    .reverse()
+    .forEach((w: string) => console.warn(w));
 
 console.log(`Created schema ${path.win32.basename(input)}.graphql`);
