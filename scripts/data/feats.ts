@@ -1,4 +1,4 @@
-import { utils, handleFiles } from "./utils.js";
+import { utils, handleFiles } from "./utils";
 import rootDir from "app-root-dir";
 
 const root = rootDir.get();
@@ -7,7 +7,16 @@ const input = root + "/data/original/feats/";
 const output = root + "/data/modified/";
 const options = {
     input,
-    output
+    output,
+    enableInternalTests: { enabled: false, property: "entries", key: "feat" },
+    enableCustomTests: {
+        enabled: false,
+        tests: e => {
+            e.entries.forEach(x => {
+                x.items && console.log(x.items);
+            });
+        }
+    }
 };
 
 handleFiles(

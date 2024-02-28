@@ -1,4 +1,4 @@
-import { utils, handleFiles } from "./utils.js";
+import { utils, handleFiles } from "./utils";
 import rootDir from "app-root-dir";
 
 const root = rootDir.get();
@@ -7,7 +7,18 @@ const input = root + "/data/original/races/";
 const output = root + "/data/modified/";
 const options = {
     input,
-    output
+    output,
+    peek: {
+        enabled: true,
+        key: "race",
+        peek: e => {
+            if (e.additionalSpells && !e.additionalSpells.spells.length) {
+                const x = { ...e };
+                delete x.entries;
+                console.log(x);
+            }
+        }
+    }
 };
 
 handleFiles(

@@ -1,4 +1,4 @@
-import { utils, handleFiles } from "./utils.js";
+import { utils, handleFiles } from "./utils";
 import rootDir from "app-root-dir";
 import fs from "fs";
 
@@ -8,7 +8,18 @@ const input = root + "/data/original/items/";
 const output = root + "/data/modified/";
 const options = {
     input,
-    output
+    output,
+    peek: {
+        enabled: true,
+        key: "item",
+        peek: e => {
+            e.entries &&
+                e.entries.forEach(entry => {
+                    if (entry.rows && typeof entry.rows[0][0] !== "string")
+                        console.log(e.name);
+                });
+        }
+    }
 };
 
 const data = JSON.parse(
@@ -41,10 +52,13 @@ handleFiles(
                             }
                   )
                 : null,
-            damage: {
-                1: e.dmg1 || null,
-                2: e.dmg2 || null
-            },
+            damage:
+                e.dmg1 || e.dmg2
+                    ? {
+                          1: e.dmg1 || null,
+                          2: e.dmg2 || null
+                      }
+                    : null,
             armorClass: e.ac,
             isArmor: e.armor,
             entries: e.entries ? utils.separateEntries(e.entries) : null,
@@ -76,11 +90,37 @@ handleFiles(
             entries: e.entries
                 ? e.additionalEntries
                     ? utils.separateEntries([
-                          ...e.entries,
+                          ...e.entries.map(entry =>
+                              entry.type === "table"
+                                  ? {
+                                        ...entry,
+                                        rows: entry.rows.map(row =>
+                                            row.map(cell =>
+                                                typeof cell === "string"
+                                                    ? cell
+                                                    : cell.entry
+                                            )
+                                        )
+                                    }
+                                  : entry
+                          ),
                           ...e.additionalEntries
                       ])
                     : utils.separateEntries(
-                          utils.renderEntries(e, data) || e.entries
+                          utils.renderEntries(e, data) || e.entries.map(entry =>
+                              entry.type === "table"
+                                  ? {
+                                        ...entry,
+                                        rows: entry.rows.map(row =>
+                                            row.map(cell =>
+                                                typeof cell === "string"
+                                                    ? cell
+                                                    : cell.entry
+                                            )
+                                        )
+                                    }
+                                  : entry
+                          ),
                       )
                 : e.additionalEntries
                 ? utils.separateEntries(e.additionalEntries)
@@ -99,10 +139,13 @@ handleFiles(
                 : null,
             weaponCategory: e.weaponCategory,
             properties: e.property,
-            damage: {
-                1: e.dmg1 || null,
-                2: e.dmg2 || null
-            },
+            damage:
+                e.dmg1 || e.dmg2
+                    ? {
+                          1: e.dmg1 || null,
+                          2: e.dmg2 || null
+                      }
+                    : null,
             damageType: e.damageType,
             bonusWeapon: e.bonusWeapon,
             bonusWeaponDamage: e.bonusWeaponDamage,

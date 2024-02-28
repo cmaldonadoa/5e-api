@@ -3,14 +3,19 @@ import path from "path";
 
 export const utils = {
     formatEntries: entries => {
-        if (!Array.isArray(entries)) console.log({ entries });
+        if (!Array.isArray(entries)) entries = [entries];
 
         return entries.map(entry =>
             typeof entry === "string"
                 ? { type: "text", entry }
-                : entry.type === "entries"
-                ? { ...entry, entries: utils.formatEntries(entry.entries) }
-                : entry
+                : entry.type === "list"
+                ? { ...entry, items: utils.formatEntries(entry.items) }
+                : {
+                      ...entry,
+                      ...(entry.entries && {
+                          entries: utils.formatEntries(entry.entries)
+                      })
+                  }
         );
     },
     renderEntries: (item, data) => {
@@ -57,16 +62,13 @@ export const utils = {
     },
 
     separateEntries: (entries, nextId = 0, parentId = null) => {
-        if (!entries) return [];
+        if (!entries) return null;
 
         let result = [];
         utils.formatEntries(entries).forEach(entry => {
             const id = nextId;
-            const descendantNodes = utils.separateEntries(
-                entry.entries,
-                id + 1,
-                id
-            );
+            const descendantNodes =
+                utils.separateEntries(entry.entries, id + 1, id) || [];
             delete entry.entries;
             result = [
                 ...result,
@@ -78,7 +80,7 @@ export const utils = {
                             ? descendantNodes
                                   .filter(e => e.parentId === id)
                                   .map(e => e.id)
-                            : [],
+                            : null,
                     parentId
                 },
                 ...descendantNodes
@@ -129,7 +131,7 @@ export const utils = {
 
         keys.forEach(k => {
             const obj = spells[k];
-
+            
             if (!obj) return;
 
             if (Array.isArray(obj)) {
@@ -294,7 +296,7 @@ export const utils = {
         return versions.map(version => {
             let entries = obj.entries;
 
-            if (version._mod) {
+            if (entries && version._mod) {
                 let entriesMod = Array.isArray(version._mod.entries)
                     ? version._mod.entries
                     : [version._mod.entries];
@@ -336,11 +338,27 @@ type OptionsTestsDisabled = {
 type OptionsCurstomTestsEnabled = {
     enabled: true;
     tests: Function;
+    property: string;
+    key: string;
 };
 
 type OptionsCurstomTestsDisabled = {
     enabled: false;
     tests?: Function;
+    key?: string;
+    property?: string;
+};
+
+type OptionsPeekEnabled = {
+    enabled: true;
+    peek: Function;
+    key: string;
+};
+
+type OptionsPeekDisabled = {
+    enabled: false;
+    peek?: Function;
+    key?: string;
 };
 
 type Options = {
@@ -350,6 +368,7 @@ type Options = {
     enableCustomTests?:
         | OptionsCurstomTestsEnabled
         | OptionsCurstomTestsDisabled;
+    peek?: OptionsPeekEnabled | OptionsPeekDisabled;
 };
 
 export const handleFiles = (handlers: any, options: Options) => {
@@ -361,9 +380,7 @@ export const handleFiles = (handlers: any, options: Options) => {
             !/^optional/.test(item)
     );
 
-    const keys = {
-        _total: 0
-    };
+    const keys = {};
 
     const add = key => {
         if (key in keys) keys[key] += 1;
@@ -374,8 +391,8 @@ export const handleFiles = (handlers: any, options: Options) => {
     const displayProperties = element =>
         Object.keys(element).forEach(k => add(k));
 
-    const runTests = element => {
-        keys._total += 1;
+    const runInternalTests = element => {
+        add("_total");
         const property = options.enableInternalTests?.property;
 
         if (element[property]) {
@@ -418,6 +435,20 @@ export const handleFiles = (handlers: any, options: Options) => {
         }
     };
 
+    const peek = (element, key: string) => {
+        if (options.peek?.enabled && options.peek?.key === key)
+            options.peek?.peek(element);
+        return element;
+    };
+
+    const runCustomTests = element => {
+        const property = options.enableCustomTests?.property;
+
+        if (element[property]) {
+            options.enableCustomTests?.tests(element);
+        }
+    };
+
     for (let filename of jsonFiles) {
         const data = fs.readFileSync(options.input + "/" + filename, "utf8");
         const oldData = JSON.parse(data);
@@ -431,18 +462,22 @@ export const handleFiles = (handlers: any, options: Options) => {
                         options.enableInternalTests?.enabled &&
                         options.enableInternalTests?.key === key
                     )
-                        runTests(copy || x);
+                        runInternalTests(copy || x);
 
-                    if (options.enableCustomTests?.enabled)
-                        options.enableCustomTests?.tests(x);
+                    if (
+                        options.enableCustomTests?.enabled &&
+                        options.enableCustomTests?.key === key
+                    )
+                        runCustomTests(copy || x);
 
                     if (
                         !options.enableInternalTests?.enabled &&
-                        !options.enableCustomTests?.enabled
+                        !options.enableCustomTests?.enabled && !options.peek?.enabled
                     )
                         displayProperties(copy || x);
 
-                    return handlers[key](copy || x);
+                    const result = handlers[key](copy || x);
+                    return peek(result, key);
                 };
 
                 const versions = utils.constructVersions(element);

@@ -1,4 +1,4 @@
-import { utils, handleFiles } from "./utils.js";
+import { utils, handleFiles } from "./utils";
 import rootDir from "app-root-dir";
 
 const root = rootDir.get();
@@ -7,7 +7,16 @@ const input = root + "/data/original/vehicles/";
 const output = root + "/data/modified/";
 const options = {
     input,
-    output
+    output,
+    peek: {
+        enabled: true,
+        key: "vehicle",
+        peek: e => {
+            if (e.ability) {
+                console.log(e.ability);
+            }
+        }
+    }
 };
 
 handleFiles(
@@ -38,6 +47,9 @@ handleFiles(
                           }),
                           ...(e.terrain.includes("sea") && {
                               swim: "" + e.pace
+                          }),
+                          ...(e.terrain.includes("spce") && {
+                              fly: "" + e.pace
                           })
                       }
                     : {
@@ -48,18 +60,24 @@ handleFiles(
                               walk: "" + e.pace.walk
                           }),
                           ...(e.terrain.includes("sea") && {
-                              swim: "" + e.pace.swim
+                              swim: "" + (e.pace.swim || e.pace.fly)
+                          }),
+                          ...(e.terrain.includes("space") && {
+                              fly: "" + e.pace.fly
                           })
                       }
                 : null,
-            ability: {
-                str: e.str,
-                dex: e.dex,
-                con: e.con,
-                int: e.int,
-                wis: e.wis,
-                cha: e.cha
-            },
+            ability:
+                e.str || e.dex || e.con || e.int || e.wis || e.cha
+                    ? {
+                          str: e.str,
+                          dex: e.dex,
+                          con: e.con,
+                          int: e.int,
+                          wis: e.wis,
+                          cha: e.cha
+                      }
+                    : undefined,
             weapons: e.weapon
                 ? e.weapon.map(w => {
                       const result = {
