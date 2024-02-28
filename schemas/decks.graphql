@@ -1,0 +1,63 @@
+type DecksDeckEntries {
+type: String
+entry: String
+id: Int
+colLabels: [String]
+colStyles: [String]
+rows: [DecksDeckEntriesRowsList]
+name: String
+children: [Int]
+parentId: Int
+footnotes: [String]
+page: Int
+}
+
+type DecksDeckEntriesRowsList0Roll {
+exact: Int
+min: Int
+max: Int
+}
+
+type DecksDeckEntriesRowsList0 {
+type: String
+roll: DecksDeckEntriesRowsList0Roll
+entry: String
+}
+
+type DecksDeckEntriesRows {
+_0: DecksDeckEntriesRowsList0
+_1: String
+}
+
+type DecksDeckEntriesRowsList {
+items: [DecksDeckEntriesRows]
+}
+
+type DecksDeck {
+name: String
+source: String
+cards: [String]
+entries: [DecksDeckEntries]
+}
+
+type DecksCardEntries {
+type: String
+tag: String
+style: String
+source: String
+name: String
+id: Int
+entry: String
+}
+
+type DecksCard {
+name: String
+source: String
+set: String
+entries: [DecksCardEntries]
+}
+
+type Decks {
+deck: [DecksDeck]
+card: [DecksCard]
+}

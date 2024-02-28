@@ -1,0 +1,10 @@
+type LanguagesLanguage {
+name: String
+source: String
+type: String
+script: String
+}
+
+type Languages {
+language: [LanguagesLanguage]
+}

@@ -1,0 +1,149 @@
+type VehiclesVehicleSpeed {
+walk: Int
+swim: Int
+note: String
+fly: Int
+}
+
+type VehiclesVehicleEntriesRows {
+_0: String
+_1: String
+_2: String
+}
+
+type VehiclesVehicleEntriesRowsList {
+items: [VehiclesVehicleEntriesRows]
+}
+
+type VehiclesVehicleEntries {
+type: String
+entry: String
+id: Int
+caption: String
+colLabels: [String]
+colStyles: [String]
+rows: [VehiclesVehicleEntriesRowsList]
+}
+
+type VehiclesVehiclePace {
+fly: String
+swim: String
+walk: String
+}
+
+type VehiclesVehicleWeaponsEntries {
+type: String
+entry: String
+id: Int
+style: String
+items: [VehiclesVehicleWeaponsEntriesItems]
+}
+
+type VehiclesVehicleWeapons {
+name: String
+count: Int
+entries: [VehiclesVehicleWeaponsEntries]
+armorClass: Int
+health: Int
+crew: Int
+actions: [VehiclesVehicleWeaponsActions]
+}
+
+type VehiclesVehicleAbility {
+str: Int
+dex: Int
+con: Int
+int: Int
+wis: Int
+cha: Int
+}
+
+type VehiclesVehicleControlsEntries {
+type: String
+entry: String
+id: Int
+}
+
+type VehiclesVehicleControls {
+name: String
+entries: [VehiclesVehicleControlsEntries]
+armorClass: Int
+health: Int
+}
+
+type VehiclesVehicleMovementsSpeedEntries {
+type: String
+entry: String
+id: Int
+}
+
+type VehiclesVehicleMovementsSpeed {
+mode: String
+entries: [VehiclesVehicleMovementsSpeedEntries]
+}
+
+type VehiclesVehicleMovements {
+name: String
+speed: [VehiclesVehicleMovementsSpeed]
+armorClass: Int
+health: Int
+healthNote: String
+}
+
+type VehiclesVehicleActionsItems {
+type: String
+name: String
+entry: String
+}
+
+type VehiclesVehicleActions {
+type: String
+entry: String
+id: Int
+style: String
+items: [VehiclesVehicleActionsItems]
+}
+
+type VehiclesVehicleWeaponsActionsEntries {
+type: String
+entry: String
+id: Int
+}
+
+type VehiclesVehicleWeaponsActions {
+name: String
+entries: [VehiclesVehicleWeaponsActionsEntries]
+}
+
+type VehiclesVehicleWeaponsEntriesItems {
+type: String
+name: String
+entry: String
+}
+
+type VehiclesVehicle {
+name: String
+source: String
+size: String
+maxCrew: Int
+maxPassengers: Int
+armorClass: Int
+speed: VehiclesVehicleSpeed
+health: Int
+damageImmunities: [String]
+entries: [VehiclesVehicleEntries]
+dimensions: [String]
+pace: VehiclesVehiclePace
+weapons: [VehiclesVehicleWeapons]
+maxCargo: Int
+conditionImmunities: [String]
+ability: VehiclesVehicleAbility
+controls: [VehiclesVehicleControls]
+movements: [VehiclesVehicleMovements]
+actions: [VehiclesVehicleActions]
+maxCrewNote: String
+}
+
+type Vehicles {
+vehicle: [VehiclesVehicle]
+}

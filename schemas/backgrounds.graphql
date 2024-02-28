@@ -1,0 +1,175 @@
+type BackgroundsBackgroundSkillProficiencies {
+insight: Boolean
+religion: Boolean
+acrobatics: Boolean
+athletics: Boolean
+deception: Boolean
+stealth: Boolean
+intimidation: Boolean
+perception: Boolean
+performance: Boolean
+sleight of hand: Boolean
+history: Boolean
+choose: BackgroundsBackgroundSkillProficienciesChoose
+arcana: Boolean
+persuasion: Boolean
+investigation: Boolean
+animal handling: Boolean
+survival: Boolean
+nature: Boolean
+medicine: Boolean
+}
+
+type BackgroundsBackgroundLanguageProficiencies {
+anyStandard: Int
+choose: BackgroundsBackgroundLanguageProficienciesChoose
+dwarvish: Boolean
+}
+
+type BackgroundsBackgroundStartingEquipment_ {
+item: String
+displayName: String
+special: String
+quantity: Int
+value: Int
+tool: String
+worthValue: Int
+}
+
+type BackgroundsBackgroundStartingEquipmentA {
+item: String
+displayName: String
+special: String
+quantity: Int
+tool: String
+}
+
+type BackgroundsBackgroundStartingEquipmentB {
+special: String
+tool: String
+item: String
+}
+
+type BackgroundsBackgroundStartingEquipment {
+_: [BackgroundsBackgroundStartingEquipment_]
+a: [BackgroundsBackgroundStartingEquipmentA]
+b: [BackgroundsBackgroundStartingEquipmentB]
+c: [BackgroundsBackgroundStartingEquipmentC]
+d: [BackgroundsBackgroundStartingEquipmentD]
+}
+
+type BackgroundsBackgroundEntriesItems {
+type: String
+name: String
+entry: String
+}
+
+type BackgroundsBackgroundEntriesData {
+isFeature: Boolean
+tableInclude: Boolean
+}
+
+type BackgroundsBackgroundEntriesRows {
+_0: String
+_1: String
+}
+
+type BackgroundsBackgroundEntriesRowsList {
+items: [BackgroundsBackgroundEntriesRows]
+}
+
+type BackgroundsBackgroundEntries {
+type: String
+style: String
+items: [BackgroundsBackgroundEntriesItems]
+id: Int
+name: String
+data: BackgroundsBackgroundEntriesData
+children: [Int]
+entry: String
+parentId: Int
+colLabels: [String]
+colStyles: [String]
+rows: [BackgroundsBackgroundEntriesRowsList]
+caption: String
+}
+
+type BackgroundsBackgroundFeats {
+magic initiate|phb: Boolean
+strixhaven initiate|scc: Boolean
+tough|phb: Boolean
+}
+
+type BackgroundsBackgroundToolProficiencies {
+vehicles (land): Boolean
+anyGaming: Int
+thieves' tools: Boolean
+disguise kit: Boolean
+forgery kit: Boolean
+anyArtisans: Int
+anyMusical: Int
+choose: BackgroundsBackgroundToolProficienciesChoose
+poisoner's kit: Boolean
+herbalism kit: Boolean
+navigator's tools: Boolean
+vehicles (water): Boolean
+vehicles (space): Boolean
+alchemist's supplies: Boolean
+tinker's tools: Boolean
+brewer's supplies: Boolean
+cook's utensils: Boolean
+vehicles (air): Boolean
+calligrapher's supplies: Boolean
+}
+
+type BackgroundsBackgroundAdditionalSpellsExpanded {
+s0: [String]
+s1: [String]
+s2: [String]
+s3: [String]
+s4: [String]
+s5: [String]
+}
+
+type BackgroundsBackgroundAdditionalSpells {
+expanded: BackgroundsBackgroundAdditionalSpellsExpanded
+}
+
+type BackgroundsBackgroundLanguageProficienciesChoose {
+from: [String]
+count: Int
+}
+
+type BackgroundsBackgroundStartingEquipmentC {
+special: String
+}
+
+type BackgroundsBackgroundStartingEquipmentD {
+special: String
+}
+
+type BackgroundsBackgroundSkillProficienciesChoose {
+from: [String]
+count: Int
+}
+
+type BackgroundsBackgroundToolProficienciesChoose {
+from: [String]
+count: Int
+}
+
+type BackgroundsBackground {
+name: String
+source: String
+skillProficiencies: BackgroundsBackgroundSkillProficiencies
+languageProficiencies: BackgroundsBackgroundLanguageProficiencies
+startingEquipment: [BackgroundsBackgroundStartingEquipment]
+entries: [BackgroundsBackgroundEntries]
+feats: BackgroundsBackgroundFeats
+toolProficiencies: BackgroundsBackgroundToolProficiencies
+additionalSpells: [BackgroundsBackgroundAdditionalSpells]
+}
+
+type Backgrounds {
+background: [BackgroundsBackground]
+}

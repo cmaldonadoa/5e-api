@@ -1,0 +1,263 @@
+type ItemsBaseItemDamage {
+_1: String
+_2: String
+}
+
+type ItemsBaseItemPackContents {
+item: String
+quantity: Int
+special: Boolean
+}
+
+type ItemsBaseItemEntries {
+type: String
+entry: String
+id: Int
+name: String
+children: [Int]
+parentId: Int
+}
+
+type ItemsBaseItem {
+name: String
+source: String
+types: [String]
+rarity: String
+properties: [String]
+weaponCategory: String
+range: String
+isWeapon: Boolean
+isFirearm: Boolean
+reload: Int
+ammoType: String
+damageType: String
+damage: ItemsBaseItemDamage
+packContents: [ItemsBaseItemPackContents]
+armorClass: Int
+isArmor: Boolean
+entries: [ItemsBaseItemEntries]
+strength: String
+stealth: Boolean
+}
+
+type ItemsItemPropertyEntries {
+type: String
+entry: String
+id: Int
+}
+
+type ItemsItemProperty {
+abbreviation: String
+source: String
+name: String
+entries: [ItemsItemPropertyEntries]
+}
+
+type ItemsItemTypeEntries {
+type: String
+entry: String
+id: Int
+name: String
+children: [Int]
+parentId: Int
+source: String
+page: Int
+caption: String
+colLabels: [String]
+colStyles: [String]
+rows: [ItemsItemTypeEntriesRowsList]
+}
+
+type ItemsItemTypeEntriesRows {
+_0: String
+_1: String
+}
+
+type ItemsItemTypeEntriesRowsList {
+items: [ItemsItemTypeEntriesRows]
+}
+
+type ItemsItemType {
+abbreviation: String
+source: String
+name: String
+entries: [ItemsItemTypeEntries]
+}
+
+type ItemsItemAttunedBy {
+class: String
+spellcasting: Boolean
+background: String
+alignment: [String]
+creatureType: String
+race: String
+psionics: Boolean
+}
+
+type ItemsItemEntries {
+type: String
+entry: String
+id: Int
+name: String
+children: [Int]
+parentId: Int
+style: String
+items: [ItemsItemEntriesItems]
+caption: String
+colLabels: [String]
+colStyles: [String]
+rows: [ItemsItemEntriesRowsList]
+source: String
+page: Int
+footnotes: [String]
+}
+
+type ItemsItemDamage {
+_1: String
+_2: String
+}
+
+type ItemsItemEntriesItems {
+type: String
+name: String
+entry: String
+style: String
+items: [ItemsItemEntriesItemsItems]
+}
+
+type ItemsItemEntriesRows {
+_0: String
+_1: String
+_2: String
+_3: String
+}
+
+type ItemsItemEntriesRowsList {
+items: [ItemsItemEntriesRows]
+}
+
+type ItemsItemModifySpeedEqual {
+fly: String
+climb: String
+}
+
+type ItemsItemModifySpeed {
+equal: ItemsItemModifySpeedEqual
+multiply: ItemsItemModifySpeedMultiply
+static: ItemsItemModifySpeedStatic
+}
+
+type ItemsItemModifyAbilityStatic {
+con: Int
+str: Int
+int: Int
+}
+
+type ItemsItemModifyAbility {
+static: ItemsItemModifyAbilityStatic
+con: Int
+wis: Int
+choose: [ItemsItemModifyAbilityChoose]
+from: [String]
+count: Int
+amount: Int
+str: Int
+dex: Int
+int: Int
+cha: Int
+}
+
+type ItemsItemPackContents {
+item: String
+quantity: Int
+special: Boolean
+}
+
+type ItemsItemModifyAbilityChoose {
+from: [String]
+count: Int
+amount: Int
+}
+
+type ItemsItemModifySpeedMultiply {
+walk: Int
+}
+
+type ItemsItemModifySpeedStatic {
+walk: Int
+swim: Int
+fly: Int
+}
+
+type ItemsItemBonusSavingThrow {
+int: String
+_: String
+str: String
+cha: String
+con: String
+dex: String
+wis: String
+}
+
+type ItemsItemEntriesItemsItems {
+type: String
+name: String
+entry: String
+}
+
+type ItemsItem {
+name: String
+source: String
+rarity: String
+attuned: Boolean
+attunedBy: [ItemsItemAttunedBy]
+bonusSpellAttack: String
+bonusSpellSaveDC: String
+entries: [ItemsItemEntries]
+types: [String]
+baseItem: String
+weaponCategory: String
+properties: [String]
+damage: ItemsItemDamage
+bonusWeapon: String
+isWeapon: Boolean
+grantsProficiency: Boolean
+crew: Int
+vehicleArmorClass: Int
+vehicleHealth: Int
+vehicleSpeed: Float
+vehicleMaxPassengers: Int
+vehicleMaxCargo: Float
+attachedSpells: [String]
+modifySpeed: ItemsItemModifySpeed
+modifyAbility: ItemsItemModifyAbility
+armorClass: Int
+vehicleSeeAlso: String
+range: String
+strength: String
+stealth: Boolean
+isCursed: Boolean
+bonusAC: String
+isPoison: Boolean
+poisonTypes: [String]
+packContents: [ItemsItemPackContents]
+vehicleThreshold: Int
+bonusWeaponDamage: String
+carryingCapacity: Int
+mountSpeed: Int
+bonusSavingThrow: ItemsItemBonusSavingThrow
+deckSeeAlso: String
+ammoType: String
+bonusAbilityCheck: String
+bonusProficiencyBonus: String
+minCrew: Int
+maxCrew: Int
+isFirearm: Boolean
+}
+
+type Items {
+baseItem: [ItemsBaseItem]
+itemProperty: [ItemsItemProperty]
+itemType: [ItemsItemType]
+item: [ItemsItem]
+}

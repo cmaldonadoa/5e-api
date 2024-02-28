@@ -1,0 +1,225 @@
+type FeatsFeatPrerequisite {
+other: String
+race: [FeatsFeatPrerequisiteRace]
+ability: [FeatsFeatPrerequisiteAbility]
+spellcasting2020: Boolean
+spellcasting: Boolean
+proficiency: [FeatsFeatPrerequisiteProficiency]
+level: Int
+feat: [String]
+}
+
+type FeatsFeatAbility {
+con: Int
+cha: Int
+choose: FeatsFeatAbilityChoose
+dex: Int
+str: Int
+int: Int
+}
+
+type FeatsFeatAdditionalSpellsSpellcastingAbility {
+con: Boolean
+int: Boolean
+cha: Boolean
+inherit: Boolean
+choose: FeatsFeatAdditionalSpellsSpellcastingAbilityChoose
+wis: Boolean
+}
+
+type FeatsFeatAdditionalSpellsSpellsItemChoose {
+fromFilter: String
+count: Int
+from: [String]
+}
+
+type FeatsFeatAdditionalSpellsSpellsItem {
+choose: FeatsFeatAdditionalSpellsSpellsItemChoose
+detect magic: Boolean
+levitate: Boolean
+dispel magic: Boolean
+misty step: Boolean
+cure wounds: Boolean
+invisibility: Boolean
+find familiar: Boolean
+mage hand: Boolean
+detect thoughts: Boolean
+longstrider: Boolean
+pass without trace: Boolean
+}
+
+type FeatsFeatAdditionalSpellsSpells_meta {
+shortRest: Int
+longRest: Int
+will: Boolean
+ritual: Boolean
+}
+
+type FeatsFeatAdditionalSpellsSpells {
+item: FeatsFeatAdditionalSpellsSpellsItem
+_meta: FeatsFeatAdditionalSpellsSpells_meta
+}
+
+type FeatsFeatAdditionalSpells {
+spellcastingAbility: FeatsFeatAdditionalSpellsSpellcastingAbility
+spells: [FeatsFeatAdditionalSpellsSpells]
+name: String
+}
+
+type FeatsFeatEntriesItems {
+type: String
+entry: String
+name: String
+entries: [FeatsFeatEntriesItemsEntries]
+}
+
+type FeatsFeatEntriesRows {
+_0: String
+_1: String
+_2: String
+}
+
+type FeatsFeatEntriesRowsList {
+items: [FeatsFeatEntriesRows]
+}
+
+type FeatsFeatEntries {
+type: String
+entry: String
+id: Int
+items: [FeatsFeatEntriesItems]
+caption: String
+colLabels: [String]
+colStyles: [String]
+rows: [FeatsFeatEntriesRowsList]
+children: [Int]
+parentId: Int
+name: String
+style: String
+}
+
+type FeatsFeatToolProficiencies {
+anyArtisans: Boolean
+cook's utensils: Boolean
+poisoner's kit: Boolean
+any: Int
+}
+
+type FeatsFeatAbilityChoose {
+from: [String]
+count: Int
+}
+
+type FeatsFeatPrerequisiteRace {
+name: String
+subrace: String
+displayEntry: String
+}
+
+type FeatsFeatPrerequisiteAbility {
+dex: Int
+str: Int
+cha: Int
+int: Int
+wis: Int
+}
+
+type FeatsFeatOptionalfeatureProgressionProgression {
+*: Int
+}
+
+type FeatsFeatOptionalfeatureProgression {
+name: String
+featureType: [String]
+progression: FeatsFeatOptionalfeatureProgressionProgression
+}
+
+type FeatsFeatLanguageProficiencies {
+sylvan: Boolean
+any: Int
+}
+
+type FeatsFeatPrerequisiteProficiency {
+weapon: String
+armor: String
+}
+
+type FeatsFeatEntriesItemsEntries {
+type: String
+entry: String
+}
+
+type FeatsFeatAdditionalSpellsSpellcastingAbilityChoose {
+from: [String]
+count: Int
+}
+
+type FeatsFeatWeaponProficiencies {
+firearms: Boolean
+choose: FeatsFeatWeaponProficienciesChoose
+}
+
+type FeatsFeatArmorProficiencies {
+heavy: Boolean
+light: Boolean
+medium: Boolean
+shield|phb: Boolean
+}
+
+type FeatsFeatSkillProficienciesChoose {
+from: [String]
+count: Int
+}
+
+type FeatsFeatSkillProficiencies {
+choose: FeatsFeatSkillProficienciesChoose
+}
+
+type FeatsFeatSavingThrowProficienciesChoose {
+from: [String]
+count: Int
+}
+
+type FeatsFeatSavingThrowProficiencies {
+choose: FeatsFeatSavingThrowProficienciesChoose
+}
+
+type FeatsFeatExpertise {
+anyProficientSkill: Int
+}
+
+type FeatsFeatSkillToolLanguageProficienciesChoose {
+from: [String]
+count: Int
+}
+
+type FeatsFeatSkillToolLanguageProficiencies {
+choose: FeatsFeatSkillToolLanguageProficienciesChoose
+}
+
+type FeatsFeatWeaponProficienciesChoose {
+fromFilter: String
+count: Int
+}
+
+type FeatsFeat {
+name: String
+source: String
+prerequisite: FeatsFeatPrerequisite
+ability: FeatsFeatAbility
+additionalSpells: [FeatsFeatAdditionalSpells]
+entries: [FeatsFeatEntries]
+toolProficiencies: FeatsFeatToolProficiencies
+optionalfeatureProgression: [FeatsFeatOptionalfeatureProgression]
+languageProficiencies: FeatsFeatLanguageProficiencies
+weaponProficiencies: FeatsFeatWeaponProficiencies
+armorProficiencies: FeatsFeatArmorProficiencies
+skillProficiencies: FeatsFeatSkillProficiencies
+savingThrowProficiencies: FeatsFeatSavingThrowProficiencies
+expertise: FeatsFeatExpertise
+skillToolLanguageProficiencies: FeatsFeatSkillToolLanguageProficiencies
+}
+
+type Feats {
+feat: [FeatsFeat]
+}

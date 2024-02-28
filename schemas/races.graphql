@@ -1,0 +1,440 @@
+type RacesRaceSpeed {
+walk: Int
+fly: Int
+climb: Int
+swim: Int
+}
+
+type RacesRaceEntries {
+type: String
+name: String
+id: Int
+children: [Int]
+entry: String
+parentId: Int
+items: [RacesRaceEntriesItems]
+caption: String
+colLabels: [String]
+colStyles: [String]
+rows: [RacesRaceEntriesRowsList]
+style: String
+}
+
+type RacesRaceAdditionalSpellsSpellcastingAbilityChoose {
+from: [String]
+count: Int
+}
+
+type RacesRaceAdditionalSpellsSpellcastingAbility {
+choose: RacesRaceAdditionalSpellsSpellcastingAbilityChoose
+cha: Boolean
+wis: Boolean
+}
+
+type RacesRaceAdditionalSpellsSpellsItem {
+gust of wind: Boolean
+lesser restoration: Boolean
+daylight: Boolean
+light: Boolean
+dancing lights: Boolean
+sacred flame: Boolean
+disguise self: Boolean
+nondetection: Boolean
+enlarge/reduce: Boolean
+invisibility: Boolean
+faerie fire: Boolean
+druidcraft: Boolean
+detect magic: Boolean
+jump: Boolean
+misty step: Boolean
+mage hand: Boolean
+shield: Boolean
+detect thoughts: Boolean
+hex: Boolean
+hellish rebuke: Boolean
+darkness: Boolean
+thaumaturgy: Boolean
+fog cloud: Boolean
+wall of water|xge: Boolean
+water walk: Boolean
+animal friendship: Boolean
+suggestion: Boolean
+poison spray: Boolean
+choose: RacesRaceAdditionalSpellsSpellsItemChoose
+}
+
+type RacesRaceAdditionalSpellsSpells {
+item: RacesRaceAdditionalSpellsSpellsItem
+_meta: RacesRaceAdditionalSpellsSpells_meta
+}
+
+type RacesRaceAdditionalSpells {
+spellcastingAbility: RacesRaceAdditionalSpellsSpellcastingAbility
+spells: [RacesRaceAdditionalSpellsSpells]
+}
+
+type RacesRaceAbility {
+wis: Int
+cha: Int
+str: Int
+dex: Int
+choose: RacesRaceAbilityChoose
+con: Int
+int: Int
+}
+
+type RacesRaceLanguageProficiencies {
+common: Boolean
+celestial: Boolean
+goblin: Boolean
+sylvan: Boolean
+anyStandard: Int
+draconic: Boolean
+dwarvish: Boolean
+elvish: Boolean
+giant: Boolean
+other: Boolean
+gnomish: Boolean
+orc: Boolean
+halfling: Boolean
+auran: Boolean
+choose: RacesRaceLanguageProficienciesChoose
+infernal: Boolean
+primordial: Boolean
+abyssal: Boolean
+}
+
+type RacesRaceAdditionalSpellsSpells_meta {
+longRest: Int
+}
+
+type RacesRaceSkillProficiencies {
+perception: Boolean
+stealth: Boolean
+choose: RacesRaceSkillProficienciesChoose
+any: Int
+athletics: Boolean
+intimidation: Boolean
+performance: Boolean
+persuasion: Boolean
+}
+
+type RacesRaceToolProficiencies {
+any: Int
+anyMusical: Int
+}
+
+type RacesRaceSkillProficienciesChoose {
+from: [String]
+count: Int
+}
+
+type RacesRaceAbilityChoose {
+from: [String]
+count: Int
+}
+
+type RacesRaceEntriesItems {
+type: String
+entry: String
+name: String
+}
+
+type RacesRaceEntriesRows {
+_0: String
+_1: String
+_2: String
+}
+
+type RacesRaceEntriesRowsList {
+items: [RacesRaceEntriesRows]
+}
+
+type RacesRaceWeaponProficiencies {
+battleaxe|phb: Boolean
+handaxe|phb: Boolean
+light hammer|phb: Boolean
+warhammer|phb: Boolean
+firearms: Boolean
+choose: RacesRaceWeaponProficienciesChoose
+}
+
+type RacesRaceWeaponProficienciesChoose {
+fromFilter: String
+count: Int
+}
+
+type RacesRaceArmorProficiencies {
+light: Boolean
+}
+
+type RacesRaceLanguageProficienciesChoose {
+from: [String]
+count: Int
+}
+
+type RacesRaceFeats {
+any: Int
+}
+
+type RacesRaceAdditionalSpellsSpellsItemChoose {
+fromFilter: String
+count: Int
+}
+
+type RacesRace {
+name: String
+source: String
+size: [String]
+speed: RacesRaceSpeed
+entries: [RacesRaceEntries]
+additionalSpells: RacesRaceAdditionalSpells
+ability: RacesRaceAbility
+languageProficiencies: RacesRaceLanguageProficiencies
+skillProficiencies: RacesRaceSkillProficiencies
+toolProficiencies: RacesRaceToolProficiencies
+weaponProficiencies: RacesRaceWeaponProficiencies
+armorProficiencies: RacesRaceArmorProficiencies
+feats: RacesRaceFeats
+}
+
+type RacesSubraceAbility {
+str: Int
+wis: Int
+con: Int
+int: Int
+cha: Int
+dex: Int
+choose: RacesSubraceAbilityChoose
+}
+
+type RacesSubraceEntries {
+name: String
+type: String
+id: Int
+children: [Int]
+entry: String
+parentId: Int
+data: RacesSubraceEntriesData
+caption: String
+colLabels: [String]
+colStyles: [String]
+rows: [RacesSubraceEntriesRowsList]
+style: String
+items: [RacesSubraceEntriesItems]
+}
+
+type RacesSubraceLanguageProficiencies {
+common: Boolean
+dwarvish: Boolean
+undercommon: Boolean
+elvish: Boolean
+anyStandard: Int
+aquan: Boolean
+gnomish: Boolean
+goblin: Boolean
+}
+
+type RacesSubraceEntriesData {
+overwrite: String
+}
+
+type RacesSubraceAdditionalSpellsSpellcastingAbility {
+int: Boolean
+cha: Boolean
+wis: Boolean
+choose: RacesSubraceAdditionalSpellsSpellcastingAbilityChoose
+dex: Boolean
+}
+
+type RacesSubraceAdditionalSpellsSpellsItem {
+enlarge/reduce: Boolean
+invisibility: Boolean
+alarm: Boolean
+mage armor: Boolean
+faerie fire: Boolean
+darkness: Boolean
+dancing lights: Boolean
+misty step: Boolean
+choose: RacesSubraceAdditionalSpellsSpellsItemChoose
+minor illusion: Boolean
+sleep: Boolean
+light: Boolean
+feather fall: Boolean
+levitate: Boolean
+shocking grasp: Boolean
+pass without trace: Boolean
+blade ward: Boolean
+burning hands: Boolean
+flame blade: Boolean
+produce flame: Boolean
+create or destroy water: Boolean
+water walk: Boolean
+acid splash: Boolean
+jump: Boolean
+mage hand: Boolean
+shield: Boolean
+detect thoughts: Boolean
+comprehend languages: Boolean
+magic mouth: Boolean
+message: Boolean
+detect magic: Boolean
+detect poison and disease: Boolean
+see invisibility: Boolean
+gust|xge: Boolean
+hunter's mark: Boolean
+locate object: Boolean
+entangle: Boolean
+spike growth: Boolean
+druidcraft: Boolean
+cure wounds: Boolean
+lesser restoration: Boolean
+prestidigitation: Boolean
+purify food and drink: Boolean
+unseen servant: Boolean
+animal friendship: Boolean
+speak with animals: Boolean
+mending: Boolean
+magic weapon: Boolean
+ray of sickness: Boolean
+crown of madness: Boolean
+thaumaturgy: Boolean
+disguise self: Boolean
+charm person: Boolean
+suggestion: Boolean
+friends: Boolean
+armor of agathys: Boolean
+ray of frost: Boolean
+tenser's floating disk: Boolean
+arcane lock: Boolean
+enthrall: Boolean
+vicious mockery: Boolean
+hellish rebuke: Boolean
+searing smite: Boolean
+branding smite: Boolean
+}
+
+type RacesSubraceAdditionalSpellsSpells_meta {
+longRest: Int
+shortRest: Int
+}
+
+type RacesSubraceAdditionalSpellsSpells {
+item: RacesSubraceAdditionalSpellsSpellsItem
+_meta: RacesSubraceAdditionalSpellsSpells_meta
+}
+
+type RacesSubraceAdditionalSpells {
+spellcastingAbility: RacesSubraceAdditionalSpellsSpellcastingAbility
+spells: [RacesSubraceAdditionalSpellsSpells]
+}
+
+type RacesSubraceOverwrite {
+languageProficiencies: Boolean
+ability: Boolean
+skillProficiencies: Boolean
+}
+
+type RacesSubraceEntriesRows {
+_0: String
+_1: String
+}
+
+type RacesSubraceEntriesRowsList {
+items: [RacesSubraceEntriesRows]
+}
+
+type RacesSubraceArmorProficiencies {
+light: Boolean
+medium: Boolean
+}
+
+type RacesSubraceWeaponProficiencies {
+rapier|phb: Boolean
+shortsword|phb: Boolean
+hand crossbow|phb: Boolean
+longsword|phb: Boolean
+shortbow|phb: Boolean
+longbow|phb: Boolean
+spear|phb: Boolean
+trident|phb: Boolean
+light crossbow|phb: Boolean
+net|phb: Boolean
+greatsword|phb: Boolean
+}
+
+type RacesSubraceEntriesItems {
+type: String
+name: String
+entry: String
+}
+
+type RacesSubraceSpeed {
+walk: Int
+swim: Int
+fly: Int
+}
+
+type RacesSubraceAdditionalSpellsSpellsItemChoose {
+fromFilter: String
+count: Int
+}
+
+type RacesSubraceAdditionalSpellsSpellcastingAbilityChoose {
+from: [String]
+count: Int
+}
+
+type RacesSubraceSkillToolLanguageProficienciesChoose {
+from: [String]
+count: Int
+}
+
+type RacesSubraceSkillToolLanguageProficiencies {
+choose: RacesSubraceSkillToolLanguageProficienciesChoose
+}
+
+type RacesSubraceAbilityChoose {
+from: [String]
+count: Int
+}
+
+type RacesSubraceToolProficiencies {
+anyArtisans: Int
+}
+
+type RacesSubraceSkillProficiencies {
+any: Int
+athletics: Boolean
+intimidation: Boolean
+acrobatics: Boolean
+survival: Boolean
+}
+
+type RacesSubraceFeats {
+any: Int
+}
+
+type RacesSubrace {
+name: String
+source: String
+raceName: String
+raceSource: String
+ability: RacesSubraceAbility
+entries: [RacesSubraceEntries]
+languageProficiencies: RacesSubraceLanguageProficiencies
+additionalSpells: RacesSubraceAdditionalSpells
+overwrite: RacesSubraceOverwrite
+armorProficiencies: RacesSubraceArmorProficiencies
+weaponProficiencies: RacesSubraceWeaponProficiencies
+speed: RacesSubraceSpeed
+skillToolLanguageProficiencies: RacesSubraceSkillToolLanguageProficiencies
+toolProficiencies: RacesSubraceToolProficiencies
+skillProficiencies: RacesSubraceSkillProficiencies
+feats: RacesSubraceFeats
+}
+
+type Races {
+race: [RacesRace]
+subrace: [RacesSubrace]
+}

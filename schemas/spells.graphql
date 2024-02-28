@@ -1,0 +1,85 @@
+type SpellsSpellRangeDistance {
+type: String
+distance: Int
+}
+
+type SpellsSpellRange {
+type: String
+distance: SpellsSpellRangeDistance
+}
+
+type SpellsSpellComponents {
+s: Boolean
+v: Boolean
+m: String
+}
+
+type SpellsSpellDuration {
+type: String
+duration: String
+concentration: Boolean
+}
+
+type SpellsSpellEntries {
+type: String
+entry: String
+id: Int
+by: String
+children: [Int]
+parentId: Int
+caption: String
+colLabels: [String]
+colStyles: [String]
+rows: [SpellsSpellEntriesRowsList]
+style: String
+items: [SpellsSpellEntriesItems]
+name: String
+source: String
+page: Int
+}
+
+type SpellsSpellHigherLevel {
+type: String
+name: String
+id: Int
+children: [Int]
+entry: String
+parentId: Int
+}
+
+type SpellsSpell {
+name: String
+source: String
+level: Int
+school: String
+time: String
+range: SpellsSpellRange
+components: SpellsSpellComponents
+duration: SpellsSpellDuration
+classes: [String]
+entries: [SpellsSpellEntries]
+higherLevel: [SpellsSpellHigherLevel]
+ritual: Boolean
+}
+
+type Spells {
+spell: [SpellsSpell]
+}
+
+type SpellsSpellEntriesRows {
+_0: String
+_1: String
+_2: String
+_3: String
+_4: String
+_5: String
+}
+
+type SpellsSpellEntriesRowsList {
+items: [SpellsSpellEntriesRows]
+}
+
+type SpellsSpellEntriesItems {
+type: String
+entry: String
+}

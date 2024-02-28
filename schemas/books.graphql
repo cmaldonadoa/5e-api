@@ -1,0 +1,9 @@
+type BooksBook {
+id: String
+name: String
+group: String
+}
+
+type Books {
+book: [BooksBook]
+}
