@@ -1,20 +1,19 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import { parse } from "./utils/json2graphql.js";
-import * as fs from "fs";
+import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
+import { loadSchema } from "@graphql-tools/load";
+import fs from "fs";
 
-const data = fs.readFileSync(
-  process.cwd() + "/data/modified/books/books.json",
-  "utf-8",
-);
-
-const books = JSON.parse(data);
-const typeDefs = `type Query {\n_: Boolean\n}\n\n` + parse(books, "books");
+const loadedTypeDefs = await loadSchema("schemas/*.graphql", {
+    loaders: [new GraphQLFileLoader()]
+});
+const queries = `type Query {\n_: Boolean\n}\n\n`;
+const typeDefs = queries + loadedTypeDefs;
 
 const server = new ApolloServer({ typeDefs });
 
 const { url } = await startStandaloneServer(server, {
-  listen: { port: 5555 },
+    listen: { port: 5555 }
 });
 
 console.log(`🚀  Server ready at: ${url}`);
