@@ -131,7 +131,7 @@ export const utils = {
 
         keys.forEach(k => {
             const obj = spells[k];
-            
+
             if (!obj) return;
 
             if (Array.isArray(obj)) {
@@ -204,12 +204,20 @@ export const utils = {
     },
 
     formatChoose: obj => {
-        if (typeof obj === "string")
-            return { [utils.clearSpellName(obj)]: true };
+        if (!obj) return undefined;
+
+        if (Array.isArray(obj)) return obj.map(e => utils.formatChoose(e));
+
+        if (typeof obj === "string") return { item: utils.clearSpellName(obj) };
+
+        const getItems = () => Object.keys(obj).filter(e => e !== "choose");
+
+        const hasItems = () => getItems().length > 0;
 
         if ("choose" in obj) {
             if (typeof obj.choose === "string")
                 return {
+                    ...(hasItems() && { items: getItems() }),
                     choose: {
                         from: null,
                         fromFilter: obj.choose,
@@ -218,6 +226,7 @@ export const utils = {
                 };
             else if ("from" in obj.choose)
                 return {
+                    ...(hasItems() && { items: getItems() }),
                     choose: {
                         from: Array.isArray(obj.choose.from)
                             ? obj.choose.from.map(n => utils.clearSpellName(n))
@@ -230,6 +239,7 @@ export const utils = {
                 };
             else
                 return {
+                    ...(hasItems() && { items: getItems() }),
                     choose: {
                         from: Array.isArray(obj.choose)
                             ? obj.choose.map(n => utils.clearSpellName(n))
@@ -241,7 +251,9 @@ export const utils = {
                     }
                 };
         }
-        return obj;
+        return {
+            items: getItems()
+        };
     },
 
     clearSpellName: name => {
@@ -472,7 +484,8 @@ export const handleFiles = (handlers: any, options: Options) => {
 
                     if (
                         !options.enableInternalTests?.enabled &&
-                        !options.enableCustomTests?.enabled && !options.peek?.enabled
+                        !options.enableCustomTests?.enabled &&
+                        !options.peek?.enabled
                     )
                         displayProperties(copy || x);
 
