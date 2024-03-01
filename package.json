@@ -19,6 +19,7 @@
         "@graphql-codegen/cli": "5.0.2",
         "@graphql-codegen/typescript": "4.0.6",
         "@graphql-codegen/typescript-resolvers": "4.0.6",
+        "@types/app-root-dir": "^0.1.4",
         "@types/node": "^20.11.19",
         "prettier": "^3.2.5",
         "ts-node": "^10.9.2",
