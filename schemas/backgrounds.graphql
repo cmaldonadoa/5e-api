@@ -1,29 +1,11 @@
 type BackgroundsBackgroundSkillProficiencies {
-insight: Boolean
-religion: Boolean
-acrobatics: Boolean
-athletics: Boolean
-deception: Boolean
-stealth: Boolean
-intimidation: Boolean
-perception: Boolean
-performance: Boolean
-sleight of hand: Boolean
-history: Boolean
+items: [String]
 choose: BackgroundsBackgroundSkillProficienciesChoose
-arcana: Boolean
-persuasion: Boolean
-investigation: Boolean
-animal handling: Boolean
-survival: Boolean
-nature: Boolean
-medicine: Boolean
 }
 
 type BackgroundsBackgroundLanguageProficiencies {
-anyStandard: Int
+items: [String]
 choose: BackgroundsBackgroundLanguageProficienciesChoose
-dwarvish: Boolean
 }
 
 type BackgroundsBackgroundStartingEquipment_ {
@@ -95,31 +77,12 @@ caption: String
 }
 
 type BackgroundsBackgroundFeats {
-magic initiate|phb: Boolean
-strixhaven initiate|scc: Boolean
-tough|phb: Boolean
+items: [String]
 }
 
 type BackgroundsBackgroundToolProficiencies {
-vehicles (land): Boolean
-anyGaming: Int
-thieves' tools: Boolean
-disguise kit: Boolean
-forgery kit: Boolean
-anyArtisans: Int
-anyMusical: Int
+items: [String]
 choose: BackgroundsBackgroundToolProficienciesChoose
-poisoner's kit: Boolean
-herbalism kit: Boolean
-navigator's tools: Boolean
-vehicles (water): Boolean
-vehicles (space): Boolean
-alchemist's supplies: Boolean
-tinker's tools: Boolean
-brewer's supplies: Boolean
-cook's utensils: Boolean
-vehicles (air): Boolean
-calligrapher's supplies: Boolean
 }
 
 type BackgroundsBackgroundAdditionalSpellsExpanded {
@@ -167,7 +130,7 @@ startingEquipment: [BackgroundsBackgroundStartingEquipment]
 entries: [BackgroundsBackgroundEntries]
 feats: BackgroundsBackgroundFeats
 toolProficiencies: BackgroundsBackgroundToolProficiencies
-additionalSpells: [BackgroundsBackgroundAdditionalSpells]
+additionalSpells: BackgroundsBackgroundAdditionalSpells
 }
 
 type Backgrounds {

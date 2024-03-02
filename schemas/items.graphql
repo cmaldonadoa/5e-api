@@ -1,12 +1,12 @@
-type ItemsBaseItemDamage {
-_1: String
-_2: String
-}
-
 type ItemsBaseItemPackContents {
 item: String
 quantity: Int
 special: Boolean
+}
+
+type ItemsBaseItemDamage {
+_1: String
+_2: String
 }
 
 type ItemsBaseItemEntries {
@@ -31,8 +31,8 @@ isFirearm: Boolean
 reload: Int
 ammoType: String
 damageType: String
-damage: ItemsBaseItemDamage
 packContents: [ItemsBaseItemPackContents]
+damage: ItemsBaseItemDamage
 armorClass: Int
 isArmor: Boolean
 entries: [ItemsBaseItemEntries]
@@ -101,15 +101,13 @@ id: Int
 name: String
 children: [Int]
 parentId: Int
-style: String
-items: [ItemsItemEntriesItems]
 caption: String
 colLabels: [String]
 colStyles: [String]
 rows: [ItemsItemEntriesRowsList]
 source: String
 page: Int
-footnotes: [String]
+items: [ItemsItemEntriesItems]
 }
 
 type ItemsItemDamage {
@@ -117,19 +115,9 @@ _1: String
 _2: String
 }
 
-type ItemsItemEntriesItems {
-type: String
-name: String
-entry: String
-style: String
-items: [ItemsItemEntriesItemsItems]
-}
-
 type ItemsItemEntriesRows {
 _0: String
 _1: String
-_2: String
-_3: String
 }
 
 type ItemsItemEntriesRowsList {
@@ -189,6 +177,11 @@ swim: Int
 fly: Int
 }
 
+type ItemsItemEntriesItems {
+type: String
+entry: String
+}
+
 type ItemsItemBonusSavingThrow {
 int: String
 _: String
@@ -199,12 +192,6 @@ dex: String
 wis: String
 }
 
-type ItemsItemEntriesItemsItems {
-type: String
-name: String
-entry: String
-}
-
 type ItemsItem {
 name: String
 source: String
@@ -213,26 +200,26 @@ attuned: Boolean
 attunedBy: [ItemsItemAttunedBy]
 bonusSpellAttack: String
 bonusSpellSaveDC: String
-entries: [ItemsItemEntries]
 types: [String]
 baseItem: String
 weaponCategory: String
 properties: [String]
-damage: ItemsItemDamage
 bonusWeapon: String
 isWeapon: Boolean
 grantsProficiency: Boolean
+entries: [ItemsItemEntries]
 crew: Int
 vehicleArmorClass: Int
 vehicleHealth: Int
 vehicleSpeed: Float
 vehicleMaxPassengers: Int
 vehicleMaxCargo: Float
+damage: ItemsItemDamage
 attachedSpells: [String]
 modifySpeed: ItemsItemModifySpeed
 modifyAbility: ItemsItemModifyAbility
 armorClass: Int
-vehicleSeeAlso: String
+vehicleSeeAlso: [String]
 range: String
 strength: String
 stealth: Boolean
@@ -246,7 +233,7 @@ bonusWeaponDamage: String
 carryingCapacity: Int
 mountSpeed: Int
 bonusSavingThrow: ItemsItemBonusSavingThrow
-deckSeeAlso: String
+deckSeeAlso: [String]
 ammoType: String
 bonusAbilityCheck: String
 bonusProficiencyBonus: String

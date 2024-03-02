@@ -1,3 +1,9 @@
+type SpellsSpellTime {
+number: Int
+unit: String
+condition: String
+}
+
 type SpellsSpellRangeDistance {
 type: String
 distance: Int
@@ -12,12 +18,6 @@ type SpellsSpellComponents {
 s: Boolean
 v: Boolean
 m: String
-}
-
-type SpellsSpellDuration {
-type: String
-duration: String
-concentration: Boolean
 }
 
 type SpellsSpellEntries {
@@ -52,18 +52,24 @@ name: String
 source: String
 level: Int
 school: String
-time: String
+time: [SpellsSpellTime]
 range: SpellsSpellRange
 components: SpellsSpellComponents
-duration: SpellsSpellDuration
 classes: [String]
 entries: [SpellsSpellEntries]
 higherLevel: [SpellsSpellHigherLevel]
+duration: SpellsSpellDuration
 ritual: Boolean
 }
 
 type Spells {
 spell: [SpellsSpell]
+}
+
+type SpellsSpellDuration {
+type: String
+concentration: Boolean
+duration: String
 }
 
 type SpellsSpellEntriesRows {

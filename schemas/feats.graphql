@@ -10,42 +10,19 @@ feat: [String]
 }
 
 type FeatsFeatAbility {
-con: Int
-cha: Int
+items: [String]
 choose: FeatsFeatAbilityChoose
-dex: Int
-str: Int
-int: Int
 }
 
 type FeatsFeatAdditionalSpellsSpellcastingAbility {
-con: Boolean
-int: Boolean
-cha: Boolean
-inherit: Boolean
+items: [String]
 choose: FeatsFeatAdditionalSpellsSpellcastingAbilityChoose
-wis: Boolean
 }
 
-type FeatsFeatAdditionalSpellsSpellsItemChoose {
+type FeatsFeatAdditionalSpellsSpellsChoose {
 fromFilter: String
 count: Int
 from: [String]
-}
-
-type FeatsFeatAdditionalSpellsSpellsItem {
-choose: FeatsFeatAdditionalSpellsSpellsItemChoose
-detect magic: Boolean
-levitate: Boolean
-dispel magic: Boolean
-misty step: Boolean
-cure wounds: Boolean
-invisibility: Boolean
-find familiar: Boolean
-mage hand: Boolean
-detect thoughts: Boolean
-longstrider: Boolean
-pass without trace: Boolean
 }
 
 type FeatsFeatAdditionalSpellsSpells_meta {
@@ -56,8 +33,10 @@ ritual: Boolean
 }
 
 type FeatsFeatAdditionalSpellsSpells {
-item: FeatsFeatAdditionalSpellsSpellsItem
+choose: FeatsFeatAdditionalSpellsSpellsChoose
 _meta: FeatsFeatAdditionalSpellsSpells_meta
+item: String
+items: [String]
 }
 
 type FeatsFeatAdditionalSpells {
@@ -99,10 +78,7 @@ style: String
 }
 
 type FeatsFeatToolProficiencies {
-anyArtisans: Boolean
-cook's utensils: Boolean
-poisoner's kit: Boolean
-any: Int
+items: [String]
 }
 
 type FeatsFeatAbilityChoose {
@@ -135,8 +111,7 @@ progression: FeatsFeatOptionalfeatureProgressionProgression
 }
 
 type FeatsFeatLanguageProficiencies {
-sylvan: Boolean
-any: Int
+items: [String]
 }
 
 type FeatsFeatPrerequisiteProficiency {
@@ -155,15 +130,12 @@ count: Int
 }
 
 type FeatsFeatWeaponProficiencies {
-firearms: Boolean
+items: [String]
 choose: FeatsFeatWeaponProficienciesChoose
 }
 
 type FeatsFeatArmorProficiencies {
-heavy: Boolean
-light: Boolean
-medium: Boolean
-shield|phb: Boolean
+items: [String]
 }
 
 type FeatsFeatSkillProficienciesChoose {
@@ -185,7 +157,7 @@ choose: FeatsFeatSavingThrowProficienciesChoose
 }
 
 type FeatsFeatExpertise {
-anyProficientSkill: Int
+items: [String]
 }
 
 type FeatsFeatSkillToolLanguageProficienciesChoose {

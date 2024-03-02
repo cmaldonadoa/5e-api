@@ -25,6 +25,26 @@ colStyles: [String]
 rows: [VehiclesVehicleEntriesRowsList]
 }
 
+type VehiclesVehicleActionsRows {
+_0: String
+_1: String
+_2: String
+}
+
+type VehiclesVehicleActionsRowsList {
+items: [VehiclesVehicleActionsRows]
+}
+
+type VehiclesVehicleActions {
+type: String
+entry: String
+id: Int
+caption: String
+colLabels: [String]
+colStyles: [String]
+rows: [VehiclesVehicleActionsRowsList]
+}
+
 type VehiclesVehiclePace {
 fly: String
 swim: String
@@ -47,15 +67,6 @@ armorClass: Int
 health: Int
 crew: Int
 actions: [VehiclesVehicleWeaponsActions]
-}
-
-type VehiclesVehicleAbility {
-str: Int
-dex: Int
-con: Int
-int: Int
-wis: Int
-cha: Int
 }
 
 type VehiclesVehicleControlsEntries {
@@ -90,20 +101,6 @@ health: Int
 healthNote: String
 }
 
-type VehiclesVehicleActionsItems {
-type: String
-name: String
-entry: String
-}
-
-type VehiclesVehicleActions {
-type: String
-entry: String
-id: Int
-style: String
-items: [VehiclesVehicleActionsItems]
-}
-
 type VehiclesVehicleWeaponsActionsEntries {
 type: String
 entry: String
@@ -132,15 +129,14 @@ speed: VehiclesVehicleSpeed
 health: Int
 damageImmunities: [String]
 entries: [VehiclesVehicleEntries]
+actions: [VehiclesVehicleActions]
 dimensions: [String]
 pace: VehiclesVehiclePace
 weapons: [VehiclesVehicleWeapons]
 maxCargo: Int
 conditionImmunities: [String]
-ability: VehiclesVehicleAbility
 controls: [VehiclesVehicleControls]
 movements: [VehiclesVehicleMovements]
-actions: [VehiclesVehicleActions]
 maxCrewNote: String
 }
 
