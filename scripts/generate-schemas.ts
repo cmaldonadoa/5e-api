@@ -6,9 +6,11 @@ const root = rootDir.get();
 const path = root + "/data/original/";
 
 const folders = fs.readdirSync(path);
+const exclude = ["classes"];
 
 for (const name of folders) {
   console.log("---", name);
+  if (exclude.includes(name)) continue;
   const { stdout, stderr } = spawnSync("npm", [
     "run",
     "generate-schema",
