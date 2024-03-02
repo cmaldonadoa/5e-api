@@ -190,10 +190,10 @@ export const utils = {
         result = [
           ...result,
           {
+            ...entry,
             id,
             parentId,
             children,
-            ...entry,
           },
           ...descendantNodes,
         ];
