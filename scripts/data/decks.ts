@@ -16,14 +16,14 @@ handleFiles(
       name: e.name,
       source: e.source,
       cards: e.cards.map((x: any) => (typeof x === "string" ? x : x.uid)),
-      entries: utils.splitEntries(utils.asArray(e.entries)),
+      entries: utils.adapt(utils.splitEntries(utils.asArray(e.entries))),
     }),
     card: (e: any) => ({
       name: e.name,
       source: e.source,
       set: e.set,
-      entries: utils.splitEntries(utils.asArray(e.entries)),
+      entries: utils.adapt(utils.splitEntries(utils.asArray(e.entries))),
     }),
   },
-  options,
+  options
 );
