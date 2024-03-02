@@ -110,7 +110,7 @@ export const utils = {
   adapt: <T>(object: T): undefined | T => {
     if (
       !object ||
-      Object.values(object).some(Boolean) ||
+      !Object.values(object).every(Boolean) ||
       (Array.isArray(object) && object.filter(Boolean).length === 0)
     )
       return;
