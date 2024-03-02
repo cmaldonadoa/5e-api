@@ -243,7 +243,8 @@ export const utils = {
 
       if (Array.isArray(spell))
         spellItems = spell.map((o) => ({
-          item: utils.formatObject(o),
+          ...(typeof o === "string" && { item: utils.clearName(o) }),
+          ...(typeof o !== "string" && utils.formatObject(o)),
           ...(Number.isInteger(level) && {
             _meta: {
               level: +level,
@@ -271,10 +272,8 @@ export const utils = {
           const newSpells = utils
             .asArray(spell.daily[key] as any[])
             .map((o) => ({
-              item:
-                typeof o === "string"
-                  ? utils.clearName(o)
-                  : utils.formatObject(o),
+              ...(typeof o === "string" && { item: utils.clearName(o) }),
+              ...(typeof o !== "string" && utils.formatObject(o)),
               _meta: {
                 ...(Number.isInteger(level) && { level: +level }),
                 longRest: 1,
@@ -287,10 +286,8 @@ export const utils = {
           const newSpells = utils
             .asArray(spell.rest[key] as any[])
             .map((o) => ({
-              item:
-                typeof o === "string"
-                  ? utils.clearName(o)
-                  : utils.formatObject(o),
+              ...(typeof o === "string" && { item: utils.clearName(o) }),
+              ...(typeof o !== "string" && utils.formatObject(o)),
               _meta: {
                 ...(Number.isInteger(level) && { level: +level }),
                 shortRest: 1,
@@ -303,10 +300,8 @@ export const utils = {
           const newSpells = utils
             .asArray(spell.resource[key] as any[])
             .map((o) => ({
-              item:
-                typeof o === "string"
-                  ? utils.clearName(o)
-                  : utils.formatObject(o),
+              ...(typeof o === "string" && { item: utils.clearName(o) }),
+              ...(typeof o !== "string" && utils.formatObject(o)),
               ...(Number.isInteger(level) && {
                 _meta: {
                   level: +level,
