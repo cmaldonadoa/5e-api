@@ -20,9 +20,9 @@ type SpellData = {
     | string[]
     | { will: string[] }
     | { ritual: string[] }
-    | { daily: { [k: string | number]: string[] } }
-    | { rest: { [k: string | number]: string[] } }
-    | { resource: { [k: string | number]: string[] } };
+    | { daily: { [k: string | number]: string[] | FieldData[] } }
+    | { rest: { [k: string | number]: string[] | FieldData[] } }
+    | { resource: { [k: string | number]: string[] | FieldData[] } };
 };
 
 type SpellItem = {
@@ -87,13 +87,13 @@ const modifyEntries = (base: BaseData, modifierEntries: ModifierEntry[]) => {
 
     if (entry.mode === "removeArr")
       (base.entries as Entry[]) = (base.entries as Entry[]).filter(
-        (e) => typeof e !== "string" && e.name !== entry.names,
+        (e) => typeof e !== "string" && e.name !== entry.names
       );
     else if (entry.mode === "replaceArr")
       (base.entries as Entry[])[
         typeof entry.replace === "string"
           ? (base.entries as Entry[]).findIndex(
-              (e) => typeof e !== "string" && e.name === entry.replace,
+              (e) => typeof e !== "string" && e.name === entry.replace
             )
           : entry.replace.index
       ] = entry.items;
@@ -108,7 +108,12 @@ export const utils = {
     object ? (Array.isArray(object) ? object : [object]) : [],
 
   adapt: <T>(object: T): undefined | T => {
-    if (!object || (Array.isArray(object) && object.length === 0)) return;
+    if (
+      !object ||
+      Object.keys(object).length === 0 ||
+      (Array.isArray(object) && object.filter(Boolean).length === 0)
+    )
+      return;
     return object;
   },
 
@@ -120,15 +125,15 @@ export const utils = {
           ? {
               ...entry,
               items: utils.adapt(
-                utils.formatEntries(utils.asArray(entry.items)),
+                utils.formatEntries(utils.asArray(entry.items))
               ),
             }
           : {
               ...entry,
               entries: utils.adapt(
-                utils.formatEntries(utils.asArray(entry.entries)),
+                utils.formatEntries(utils.asArray(entry.entries))
               ),
-            },
+            }
     );
   },
 
@@ -171,28 +176,28 @@ export const utils = {
     return replaceVariables(itemEntry.entriesTemplate);
   },
 
-  splitEntries: (entries?: Entries) => {
-    const split = (nextId: number, entries?: Entries) => {
+  splitEntries: (entries: Entry[]) => {
+    const split = (id: number, entries?: Entries, parentId?: number) => {
       if (!entries) return;
 
       let result = [];
       utils.formatEntries(utils.asArray(entries)).forEach((entry) => {
-        const descendantNodes = split(nextId + 1, entry.entries) || [];
+        const descendantNodes = split(id + 1, entry.entries, id) || [];
         const children = utils.adapt(
-          descendantNodes.filter((e) => e.parentId === nextId).map((e) => e.id),
+          descendantNodes.filter((e) => e.parentId === id).map((e) => e.id)
         );
         delete entry.entries;
         result = [
           ...result,
           {
-            ...entry,
-            id: nextId,
+            id,
+            parentId,
             children,
-            parentId: nextId ? nextId - 1 : undefined,
+            ...entry,
           },
           ...descendantNodes,
         ];
-        nextId += 1 + descendantNodes.length;
+        id += 1 + descendantNodes.length;
       });
       return result;
     };
@@ -219,7 +224,7 @@ export const utils = {
     return base;
   },
 
-  formatAdditionalSpells: (keys: string[], spells?: SpellData) => {
+  formatSpells: (keys: string[], spells?: SpellData) => {
     if (!spells) return [];
 
     //const keys = [...Array(20).keys()].map(k => "" + (k + 1));
@@ -247,7 +252,7 @@ export const utils = {
         }));
       else if ("will" in spell)
         spellItems = spell.will.map((o) => ({
-          item: utils.formatObject(o),
+          item: utils.clearName(o),
           _meta: {
             ...(Number.isInteger(level) && { level: +level }),
             will: true,
@@ -255,7 +260,7 @@ export const utils = {
         }));
       else if ("ritual" in spell)
         spellItems = spell.ritual.map((o) => ({
-          item: utils.formatObject(o),
+          item: utils.clearName(o),
           _meta: {
             ...(Number.isInteger(level) && { level: +level }),
             ritual: true,
@@ -263,36 +268,51 @@ export const utils = {
         }));
       else if ("daily" in spell)
         spellItems = dailyKeys.reduce((accumulator, key) => {
-          const newSpells = spell.daily[key].map((o) => ({
-            item: utils.formatObject(o),
-            _meta: {
-              ...(Number.isInteger(level) && { level: +level }),
-              longRest: 1,
-            },
-          }));
+          const newSpells = utils
+            .asArray(spell.daily[key] as any[])
+            .map((o) => ({
+              item:
+                typeof o === "string"
+                  ? utils.clearName(o)
+                  : utils.formatObject(o),
+              _meta: {
+                ...(Number.isInteger(level) && { level: +level }),
+                longRest: 1,
+              },
+            }));
           return [...accumulator, ...newSpells];
         }, []);
       else if ("rest" in spell)
         spellItems = restKeys.reduce((accumulator, key) => {
-          const newSpells = spell.rest[key].map((o) => ({
-            item: utils.formatObject(o),
-            _meta: {
-              ...(Number.isInteger(level) && { level: +level }),
-              shortRest: 1,
-            },
-          }));
+          const newSpells = utils
+            .asArray(spell.rest[key] as any[])
+            .map((o) => ({
+              item:
+                typeof o === "string"
+                  ? utils.clearName(o)
+                  : utils.formatObject(o),
+              _meta: {
+                ...(Number.isInteger(level) && { level: +level }),
+                shortRest: 1,
+              },
+            }));
           return [...accumulator, ...newSpells];
         }, []);
       else if ("resource" in spell)
         spellItems = resourceKeys.reduce((accumulator, key) => {
-          const newSpells = spell.resource[key].map((o) => ({
-            item: utils.formatObject(o),
-            ...(Number.isInteger(level) && {
-              _meta: {
-                level: +level,
-              },
-            }),
-          }));
+          const newSpells = utils
+            .asArray(spell.resource[key] as any[])
+            .map((o) => ({
+              item:
+                typeof o === "string"
+                  ? utils.clearName(o)
+                  : utils.formatObject(o),
+              ...(Number.isInteger(level) && {
+                _meta: {
+                  level: +level,
+                },
+              }),
+            }));
           return [...accumulator, ...newSpells];
         }, []);
 
@@ -305,17 +325,21 @@ export const utils = {
   formatObject: (object?: FieldData | string | (FieldData | string)[]) => {
     if (!object) return;
 
-    if (Array.isArray(object)) return object.map((e) => utils.formatObject(e));
+    if (Array.isArray(object))
+      return object.map((e) => utils.formatObject(e))[0];
 
-    if (typeof object === "string") return { item: utils.clearName(object) };
+    if (typeof object === "string") return { items: [utils.clearName(object)] };
 
-    const getItems = () => Object.keys(object).filter((e) => e !== "choose");
-    const hasItems = () => getItems().length > 0;
+    const items = Object.entries(object)
+      .filter(([key]) => key !== "choose")
+      .flatMap(([key, value]) => Array(value).fill(key));
+
+    const hasItems = items.length > 0;
 
     if ("choose" in object) {
       if (typeof object.choose === "string")
         return {
-          ...(hasItems() && { items: getItems() }),
+          ...(hasItems && { items }),
           choose: {
             fromFilter: object.choose,
             count: object.count || 1,
@@ -323,7 +347,7 @@ export const utils = {
         };
       else if ("from" in object.choose)
         return {
-          ...(hasItems() && { items: getItems() }),
+          ...(hasItems && { items }),
           choose: {
             ...(Array.isArray(object.choose.from) && {
               from: object.choose.from.map((n) => utils.clearName(n)),
@@ -336,7 +360,7 @@ export const utils = {
         };
       else
         return {
-          ...(hasItems() && { items: getItems() }),
+          ...(hasItems && { items }),
           choose: {
             ...(Array.isArray(object.choose) && {
               from: object.choose.map((n) => utils.clearName(n)),
@@ -348,15 +372,11 @@ export const utils = {
           },
         };
     }
-    return hasItems()
-      ? {
-          items: getItems(),
-        }
-      : undefined;
+    return hasItems ? { items } : undefined;
   },
 
   clearName: (name: string) => {
-    return name.split("#")[0];
+    return name.split("#")[0].split("|")[0];
   },
 
   getVersions: (original: Versioned): BaseData[] => {
@@ -373,7 +393,7 @@ export const utils = {
       const replaceVariables = (text: string, vars: string[]) => {
         const regexp = new RegExp(
           "{{(" + Object.keys(vars).join("|") + ")}}",
-          "g",
+          "g"
         );
         return text.replace(regexp, (m, $1) => vars[$1] || m);
       };
