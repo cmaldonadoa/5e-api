@@ -6,156 +6,121 @@ const root = rootDir.get();
 const input = root + "/data/original/races/";
 const output = root + "/data/modified/";
 const options = {
-    input,
-    output,
-    peek: {
-        enabled: true,
-        key: "race",
-        peek: e => {
-            if (e.additionalSpells && !e.additionalSpells.spells.length) {
-                const x = { ...e };
-                delete x.entries;
-                console.log(x);
-            }
-        }
-    }
+  input,
+  output,
 };
 
 handleFiles(
-    {
-        race: e => ({
-            name: e.name,
-            source: e.source,
-            size: e.size,
-            speed: e.speed
-                ? Number.isInteger(e.speed)
-                    ? { walk: e.speed }
-                    : {
-                          walk: e.speed.walk,
-                          fly: e.speed.fly
-                              ? Number.isInteger(e.speed.fly)
-                                  ? e.speed.fly
-                                  : e.speed.walk
-                              : null,
-                          climb: e.speed.climb
-                              ? Number.isInteger(e.speed.climb)
-                                  ? e.speed.climb
-                                  : e.speed.walk
-                              : null,
-                          swim: e.speed.swim
-                              ? Number.isInteger(e.speed.swim)
-                                  ? e.speed.swim
-                                  : e.speed.walk
-                              : null
-                      }
-                : null,
-            ability: e.ability ? utils.formatChoose(e.ability[0]) : null,
-            languageProficiencies: e.languageProficiencies
-                ? utils.formatChoose(e.languageProficiencies[0])
-                : null,
-            weaponProficiencies: e.weaponProficiencies
-                ? utils.formatChoose(e.weaponProficiencies[0])
-                : null,
-            armorProficiencies: e.armorProficiencies
-                ? utils.formatChoose(e.armorProficiencies[0])
-                : null,
-            skillProficiencies: e.skillProficiencies
-                ? utils.formatChoose(e.skillProficiencies[0])
-                : null,
-            toolProficiencies: e.toolProficiencies
-                ? utils.formatChoose(e.toolProficiencies[0])
-                : null,
-            entries: utils.separateEntries(e.entries),
-            feats: e.feats ? e.feats[0] : null,
-            additionalSpells: e.additionalSpells
-                ? {
-                      spellcastingAbility: e.additionalSpells.ability
-                          ? utils.formatChoose(e.additionalSpells.ability)
-                          : null,
-                      spells: [
-                          ...utils.formatSpells(e.additionalSpells.innate, [
-                              "1",
-                              "3",
-                              "5"
-                          ]),
-                          ...utils.formatSpells(e.additionalSpells.known, [
-                              "1",
-                              "3",
-                              "5"
-                          ])
-                      ]
-                  }
-                : null
-        }),
-        subrace: x => ({
-            name: x.name,
-            source: x.source,
-            raceName: x.raceName,
-            raceSource: x.raceSource,
-            speed: x.speed
-                ? Number.isInteger(x.speed)
-                    ? { walk: x.speed }
-                    : {
-                          walk: x.speed.walk,
-                          fly: x.speed.fly
-                              ? Number.isInteger(x.speed.fly)
-                                  ? x.speed.fly
-                                  : x.speed.walk
-                              : null,
-                          climb: x.speed.climb
-                              ? Number.isInteger(x.speed.climb)
-                                  ? x.speed.climb
-                                  : x.speed.walk
-                              : null,
-                          swim: x.speed.swim
-                              ? Number.isInteger(x.speed.swim)
-                                  ? x.speed.swim
-                                  : x.speed.walk
-                              : null
-                      }
-                : null,
-            ability: x.ability ? utils.formatChoose(x.ability[0]) : null,
-            languageProficiencies: x.languageProficiencies
-                ? utils.formatChoose(x.languageProficiencies[0])
-                : null,
-            weaponProficiencies: x.weaponProficiencies
-                ? utils.formatChoose(x.weaponProficiencies[0])
-                : null,
-            armorProficiencies: x.armorProficiencies
-                ? utils.formatChoose(x.armorProficiencies[0])
-                : null,
-            skillProficiencies: x.skillProficiencies
-                ? utils.formatChoose(x.skillProficiencies[0])
-                : null,
-            toolProficiencies: x.toolProficiencies
-                ? utils.formatChoose(x.toolProficiencies[0])
-                : null,
-            skillToolLanguageProficiencies: x.skillToolLanguageProficiencies
-                ? utils.formatChoose(x.skillToolLanguageProficiencies[0])
-                : null,
-            entries: utils.separateEntries(x.entries),
-            feats: x.feats ? x.feats[0] : null,
-            additionalSpells: x.additionalSpells
-                ? {
-                      spellcastingAbility: x.additionalSpells.ability
-                          ? utils.formatChoose(x.additionalSpells.ability)
-                          : null,
-                      spells: [
-                          ...utils.formatSpells(x.additionalSpells.innate, [
-                              "1",
-                              "3",
-                              "5"
-                          ]),
-                          ...utils.formatSpells(x.additionalSpells.known, [
-                              "1",
-                              "3",
-                              "5"
-                          ])
-                      ]
-                  }
-                : null,
-            overwrite: x.overwrite
-        })
-    },
-    options
+  {
+    race: (e: any) => ({
+      name: e.name,
+      source: e.source,
+      size: e.size,
+      speed: utils.adapt(
+        e.speed &&
+          (Number.isInteger(e.speed)
+            ? { walk: e.speed }
+            : {
+                walk: e.speed.walk,
+                fly: utils.adapt(
+                  e.speed.fly &&
+                    (Number.isInteger(e.speed.fly) ? e.speed.fly : e.speed.walk)
+                ),
+                climb: utils.adapt(
+                  e.speed.climb &&
+                    (Number.isInteger(e.speed.climb)
+                      ? e.speed.climb
+                      : e.speed.walk)
+                ),
+                swim: utils.adapt(
+                  e.speed.swim &&
+                    (Number.isInteger(e.speed.swim)
+                      ? e.speed.swim
+                      : e.speed.walk)
+                ),
+              })
+      ),
+      ability: utils.adapt(utils.formatObject(e.ability)),
+      toolProficiencies: utils.adapt(utils.formatObject(e.toolProficiencies)),
+      languageProficiencies: utils.adapt(
+        utils.formatObject(e.languageProficiencies)
+      ),
+      weaponProficiencies: utils.adapt(
+        utils.formatObject(e.weaponProficiencies)
+      ),
+      armorProficiencies: utils.adapt(utils.formatObject(e.armorProficiencies)),
+      skillProficiencies: utils.adapt(utils.formatObject(e.skillProficiencies)),
+      entries: utils.adapt(utils.splitEntries(utils.asArray(e.entries))),
+      feats: utils.adapt(utils.formatObject(e.feats)),
+      additionalSpells: utils.adapt(
+        e.additionalSpells && {
+          spellcastingAbility: utils.adapt(
+            utils.formatObject(e.additionalSpells.ability)
+          ),
+          spells: [
+            ...utils.formatSpells(["1", "3", "5"], e.additionalSpells.innate),
+            ...utils.formatSpells(["1", "3", "5"], e.additionalSpells.known),
+          ],
+        }
+      ),
+    }),
+    subrace: (x: any) => ({
+      name: x.name,
+      source: x.source,
+      raceName: x.raceName,
+      raceSource: x.raceSource,
+      speed: utils.adapt(
+        x.speed &&
+          (Number.isInteger(x.speed)
+            ? { walk: x.speed }
+            : {
+                walk: x.speed.walk,
+                fly: utils.adapt(
+                  x.speed.fly &&
+                    (Number.isInteger(x.speed.fly) ? x.speed.fly : x.speed.walk)
+                ),
+                climb: utils.adapt(
+                  x.speed.climb &&
+                    (Number.isInteger(x.speed.climb)
+                      ? x.speed.climb
+                      : x.speed.walk)
+                ),
+                swim: utils.adapt(
+                  x.speed.swim &&
+                    (Number.isInteger(x.speed.swim)
+                      ? x.speed.swim
+                      : x.speed.walk)
+                ),
+              })
+      ),
+      ability: utils.adapt(utils.formatObject(x.ability)),
+      toolProficiencies: utils.adapt(utils.formatObject(x.toolProficiencies)),
+      languageProficiencies: utils.adapt(
+        utils.formatObject(x.languageProficiencies)
+      ),
+      weaponProficiencies: utils.adapt(
+        utils.formatObject(x.weaponProficiencies)
+      ),
+      armorProficiencies: utils.adapt(utils.formatObject(x.armorProficiencies)),
+      skillProficiencies: utils.adapt(utils.formatObject(x.skillProficiencies)),
+      skillToolLanguageProficiencies: utils.adapt(
+        utils.formatObject(x.skillToolLanguageProficiencies)
+      ),
+      entries: utils.adapt(utils.splitEntries(utils.asArray(x.entries))),
+      feats: utils.adapt(utils.formatObject(x.feats)),
+      additionalSpells: utils.adapt(
+        x.additionalSpells && {
+          spellcastingAbility: utils.adapt(
+            utils.formatObject(x.additionalSpells.ability)
+          ),
+          spells: [
+            ...utils.formatSpells(["1", "3", "5"], x.additionalSpells.innate),
+            ...utils.formatSpells(["1", "3", "5"], x.additionalSpells.known),
+          ],
+        }
+      ),
+      overwrite: x.overwrite,
+    }),
+  },
+  options
 );

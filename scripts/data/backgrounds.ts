@@ -6,74 +6,75 @@ const root = rootDir.get();
 const input = root + "/data/original/backgrounds/";
 const output = root + "/data/modified/";
 const options = {
-    input,
-    output
+  input,
+  output,
 };
 
 handleFiles(
-    {
-        background: x => ({
-            name: x.name,
-            source: x.source,
-            skillProficiencies: x.skillProficiencies
-                ? utils.formatChoose(x.skillProficiencies[0])
-                : null,
-            languageProficiencies: x.languageProficiencies
-                ? utils.formatChoose(x.languageProficiencies[0])
-                : null,
-            startingEquipment: x.startingEquipment
-                ? x.startingEquipment.map(equipmentSet =>
-                      Object.keys(equipmentSet).reduce((accum, k) => {
-                          let startingGold = 0;
-                          accum[k] = equipmentSet[k]
-                              .map(item => {
-                                  if (typeof item === "string")
-                                      return { item: item };
+  {
+    background: (x: any) => ({
+      name: x.name,
+      source: x.source,
+      skillProficiencies: utils.adapt(utils.formatObject(x.skillProficiencies)),
+      languageProficiencies: utils.adapt(
+        utils.formatObject(x.languageProficiencies)
+      ),
+      startingEquipment: utils.adapt(
+        utils.asArray(x.startingEquipment).map((equipmentSet) =>
+          Object.keys(equipmentSet).reduce((accum, k) => {
+            let startingGold = 0;
+            accum[k] = equipmentSet[k]
+              .map((item: any) => {
+                if (typeof item === "string")
+                  return { item: utils.clearName(item) };
 
-                                  if ("containsValue" in item) {
-                                      startingGold =
-                                          item["containsValue"] / 100;
-                                      delete item["containsValue"];
-                                      return item;
-                                  }
+                if ("containsValue" in item) {
+                  startingGold = item["containsValue"] / 100;
+                  delete item["containsValue"];
+                  return {
+                    ...item,
+                    ...(item.item && { item: utils.clearName(item.item) }),
+                  };
+                }
 
-                                  if ("value" in item) {
-                                      startingGold = item["value"];
-                                      return;
-                                  }
-                                  return item;
-                              })
-                              .filter(item => !!item);
+                if ("value" in item) {
+                  startingGold = item["value"];
+                  return;
+                }
 
-                          if (startingGold > 0) {
-                              accum[k].push({ value: startingGold });
-                          }
+                return {
+                  ...item,
+                  ...(item.item && { item: utils.clearName(item.item) }),
+                };
+              })
+              .filter(Boolean);
 
-                          return accum;
-                      }, {})
-                  )
-                : null,
-            entries: x.entries ? utils.separateEntries(x.entries) : null,
-            feats: x.feats ? x.feats[0] : null,
-            toolProficiencies: x.toolProficiencies
-                ? utils.formatChoose(x.toolProficiencies[0])
-                : null,
-            additionalSpells: x.additionalSpells
-                ? [
-                      {
-                          expanded: Object.entries(
-                              x.additionalSpells[0].expanded
-                          ).reduce((acc, [k, v]: [string, any]) => {
-                              acc[k] = v.map(e => utils.clearSpellName(e));
-                              return acc;
-                          }, {})
-                      }
-                  ]
-                : null,
-            skillToolLanguageProficiencies: x.skillToolLanguageProficiencies
-                ? utils.formatChoose(x.skillToolLanguageProficiencies[0])
-                : null
-        })
-    },
-    options
+            if (startingGold > 0) {
+              accum[k].push({ value: startingGold });
+            }
+
+            return accum;
+          }, {})
+        )
+      ),
+      entries: utils.adapt(utils.splitEntries(utils.asArray(x.entries))),
+      feats: utils.adapt(utils.formatObject(x.feats)),
+      toolProficiencies: utils.adapt(utils.formatObject(x.toolProficiencies)),
+      additionalSpells: utils.adapt(
+        x.additionalSpells && {
+          expanded: Object.entries(x.additionalSpells[0].expanded).reduce(
+            (acc, [k, v]: [string, any]) => {
+              acc[k] = v.map((e: string) => utils.clearName(e));
+              return acc;
+            },
+            {}
+          ),
+        }
+      ),
+      skillToolLanguageProficiencies: utils.adapt(
+        utils.formatObject(x.skillToolLanguageProficiencies)
+      ),
+    }),
+  },
+  options
 );
