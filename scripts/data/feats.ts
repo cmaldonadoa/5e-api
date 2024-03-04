@@ -1,4 +1,4 @@
-import { utils, handleFiles } from "./utils";
+import { handleFiles, utils } from "./utils";
 import rootDir from "app-root-dir";
 
 const root = rootDir.get();
@@ -9,6 +9,13 @@ const options = {
   input,
   output,
 };
+function replaceKey(obj, oldKey, newKey) {
+  if (obj.hasOwnProperty(oldKey)) {
+    obj[newKey] = obj[oldKey];
+    delete obj[oldKey];
+  }
+  return obj;
+}
 
 handleFiles(
   {
@@ -45,7 +52,12 @@ handleFiles(
       skillToolLanguageProficiencies: utils.adapt(
         utils.formatObject(e.skillToolLanguageProficiencies)
       ),
-      optionalfeatureProgression: e.optionalfeatureProgression,
+      optionalfeatureProgression: utils.adapt(
+        utils.asArray(e.optionalfeatureProgression).map((x: any) => ({
+          ...x,
+          progression: replaceKey(x.progression, "*", "_"),
+        }))
+      ),
     }),
   },
   options

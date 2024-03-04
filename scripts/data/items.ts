@@ -1,4 +1,4 @@
-import { utils, handleFiles } from "./utils";
+import { handleFiles, utils } from "./utils";
 import rootDir from "app-root-dir";
 import fs from "fs";
 
