@@ -1,0 +1,16 @@
+type Query {
+    backgrounds: [Background]
+    books: [Book]
+    decks: [Deck]
+    cards: [Card]
+    feats: [Feat]
+    items: [Item]
+    baseItems: [BaseItem]
+    itemProperties: [ItemProperty]
+    itemTypes: [ItemType]
+    languages: [Language]
+    races: [Race]
+    subraces: [Subrace]
+    spells: [Spell]
+    vehicles: [Vehicle]
+}
