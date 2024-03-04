@@ -1,14 +1,102 @@
-type BackgroundsBackgroundSkillProficiencies {
-items: [String]
-choose: BackgroundsBackgroundSkillProficienciesChoose
+type Background {
+name: String
+source: String
+skillProficiencies: BackgroundSkillProficiencies
+languageProficiencies: BackgroundLanguageProficiencies
+startingEquipment: [BackgroundStartingEquipment]
+entries: [BackgroundEntries]
+feats: BackgroundFeats
+toolProficiencies: BackgroundToolProficiencies
+additionalSpells: BackgroundAdditionalSpells
 }
 
-type BackgroundsBackgroundLanguageProficiencies {
-items: [String]
-choose: BackgroundsBackgroundLanguageProficienciesChoose
+type BackgroundEntries {
+type: String
+style: String
+items: [BackgroundEntriesItems]
+id: Int
+name: String
+data: BackgroundEntriesData
+children: [Int]
+entry: String
+parentId: Int
+colLabels: [String]
+colStyles: [String]
+rows: [BackgroundEntriesRowsList]
+caption: String
 }
 
-type BackgroundsBackgroundStartingEquipment_ {
+type BackgroundFeats {
+items: [String]
+}
+
+type BackgroundToolProficiencies {
+items: [String]
+choose: BackgroundToolProficienciesChoose
+}
+
+type BackgroundToolProficienciesChoose {
+from: [String]
+count: Int
+}
+
+type BackgroundEntriesItems {
+type: String
+name: String
+entry: String
+}
+
+type BackgroundLanguageProficiencies {
+items: [String]
+choose: BackgroundLanguageProficienciesChoose
+}
+
+type BackgroundLanguageProficienciesChoose {
+from: [String]
+count: Int
+}
+
+type BackgroundSkillProficiencies {
+items: [String]
+choose: BackgroundSkillProficienciesChoose
+}
+
+type BackgroundSkillProficienciesChoose {
+from: [String]
+count: Int
+}
+
+type BackgroundStartingEquipment {
+_: [BackgroundStartingEquipment_]
+a: [BackgroundStartingEquipmentA]
+b: [BackgroundStartingEquipmentB]
+c: [BackgroundStartingEquipmentC]
+d: [BackgroundStartingEquipmentD]
+}
+
+type BackgroundStartingEquipmentD {
+special: String
+}
+
+type BackgroundStartingEquipmentC {
+special: String
+}
+
+type BackgroundStartingEquipmentB {
+special: String
+tool: String
+item: String
+}
+
+type BackgroundStartingEquipmentA {
+item: String
+displayName: String
+special: String
+quantity: Int
+tool: String
+}
+
+type BackgroundStartingEquipment_ {
 item: String
 displayName: String
 special: String
@@ -18,121 +106,29 @@ tool: String
 worthValue: Int
 }
 
-type BackgroundsBackgroundStartingEquipmentA {
-item: String
-displayName: String
-special: String
-quantity: Int
-tool: String
-}
-
-type BackgroundsBackgroundStartingEquipmentB {
-special: String
-tool: String
-item: String
-}
-
-type BackgroundsBackgroundStartingEquipment {
-_: [BackgroundsBackgroundStartingEquipment_]
-a: [BackgroundsBackgroundStartingEquipmentA]
-b: [BackgroundsBackgroundStartingEquipmentB]
-c: [BackgroundsBackgroundStartingEquipmentC]
-d: [BackgroundsBackgroundStartingEquipmentD]
-}
-
-type BackgroundsBackgroundEntriesItems {
-type: String
-name: String
-entry: String
-}
-
-type BackgroundsBackgroundEntriesData {
-isFeature: Boolean
-tableInclude: Boolean
-}
-
-type BackgroundsBackgroundEntriesRows {
+type BackgroundEntriesRows {
 _0: String
 _1: String
 }
 
-type BackgroundsBackgroundEntriesRowsList {
-items: [BackgroundsBackgroundEntriesRows]
+type BackgroundEntriesRowsList {
+items: [BackgroundEntriesRows]
 }
 
-type BackgroundsBackgroundEntries {
-type: String
-style: String
-items: [BackgroundsBackgroundEntriesItems]
-id: Int
-name: String
-data: BackgroundsBackgroundEntriesData
-children: [Int]
-entry: String
-parentId: Int
-colLabels: [String]
-colStyles: [String]
-rows: [BackgroundsBackgroundEntriesRowsList]
-caption: String
+type BackgroundEntriesData {
+isFeature: Boolean
+tableInclude: Boolean
 }
 
-type BackgroundsBackgroundFeats {
-items: [String]
+type BackgroundAdditionalSpells {
+expanded: BackgroundAdditionalSpellsExpanded
 }
 
-type BackgroundsBackgroundToolProficiencies {
-items: [String]
-choose: BackgroundsBackgroundToolProficienciesChoose
-}
-
-type BackgroundsBackgroundAdditionalSpellsExpanded {
+type BackgroundAdditionalSpellsExpanded {
 s0: [String]
 s1: [String]
 s2: [String]
 s3: [String]
 s4: [String]
 s5: [String]
-}
-
-type BackgroundsBackgroundAdditionalSpells {
-expanded: BackgroundsBackgroundAdditionalSpellsExpanded
-}
-
-type BackgroundsBackgroundLanguageProficienciesChoose {
-from: [String]
-count: Int
-}
-
-type BackgroundsBackgroundStartingEquipmentC {
-special: String
-}
-
-type BackgroundsBackgroundStartingEquipmentD {
-special: String
-}
-
-type BackgroundsBackgroundSkillProficienciesChoose {
-from: [String]
-count: Int
-}
-
-type BackgroundsBackgroundToolProficienciesChoose {
-from: [String]
-count: Int
-}
-
-type BackgroundsBackground {
-name: String
-source: String
-skillProficiencies: BackgroundsBackgroundSkillProficiencies
-languageProficiencies: BackgroundsBackgroundLanguageProficiencies
-startingEquipment: [BackgroundsBackgroundStartingEquipment]
-entries: [BackgroundsBackgroundEntries]
-feats: BackgroundsBackgroundFeats
-toolProficiencies: BackgroundsBackgroundToolProficiencies
-additionalSpells: BackgroundsBackgroundAdditionalSpells
-}
-
-type Backgrounds {
-background: [BackgroundsBackground]
 }

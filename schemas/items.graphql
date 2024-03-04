@@ -1,24 +1,4 @@
-type ItemsBaseItemPackContents {
-item: String
-quantity: Int
-special: Boolean
-}
-
-type ItemsBaseItemDamage {
-_1: String
-_2: String
-}
-
-type ItemsBaseItemEntries {
-type: String
-entry: String
-id: Int
-name: String
-children: [Int]
-parentId: Int
-}
-
-type ItemsBaseItem {
+type BaseItem {
 name: String
 source: String
 types: [String]
@@ -31,173 +11,35 @@ isFirearm: Boolean
 reload: Int
 ammoType: String
 damageType: String
-packContents: [ItemsBaseItemPackContents]
-damage: ItemsBaseItemDamage
+packContents: [BaseItemPackContents]
+damage: BaseItemDamage
 armorClass: Int
 isArmor: Boolean
-entries: [ItemsBaseItemEntries]
+entries: [BaseItemEntries]
 strength: String
 stealth: Boolean
 }
 
-type ItemsItemPropertyEntries {
-type: String
-entry: String
-id: Int
-}
-
-type ItemsItemProperty {
-abbreviation: String
-source: String
-name: String
-entries: [ItemsItemPropertyEntries]
-}
-
-type ItemsItemTypeEntries {
+type BaseItemEntries {
 type: String
 entry: String
 id: Int
 name: String
 children: [Int]
 parentId: Int
-source: String
-page: Int
-caption: String
-colLabels: [String]
-colStyles: [String]
-rows: [ItemsItemTypeEntriesRowsList]
 }
 
-type ItemsItemTypeEntriesRows {
-_0: String
-_1: String
-}
-
-type ItemsItemTypeEntriesRowsList {
-items: [ItemsItemTypeEntriesRows]
-}
-
-type ItemsItemType {
-abbreviation: String
-source: String
-name: String
-entries: [ItemsItemTypeEntries]
-}
-
-type ItemsItemAttunedBy {
-class: String
-spellcasting: Boolean
-background: String
-alignment: [String]
-creatureType: String
-race: String
-psionics: Boolean
-}
-
-type ItemsItemEntries {
-type: String
-entry: String
-id: Int
-name: String
-children: [Int]
-parentId: Int
-caption: String
-colLabels: [String]
-colStyles: [String]
-rows: [ItemsItemEntriesRowsList]
-source: String
-page: Int
-items: [ItemsItemEntriesItems]
-}
-
-type ItemsItemDamage {
+type BaseItemDamage {
 _1: String
 _2: String
 }
 
-type ItemsItemEntriesRows {
-_0: String
-_1: String
-}
-
-type ItemsItemEntriesRowsList {
-items: [ItemsItemEntriesRows]
-}
-
-type ItemsItemModifySpeedEqual {
-fly: String
-climb: String
-}
-
-type ItemsItemModifySpeed {
-equal: ItemsItemModifySpeedEqual
-multiply: ItemsItemModifySpeedMultiply
-static: ItemsItemModifySpeedStatic
-}
-
-type ItemsItemModifyAbilityStatic {
-con: Int
-str: Int
-int: Int
-}
-
-type ItemsItemModifyAbility {
-static: ItemsItemModifyAbilityStatic
-con: Int
-wis: Int
-choose: [ItemsItemModifyAbilityChoose]
-from: [String]
-count: Int
-amount: Int
-str: Int
-dex: Int
-int: Int
-cha: Int
-}
-
-type ItemsItemPackContents {
-item: String
-quantity: Int
-special: Boolean
-}
-
-type ItemsItemModifyAbilityChoose {
-from: [String]
-count: Int
-amount: Int
-}
-
-type ItemsItemModifySpeedMultiply {
-walk: Int
-}
-
-type ItemsItemModifySpeedStatic {
-walk: Int
-swim: Int
-fly: Int
-}
-
-type ItemsItemEntriesItems {
-type: String
-entry: String
-}
-
-type ItemsItemBonusSavingThrow {
-int: String
-_: String
-str: String
-cha: String
-con: String
-dex: String
-wis: String
-}
-
-type ItemsItem {
+type Item {
 name: String
 source: String
 rarity: String
 attuned: Boolean
-attunedBy: [ItemsItemAttunedBy]
+attunedBy: [ItemAttunedBy]
 bonusSpellAttack: String
 bonusSpellSaveDC: String
 types: [String]
@@ -207,17 +49,17 @@ properties: [String]
 bonusWeapon: String
 isWeapon: Boolean
 grantsProficiency: Boolean
-entries: [ItemsItemEntries]
+entries: [ItemEntries]
 crew: Int
 vehicleArmorClass: Int
 vehicleHealth: Int
 vehicleSpeed: Float
 vehicleMaxPassengers: Int
 vehicleMaxCargo: Float
-damage: ItemsItemDamage
+damage: ItemDamage
 attachedSpells: [String]
-modifySpeed: ItemsItemModifySpeed
-modifyAbility: ItemsItemModifyAbility
+modifySpeed: ItemModifySpeed
+modifyAbility: ItemModifyAbility
 armorClass: Int
 vehicleSeeAlso: [String]
 range: String
@@ -227,12 +69,12 @@ isCursed: Boolean
 bonusAC: String
 isPoison: Boolean
 poisonTypes: [String]
-packContents: [ItemsItemPackContents]
+packContents: [ItemPackContents]
 vehicleThreshold: Int
 bonusWeaponDamage: String
 carryingCapacity: Int
 mountSpeed: Int
-bonusSavingThrow: ItemsItemBonusSavingThrow
+bonusSavingThrow: ItemBonusSavingThrow
 deckSeeAlso: [String]
 ammoType: String
 bonusAbilityCheck: String
@@ -242,9 +84,160 @@ maxCrew: Int
 isFirearm: Boolean
 }
 
-type Items {
-baseItem: [ItemsBaseItem]
-itemProperty: [ItemsItemProperty]
-itemType: [ItemsItemType]
-item: [ItemsItem]
+type ItemProperty {
+abbreviation: String
+source: String
+name: String
+entries: [ItemPropertyEntries]
+}
+
+type ItemPropertyEntries {
+type: String
+entry: String
+id: Int
+}
+
+type BaseItemPackContents {
+item: String
+quantity: Int
+special: Boolean
+}
+
+type ItemType {
+abbreviation: String
+source: String
+name: String
+entries: [ItemTypeEntries]
+}
+
+type ItemTypeEntries {
+type: String
+entry: String
+id: Int
+name: String
+children: [Int]
+parentId: Int
+source: String
+page: Int
+caption: String
+colLabels: [String]
+colStyles: [String]
+rows: [ItemTypeEntriesRowsList]
+}
+
+type ItemDamage {
+_1: String
+_2: String
+}
+
+type ItemEntries {
+type: String
+entry: String
+id: Int
+name: String
+children: [Int]
+parentId: Int
+caption: String
+colLabels: [String]
+colStyles: [String]
+rows: [ItemEntriesRowsList]
+source: String
+page: Int
+items: [ItemEntriesItems]
+}
+
+type ItemEntriesItems {
+type: String
+entry: String
+}
+
+type ItemEntriesRows {
+_0: String
+_1: String
+}
+
+type ItemEntriesRowsList {
+items: [ItemEntriesRows]
+}
+
+type ItemTypeEntriesRows {
+_0: String
+_1: String
+}
+
+type ItemAttunedBy {
+class: String
+spellcasting: Boolean
+background: String
+alignment: [String]
+creatureType: String
+race: String
+psionics: Boolean
+}
+
+type ItemTypeEntriesRowsList {
+items: [ItemTypeEntriesRows]
+}
+
+type ItemModifySpeed {
+equal: ItemModifySpeedEqual
+multiply: ItemModifySpeedMultiply
+static: ItemModifySpeedStatic
+}
+
+type ItemModifySpeedStatic {
+walk: Int
+swim: Int
+fly: Int
+}
+
+type ItemModifySpeedMultiply {
+walk: Int
+}
+
+type ItemModifyAbility {
+static: ItemModifyAbilityStatic
+con: Int
+wis: Int
+choose: [ItemModifyAbilityChoose]
+from: [String]
+count: Int
+amount: Int
+str: Int
+dex: Int
+int: Int
+cha: Int
+}
+
+type ItemModifyAbilityChoose {
+from: [String]
+count: Int
+amount: Int
+}
+
+type ItemModifyAbilityStatic {
+con: Int
+str: Int
+int: Int
+}
+
+type ItemModifySpeedEqual {
+fly: String
+climb: String
+}
+
+type ItemPackContents {
+item: String
+quantity: Int
+special: Boolean
+}
+
+type ItemBonusSavingThrow {
+int: String
+_: String
+str: String
+cha: String
+con: String
+dex: String
+wis: String
 }

@@ -1,26 +1,25 @@
-type SpellsSpellTime {
-number: Int
-unit: String
-condition: String
+type Spell {
+name: String
+source: String
+level: Int
+school: String
+time: [SpellTime]
+range: SpellRange
+components: SpellComponents
+classes: [String]
+entries: [SpellEntries]
+higherLevel: [SpellHigherLevel]
+duration: SpellDuration
+ritual: Boolean
 }
 
-type SpellsSpellRangeDistance {
+type SpellDuration {
 type: String
-distance: Int
+concentration: Boolean
+duration: String
 }
 
-type SpellsSpellRange {
-type: String
-distance: SpellsSpellRangeDistance
-}
-
-type SpellsSpellComponents {
-s: Boolean
-v: Boolean
-m: String
-}
-
-type SpellsSpellEntries {
+type SpellEntries {
 type: String
 entry: String
 id: Int
@@ -30,49 +29,20 @@ parentId: Int
 caption: String
 colLabels: [String]
 colStyles: [String]
-rows: [SpellsSpellEntriesRowsList]
+rows: [SpellEntriesRowsList]
 style: String
-items: [SpellsSpellEntriesItems]
+items: [SpellEntriesItems]
 name: String
 source: String
 page: Int
 }
 
-type SpellsSpellHigherLevel {
+type SpellEntriesItems {
 type: String
-name: String
-id: Int
-children: [Int]
 entry: String
-parentId: Int
 }
 
-type SpellsSpell {
-name: String
-source: String
-level: Int
-school: String
-time: [SpellsSpellTime]
-range: SpellsSpellRange
-components: SpellsSpellComponents
-classes: [String]
-entries: [SpellsSpellEntries]
-higherLevel: [SpellsSpellHigherLevel]
-duration: SpellsSpellDuration
-ritual: Boolean
-}
-
-type Spells {
-spell: [SpellsSpell]
-}
-
-type SpellsSpellDuration {
-type: String
-concentration: Boolean
-duration: String
-}
-
-type SpellsSpellEntriesRows {
+type SpellEntriesRows {
 _0: String
 _1: String
 _2: String
@@ -81,11 +51,37 @@ _4: String
 _5: String
 }
 
-type SpellsSpellEntriesRowsList {
-items: [SpellsSpellEntriesRows]
+type SpellEntriesRowsList {
+items: [SpellEntriesRows]
 }
 
-type SpellsSpellEntriesItems {
+type SpellComponents {
+s: Boolean
+v: Boolean
+m: String
+}
+
+type SpellTime {
+number: Int
+unit: String
+condition: String
+}
+
+type SpellRange {
 type: String
+distance: SpellRangeDistance
+}
+
+type SpellHigherLevel {
+type: String
+name: String
+id: Int
+children: [Int]
 entry: String
+parentId: Int
+}
+
+type SpellRangeDistance {
+type: String
+distance: Int
 }

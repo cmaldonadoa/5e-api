@@ -1,98 +1,48 @@
-type FeatsFeatPrerequisite {
+type Feat {
+name: String
+source: String
+prerequisite: FeatPrerequisite
+ability: FeatAbility
+additionalSpells: [FeatAdditionalSpells]
+entries: [FeatEntries]
+toolProficiencies: FeatToolProficiencies
+optionalfeatureProgression: [FeatOptionalfeatureProgression]
+languageProficiencies: FeatLanguageProficiencies
+weaponProficiencies: FeatWeaponProficiencies
+armorProficiencies: FeatArmorProficiencies
+skillProficiencies: FeatSkillProficiencies
+savingThrowProficiencies: FeatSavingThrowProficiencies
+expertise: FeatExpertise
+skillToolLanguageProficiencies: FeatSkillToolLanguageProficiencies
+}
+
+type FeatAbility {
+items: [String]
+choose: FeatAbilityChoose
+}
+
+type FeatAbilityChoose {
+from: [String]
+count: Int
+}
+
+type FeatPrerequisite {
 other: String
-race: [FeatsFeatPrerequisiteRace]
-ability: [FeatsFeatPrerequisiteAbility]
+race: [FeatPrerequisiteRace]
+ability: [FeatPrerequisiteAbility]
 spellcasting2020: Boolean
 spellcasting: Boolean
-proficiency: [FeatsFeatPrerequisiteProficiency]
+proficiency: [FeatPrerequisiteProficiency]
 level: Int
 feat: [String]
 }
 
-type FeatsFeatAbility {
-items: [String]
-choose: FeatsFeatAbilityChoose
+type FeatPrerequisiteProficiency {
+weapon: String
+armor: String
 }
 
-type FeatsFeatAdditionalSpellsSpellcastingAbility {
-items: [String]
-choose: FeatsFeatAdditionalSpellsSpellcastingAbilityChoose
-}
-
-type FeatsFeatAdditionalSpellsSpellsChoose {
-fromFilter: String
-count: Int
-from: [String]
-}
-
-type FeatsFeatAdditionalSpellsSpells_meta {
-shortRest: Int
-longRest: Int
-will: Boolean
-ritual: Boolean
-}
-
-type FeatsFeatAdditionalSpellsSpells {
-choose: FeatsFeatAdditionalSpellsSpellsChoose
-_meta: FeatsFeatAdditionalSpellsSpells_meta
-item: String
-items: [String]
-}
-
-type FeatsFeatAdditionalSpells {
-spellcastingAbility: FeatsFeatAdditionalSpellsSpellcastingAbility
-spells: [FeatsFeatAdditionalSpellsSpells]
-name: String
-}
-
-type FeatsFeatEntriesItems {
-type: String
-entry: String
-name: String
-entries: [FeatsFeatEntriesItemsEntries]
-}
-
-type FeatsFeatEntriesRows {
-_0: String
-_1: String
-_2: String
-}
-
-type FeatsFeatEntriesRowsList {
-items: [FeatsFeatEntriesRows]
-}
-
-type FeatsFeatEntries {
-type: String
-entry: String
-id: Int
-items: [FeatsFeatEntriesItems]
-caption: String
-colLabels: [String]
-colStyles: [String]
-rows: [FeatsFeatEntriesRowsList]
-children: [Int]
-parentId: Int
-name: String
-style: String
-}
-
-type FeatsFeatToolProficiencies {
-items: [String]
-}
-
-type FeatsFeatAbilityChoose {
-from: [String]
-count: Int
-}
-
-type FeatsFeatPrerequisiteRace {
-name: String
-subrace: String
-displayEntry: String
-}
-
-type FeatsFeatPrerequisiteAbility {
+type FeatPrerequisiteAbility {
 dex: Int
 str: Int
 cha: Int
@@ -100,98 +50,144 @@ int: Int
 wis: Int
 }
 
-type FeatsFeatOptionalfeatureProgressionProgression {
-*: Int
-}
-
-type FeatsFeatOptionalfeatureProgression {
+type FeatPrerequisiteRace {
 name: String
-featureType: [String]
-progression: FeatsFeatOptionalfeatureProgressionProgression
+subrace: String
+displayEntry: String
 }
 
-type FeatsFeatLanguageProficiencies {
+type FeatAdditionalSpells {
+spellcastingAbility: FeatAdditionalSpellsSpellcastingAbility
+spells: [FeatAdditionalSpellsSpells]
+name: String
+}
+
+type FeatAdditionalSpellsSpells {
+choose: FeatAdditionalSpellsSpellsChoose
+_meta: FeatAdditionalSpellsSpells_meta
+item: String
 items: [String]
 }
 
-type FeatsFeatPrerequisiteProficiency {
-weapon: String
-armor: String
+type FeatAdditionalSpellsSpellsChoose {
+fromFilter: String
+count: Int
+from: [String]
 }
 
-type FeatsFeatEntriesItemsEntries {
+type FeatAdditionalSpellsSpellcastingAbility {
+items: [String]
+choose: FeatAdditionalSpellsSpellcastingAbilityChoose
+}
+
+type FeatAdditionalSpellsSpellcastingAbilityChoose {
+from: [String]
+count: Int
+}
+
+type FeatEntries {
+type: String
+entry: String
+id: Int
+items: [FeatEntriesItems]
+caption: String
+colLabels: [String]
+colStyles: [String]
+rows: [FeatEntriesRowsList]
+children: [Int]
+parentId: Int
+name: String
+style: String
+}
+
+type FeatEntriesItems {
+type: String
+entry: String
+name: String
+entries: [FeatEntriesItemsEntries]
+}
+
+type FeatEntriesItemsEntries {
 type: String
 entry: String
 }
 
-type FeatsFeatAdditionalSpellsSpellcastingAbilityChoose {
-from: [String]
-count: Int
+type FeatAdditionalSpellsSpells_meta {
+shortRest: Int
+longRest: Int
+will: Boolean
+ritual: Boolean
 }
 
-type FeatsFeatWeaponProficiencies {
-items: [String]
-choose: FeatsFeatWeaponProficienciesChoose
+type FeatEntriesRows {
+_0: String
+_1: String
+_2: String
 }
 
-type FeatsFeatArmorProficiencies {
-items: [String]
+type FeatEntriesRowsList {
+items: [FeatEntriesRows]
 }
 
-type FeatsFeatSkillProficienciesChoose {
-from: [String]
-count: Int
-}
-
-type FeatsFeatSkillProficiencies {
-choose: FeatsFeatSkillProficienciesChoose
-}
-
-type FeatsFeatSavingThrowProficienciesChoose {
-from: [String]
-count: Int
-}
-
-type FeatsFeatSavingThrowProficiencies {
-choose: FeatsFeatSavingThrowProficienciesChoose
-}
-
-type FeatsFeatExpertise {
+type FeatToolProficiencies {
 items: [String]
 }
 
-type FeatsFeatSkillToolLanguageProficienciesChoose {
-from: [String]
-count: Int
+type FeatOptionalfeatureProgression {
+name: String
+featureType: [String]
+progression: FeatOptionalfeatureProgressionProgression
 }
 
-type FeatsFeatSkillToolLanguageProficiencies {
-choose: FeatsFeatSkillToolLanguageProficienciesChoose
+type FeatOptionalfeatureProgressionProgression {
+_: Int
 }
 
-type FeatsFeatWeaponProficienciesChoose {
+type FeatLanguageProficiencies {
+items: [String]
+}
+
+type FeatWeaponProficiencies {
+items: [String]
+choose: FeatWeaponProficienciesChoose
+}
+
+type FeatWeaponProficienciesChoose {
 fromFilter: String
 count: Int
 }
 
-type FeatsFeat {
-name: String
-source: String
-prerequisite: FeatsFeatPrerequisite
-ability: FeatsFeatAbility
-additionalSpells: [FeatsFeatAdditionalSpells]
-entries: [FeatsFeatEntries]
-toolProficiencies: FeatsFeatToolProficiencies
-optionalfeatureProgression: [FeatsFeatOptionalfeatureProgression]
-languageProficiencies: FeatsFeatLanguageProficiencies
-weaponProficiencies: FeatsFeatWeaponProficiencies
-armorProficiencies: FeatsFeatArmorProficiencies
-skillProficiencies: FeatsFeatSkillProficiencies
-savingThrowProficiencies: FeatsFeatSavingThrowProficiencies
-expertise: FeatsFeatExpertise
-skillToolLanguageProficiencies: FeatsFeatSkillToolLanguageProficiencies
+type FeatArmorProficiencies {
+items: [String]
 }
 
-type Feats {
-feat: [FeatsFeat]
+type FeatSkillProficiencies {
+choose: FeatSkillProficienciesChoose
+}
+
+type FeatSkillProficienciesChoose {
+from: [String]
+count: Int
+}
+
+type FeatSavingThrowProficiencies {
+choose: FeatSavingThrowProficienciesChoose
+}
+
+type FeatSavingThrowProficienciesChoose {
+from: [String]
+count: Int
+}
+
+type FeatExpertise {
+items: [String]
+}
+
+type FeatSkillToolLanguageProficiencies {
+choose: FeatSkillToolLanguageProficienciesChoose
+}
+
+type FeatSkillToolLanguageProficienciesChoose {
+from: [String]
+count: Int
 }

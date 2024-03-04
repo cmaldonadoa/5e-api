@@ -1,277 +1,272 @@
-type RacesRaceEntries {
+type Race {
+name: String
+source: String
+size: [String]
+entries: [RaceEntries]
+additionalSpells: RaceAdditionalSpells
+speed: RaceSpeed
+ability: RaceAbility
+languageProficiencies: RaceLanguageProficiencies
+skillProficiencies: RaceSkillProficiencies
+toolProficiencies: RaceToolProficiencies
+weaponProficiencies: RaceWeaponProficiencies
+armorProficiencies: RaceArmorProficiencies
+feats: RaceFeats
+}
+
+type RaceFeats {
+items: [String]
+}
+
+type RaceSpeed {
+walk: Int
+}
+
+type RaceEntries {
 type: String
 name: String
 id: Int
 children: [Int]
 entry: String
 parentId: Int
-items: [RacesRaceEntriesItems]
+items: [RaceEntriesItems]
 caption: String
 colLabels: [String]
 colStyles: [String]
-rows: [RacesRaceEntriesRowsList]
+rows: [RaceEntriesRowsList]
 style: String
 }
 
-type RacesRaceAdditionalSpellsSpellcastingAbilityChoose {
-from: [String]
-count: Int
-}
-
-type RacesRaceAdditionalSpellsSpellcastingAbility {
-choose: RacesRaceAdditionalSpellsSpellcastingAbilityChoose
-items: [String]
-}
-
-type RacesRaceAdditionalSpellsSpells {
-item: String
-_meta: RacesRaceAdditionalSpellsSpells_meta
-items: [String]
-choose: RacesRaceAdditionalSpellsSpellsChoose
-}
-
-type RacesRaceAdditionalSpells {
-spellcastingAbility: RacesRaceAdditionalSpellsSpellcastingAbility
-spells: [RacesRaceAdditionalSpellsSpells]
-}
-
-type RacesRaceSpeed {
-walk: Int
-}
-
-type RacesRaceAbility {
-items: [String]
-choose: RacesRaceAbilityChoose
-}
-
-type RacesRaceLanguageProficiencies {
-items: [String]
-choose: RacesRaceLanguageProficienciesChoose
-}
-
-type RacesRaceAdditionalSpellsSpells_meta {
-longRest: Int
-}
-
-type RacesRaceSkillProficiencies {
-items: [String]
-choose: RacesRaceSkillProficienciesChoose
-}
-
-type RacesRaceToolProficiencies {
-items: [String]
-}
-
-type RacesRaceSkillProficienciesChoose {
-from: [String]
-count: Int
-}
-
-type RacesRaceAbilityChoose {
-from: [String]
-count: Int
-}
-
-type RacesRaceEntriesItems {
-type: String
-entry: String
-name: String
-}
-
-type RacesRaceEntriesRows {
+type RaceEntriesRows {
 _0: String
 _1: String
 _2: String
 }
 
-type RacesRaceEntriesRowsList {
-items: [RacesRaceEntriesRows]
+type RaceEntriesRowsList {
+items: [RaceEntriesRows]
 }
 
-type RacesRaceWeaponProficiencies {
+type RaceWeaponProficiencies {
 items: [String]
-choose: RacesRaceWeaponProficienciesChoose
+choose: RaceWeaponProficienciesChoose
 }
 
-type RacesRaceWeaponProficienciesChoose {
+type RaceWeaponProficienciesChoose {
 fromFilter: String
 count: Int
 }
 
-type RacesRaceArmorProficiencies {
+type RaceEntriesItems {
+type: String
+entry: String
+name: String
+}
+
+type RaceAdditionalSpellsSpellcastingAbility {
+choose: RaceAdditionalSpellsSpellcastingAbilityChoose
 items: [String]
 }
 
-type RacesRaceLanguageProficienciesChoose {
+type RaceAdditionalSpells {
+spellcastingAbility: RaceAdditionalSpellsSpellcastingAbility
+spells: [RaceAdditionalSpellsSpells]
+}
+
+type RaceAdditionalSpellsSpells {
+item: String
+_meta: RaceAdditionalSpellsSpells_meta
+items: [String]
+choose: RaceAdditionalSpellsSpellsChoose
+}
+
+type RaceAdditionalSpellsSpellsChoose {
+fromFilter: String
+count: Int
+}
+
+type RaceArmorProficiencies {
+items: [String]
+}
+
+type RaceAdditionalSpellsSpells_meta {
+longRest: Int
+}
+
+type RaceAbility {
+items: [String]
+choose: RaceAbilityChoose
+}
+
+type RaceAbilityChoose {
 from: [String]
 count: Int
 }
 
-type RacesRaceFeats {
+type RaceToolProficiencies {
 items: [String]
 }
 
-type RacesRaceAdditionalSpellsSpellsChoose {
-fromFilter: String
+type RaceLanguageProficiencies {
+items: [String]
+choose: RaceLanguageProficienciesChoose
+}
+
+type RaceLanguageProficienciesChoose {
+from: [String]
 count: Int
 }
 
-type RacesRace {
+type RaceAdditionalSpellsSpellcastingAbilityChoose {
+from: [String]
+count: Int
+}
+
+type RaceSkillProficiencies {
+items: [String]
+choose: RaceSkillProficienciesChoose
+}
+
+type Subrace {
 name: String
 source: String
-size: [String]
-entries: [RacesRaceEntries]
-additionalSpells: RacesRaceAdditionalSpells
-speed: RacesRaceSpeed
-ability: RacesRaceAbility
-languageProficiencies: RacesRaceLanguageProficiencies
-skillProficiencies: RacesRaceSkillProficiencies
-toolProficiencies: RacesRaceToolProficiencies
-weaponProficiencies: RacesRaceWeaponProficiencies
-armorProficiencies: RacesRaceArmorProficiencies
-feats: RacesRaceFeats
+raceName: String
+raceSource: String
+ability: SubraceAbility
+entries: [SubraceEntries]
+languageProficiencies: SubraceLanguageProficiencies
+additionalSpells: SubraceAdditionalSpells
+overwrite: SubraceOverwrite
+armorProficiencies: SubraceArmorProficiencies
+weaponProficiencies: SubraceWeaponProficiencies
+speed: SubraceSpeed
+skillToolLanguageProficiencies: SubraceSkillToolLanguageProficiencies
+toolProficiencies: SubraceToolProficiencies
+skillProficiencies: SubraceSkillProficiencies
+feats: SubraceFeats
 }
 
-type RacesSubraceAbility {
+type SubraceAbility {
 items: [String]
-choose: RacesSubraceAbilityChoose
+choose: SubraceAbilityChoose
 }
 
-type RacesSubraceEntries {
+type SubraceAbilityChoose {
+from: [String]
+count: Int
+}
+
+type RaceSkillProficienciesChoose {
+from: [String]
+count: Int
+}
+
+type SubraceFeats {
+items: [String]
+}
+
+type SubraceEntries {
 name: String
 type: String
 id: Int
 children: [Int]
 entry: String
 parentId: Int
-data: RacesSubraceEntriesData
+data: SubraceEntriesData
 caption: String
 colLabels: [String]
 colStyles: [String]
-rows: [RacesSubraceEntriesRowsList]
+rows: [SubraceEntriesRowsList]
 style: String
-items: [RacesSubraceEntriesItems]
+items: [SubraceEntriesItems]
 }
 
-type RacesSubraceLanguageProficiencies {
+type SubraceToolProficiencies {
 items: [String]
 }
 
-type RacesSubraceEntriesData {
-overwrite: String
-}
-
-type RacesSubraceAdditionalSpellsSpellcastingAbility {
-items: [String]
-choose: RacesSubraceAdditionalSpellsSpellcastingAbilityChoose
-}
-
-type RacesSubraceAdditionalSpellsSpells_meta {
-longRest: Int
-shortRest: Int
-}
-
-type RacesSubraceAdditionalSpellsSpells {
-item: String
-_meta: RacesSubraceAdditionalSpellsSpells_meta
-items: [String]
-choose: RacesSubraceAdditionalSpellsSpellsChoose
-}
-
-type RacesSubraceAdditionalSpells {
-spellcastingAbility: RacesSubraceAdditionalSpellsSpellcastingAbility
-spells: [RacesSubraceAdditionalSpellsSpells]
-}
-
-type RacesSubraceOverwrite {
-languageProficiencies: Boolean
-ability: Boolean
-skillProficiencies: Boolean
-}
-
-type RacesSubraceEntriesRows {
-_0: String
-_1: String
-}
-
-type RacesSubraceEntriesRowsList {
-items: [RacesSubraceEntriesRows]
-}
-
-type RacesSubraceArmorProficiencies {
-items: [String]
-}
-
-type RacesSubraceWeaponProficiencies {
-items: [String]
-}
-
-type RacesSubraceEntriesItems {
+type SubraceEntriesItems {
 type: String
 name: String
 entry: String
 }
 
-type RacesSubraceSpeed {
+type SubraceSpeed {
 walk: Int
 }
 
-type RacesSubraceAdditionalSpellsSpellsChoose {
+type SubraceEntriesRows {
+_0: String
+_1: String
+}
+
+type SubraceWeaponProficiencies {
+items: [String]
+}
+
+type SubraceEntriesRowsList {
+items: [SubraceEntriesRows]
+}
+
+type SubraceOverwrite {
+languageProficiencies: Boolean
+ability: Boolean
+skillProficiencies: Boolean
+}
+
+type SubraceEntriesData {
+overwrite: String
+}
+
+type SubraceLanguageProficiencies {
+items: [String]
+}
+
+type SubraceAdditionalSpells {
+spellcastingAbility: SubraceAdditionalSpellsSpellcastingAbility
+spells: [SubraceAdditionalSpellsSpells]
+}
+
+type SubraceAdditionalSpellsSpells {
+item: String
+_meta: SubraceAdditionalSpellsSpells_meta
+items: [String]
+choose: SubraceAdditionalSpellsSpellsChoose
+}
+
+type SubraceAdditionalSpellsSpellsChoose {
 fromFilter: String
 count: Int
 }
 
-type RacesSubraceAdditionalSpellsSpellcastingAbilityChoose {
+type SubraceAdditionalSpellsSpells_meta {
+longRest: Int
+shortRest: Int
+}
+
+type SubraceArmorProficiencies {
+items: [String]
+}
+
+type SubraceAdditionalSpellsSpellcastingAbility {
+items: [String]
+choose: SubraceAdditionalSpellsSpellcastingAbilityChoose
+}
+
+type SubraceAdditionalSpellsSpellcastingAbilityChoose {
 from: [String]
 count: Int
 }
 
-type RacesSubraceSkillToolLanguageProficienciesChoose {
+type SubraceSkillToolLanguageProficiencies {
+choose: SubraceSkillToolLanguageProficienciesChoose
+}
+
+type SubraceSkillProficiencies {
+items: [String]
+}
+
+type SubraceSkillToolLanguageProficienciesChoose {
 from: [String]
 count: Int
-}
-
-type RacesSubraceSkillToolLanguageProficiencies {
-choose: RacesSubraceSkillToolLanguageProficienciesChoose
-}
-
-type RacesSubraceAbilityChoose {
-from: [String]
-count: Int
-}
-
-type RacesSubraceToolProficiencies {
-items: [String]
-}
-
-type RacesSubraceSkillProficiencies {
-items: [String]
-}
-
-type RacesSubraceFeats {
-items: [String]
-}
-
-type RacesSubrace {
-name: String
-source: String
-raceName: String
-raceSource: String
-ability: RacesSubraceAbility
-entries: [RacesSubraceEntries]
-languageProficiencies: RacesSubraceLanguageProficiencies
-additionalSpells: RacesSubraceAdditionalSpells
-overwrite: RacesSubraceOverwrite
-armorProficiencies: RacesSubraceArmorProficiencies
-weaponProficiencies: RacesSubraceWeaponProficiencies
-speed: RacesSubraceSpeed
-skillToolLanguageProficiencies: RacesSubraceSkillToolLanguageProficiencies
-toolProficiencies: RacesSubraceToolProficiencies
-skillProficiencies: RacesSubraceSkillProficiencies
-feats: RacesSubraceFeats
-}
-
-type Races {
-race: [RacesRace]
-subrace: [RacesSubrace]
 }

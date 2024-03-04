@@ -1,10 +1,6 @@
-type LanguagesLanguage {
+type Language {
 name: String
 source: String
 type: String
 script: String
-}
-
-type Languages {
-language: [LanguagesLanguage]
 }

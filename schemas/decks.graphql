@@ -1,10 +1,17 @@
-type DecksDeckEntries {
+type Deck {
+name: String
+source: String
+cards: [String]
+entries: [DeckEntries]
+}
+
+type DeckEntries {
 type: String
 entry: String
 id: Int
 colLabels: [String]
 colStyles: [String]
-rows: [DecksDeckEntriesRowsList]
+rows: [DeckEntriesRowsList]
 name: String
 children: [Int]
 parentId: Int
@@ -12,35 +19,29 @@ footnotes: [String]
 page: Int
 }
 
-type DecksDeckEntriesRowsList0Roll {
-exact: Int
-min: Int
-max: Int
-}
-
-type DecksDeckEntriesRowsList0 {
-type: String
-roll: DecksDeckEntriesRowsList0Roll
-entry: String
-}
-
-type DecksDeckEntriesRows {
-_0: DecksDeckEntriesRowsList0
+type DeckEntriesRows {
+_0: DeckEntriesRowsList0
 _1: String
 }
 
-type DecksDeckEntriesRowsList {
-items: [DecksDeckEntriesRows]
+type DeckEntriesRowsList {
+items: [DeckEntriesRows]
 }
 
-type DecksDeck {
+type DeckEntriesRowsList0 {
+type: String
+roll: DeckEntriesRowsList0Roll
+entry: String
+}
+
+type Card {
 name: String
 source: String
-cards: [String]
-entries: [DecksDeckEntries]
+set: String
+entries: [CardEntries]
 }
 
-type DecksCardEntries {
+type CardEntries {
 type: String
 tag: String
 style: String
@@ -50,14 +51,8 @@ id: Int
 entry: String
 }
 
-type DecksCard {
-name: String
-source: String
-set: String
-entries: [DecksCardEntries]
-}
-
-type Decks {
-deck: [DecksDeck]
-card: [DecksCard]
+type DeckEntriesRowsList0Roll {
+exact: Int
+min: Int
+max: Int
 }
