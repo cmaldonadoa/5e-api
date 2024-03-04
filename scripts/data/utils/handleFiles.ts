@@ -52,7 +52,7 @@ export const handleFiles = (handlers: any, options: Options) => {
   const files = fs.readdirSync(options.input);
   const jsonFiles = files.filter(
     (item) =>
-      /.json$/.test(item) && !/^foundry/.test(item) && !/^optional/.test(item),
+      /.json$/.test(item) && !/^foundry/.test(item) && !/^optional/.test(item)
   );
 
   const keys = {};
@@ -94,10 +94,10 @@ export const handleFiles = (handlers: any, options: Options) => {
               Object.keys(v).forEach((k) =>
                 add(
                   `ARRAY_OBJECT_KEY_${k}_` +
-                    ((Array.isArray(v[k]) && "array") || typeof v[k]),
-                ),
+                    ((Array.isArray(v[k]) && "array") || typeof v[k])
+                )
               )
-            : add("ARRAY_STRING"),
+            : add("ARRAY_STRING")
         );
 
         // Test property array length
@@ -164,11 +164,11 @@ export const handleFiles = (handlers: any, options: Options) => {
     }, {});
 
     Object.keys(newData).forEach(
-      (k) => (newData[k] = newData[k].filter(Boolean)),
+      (k) => (newData[k] = newData[k].filter(Boolean))
     );
 
     Object.keys(additional).forEach(
-      (k) => (newData[k] = [...newData[k], ...additional[k]]),
+      (k) => (newData[k] = [...newData[k], ...additional[k]])
     );
 
     const output = `${options.output}/${path.basename(options.input)}/`;
