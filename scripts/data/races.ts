@@ -1,11 +1,11 @@
-import { handleFiles, utils } from "./utils";
+import { handleFiles, Options, utils } from "./utils";
 import rootDir from "app-root-dir";
 
 const root = rootDir.get();
 
 const input = root + "/data/original/races/";
 const output = root + "/data/modified/";
-const options = {
+const options: Options = {
   input,
   output,
 };
@@ -52,17 +52,21 @@ handleFiles(
       skillProficiencies: utils.adapt(utils.formatObject(e.skillProficiencies)),
       entries: utils.adapt(utils.splitEntries(utils.asArray(e.entries))),
       feats: utils.adapt(utils.formatObject(e.feats)),
-      additionalSpells: utils.adapt(
-        e.additionalSpells && {
-          spellcastingAbility: utils.adapt(
-            utils.formatObject(e.additionalSpells.ability)
+      additionalSpells: utils.adapt({
+        spellcastingAbility: utils.adapt(
+          utils.formatObject(utils.asObject(e.additionalSpells).ability)
+        ),
+        spells: utils.adapt([
+          ...utils.formatSpells(
+            ["1", "3", "5"],
+            utils.asObject(e.additionalSpells).innate
           ),
-          spells: [
-            ...utils.formatSpells(["1", "3", "5"], e.additionalSpells.innate),
-            ...utils.formatSpells(["1", "3", "5"], e.additionalSpells.known),
-          ],
-        }
-      ),
+          ...utils.formatSpells(
+            ["1", "3", "5"],
+            utils.asObject(e.additionalSpells).known
+          ),
+        ]),
+      }),
     }),
     subrace: (x: any) => ({
       name: x.name,
@@ -108,17 +112,21 @@ handleFiles(
       ),
       entries: utils.adapt(utils.splitEntries(utils.asArray(x.entries))),
       feats: utils.adapt(utils.formatObject(x.feats)),
-      additionalSpells: utils.adapt(
-        x.additionalSpells && {
-          spellcastingAbility: utils.adapt(
-            utils.formatObject(x.additionalSpells.ability)
+      additionalSpells: utils.adapt({
+        spellcastingAbility: utils.adapt(
+          utils.formatObject(utils.asObject(x.additionalSpells).ability)
+        ),
+        spells: utils.adapt([
+          ...utils.formatSpells(
+            ["1", "3", "5"],
+            utils.asObject(x.additionalSpells).innate
           ),
-          spells: [
-            ...utils.formatSpells(["1", "3", "5"], x.additionalSpells.innate),
-            ...utils.formatSpells(["1", "3", "5"], x.additionalSpells.known),
-          ],
-        }
-      ),
+          ...utils.formatSpells(
+            ["1", "3", "5"],
+            utils.asObject(x.additionalSpells).known
+          ),
+        ]),
+      }),
       overwrite: x.overwrite,
     }),
   },

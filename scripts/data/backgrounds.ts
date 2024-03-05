@@ -1,11 +1,11 @@
-import { handleFiles, utils } from "./utils";
+import { handleFiles, Options, utils } from "./utils";
 import rootDir from "app-root-dir";
 
 const root = rootDir.get();
 
 const input = root + "/data/original/backgrounds/";
 const output = root + "/data/modified/";
-const options = {
+const options: Options = {
   input,
   output,
 };
@@ -61,15 +61,15 @@ handleFiles(
       feats: utils.adapt(utils.formatObject(x.feats)),
       toolProficiencies: utils.adapt(utils.formatObject(x.toolProficiencies)),
       additionalSpells: utils.adapt(
-        x.additionalSpells && {
-          expanded: Object.entries(x.additionalSpells[0].expanded).reduce(
+        utils.asArray(x.additionalSpells).map((spellSet) => ({
+          expanded: Object.entries(spellSet.expanded).reduce(
             (acc, [k, v]: [string, any]) => {
               acc[k] = v.map((e: string) => utils.clearName(e));
               return acc;
             },
             {}
           ),
-        }
+        }))
       ),
       skillToolLanguageProficiencies: utils.adapt(
         utils.formatObject(x.skillToolLanguageProficiencies)
