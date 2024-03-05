@@ -1,4 +1,4 @@
 import { utils } from "./utils";
-import { handleFiles } from "./handleFiles";
+import { handleFiles, Options } from "./handleFiles";
 
-export { utils, handleFiles };
+export { utils, handleFiles, Options };
