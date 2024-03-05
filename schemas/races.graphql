@@ -76,7 +76,6 @@ spells: [RaceAdditionalSpellsSpells]
 type RaceAdditionalSpellsSpells {
 item: String
 _meta: RaceAdditionalSpellsSpells_meta
-items: [String]
 choose: RaceAdditionalSpellsSpellsChoose
 }
 
@@ -90,6 +89,7 @@ items: [String]
 }
 
 type RaceAdditionalSpellsSpells_meta {
+level: Int
 longRest: Int
 }
 
@@ -230,7 +230,6 @@ spells: [SubraceAdditionalSpellsSpells]
 type SubraceAdditionalSpellsSpells {
 item: String
 _meta: SubraceAdditionalSpellsSpells_meta
-items: [String]
 choose: SubraceAdditionalSpellsSpellsChoose
 }
 
@@ -240,6 +239,7 @@ count: Int
 }
 
 type SubraceAdditionalSpellsSpells_meta {
+level: Int
 longRest: Int
 shortRest: Int
 }
