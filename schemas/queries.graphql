@@ -1,6 +1,10 @@
 type Query {
     backgrounds: [Background]
     books: [Book]
+    classes: [Class]
+    subclasses: [Subclass]
+    classFeatures: [ClassFeature]
+    subclassFeatures: [SubclassFeature]
     decks: [Deck]
     cards: [Card]
     feats: [Feat]
