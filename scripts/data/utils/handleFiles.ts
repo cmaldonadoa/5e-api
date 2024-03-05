@@ -40,7 +40,7 @@ type OptionsPeekDisabled = {
   key?: string;
 };
 
-type Options = {
+export type Options = {
   input: string;
   output: string;
   enableInternalTests?: OptionsTestsEnabled | OptionsTestsDisabled;
@@ -57,14 +57,21 @@ export const handleFiles = (handlers: any, options: Options) => {
 
   const keys = {};
 
-  const add = (key: string) => {
+  const add = (key: string, parent?: string) => {
+    if (parent) {
+      if (!(parent in keys)) keys[parent] = {};
+      if (key in keys[parent]) keys[parent][key] += 1;
+      else keys[parent][key] = 1;
+      return true;
+    }
+
     if (key in keys) keys[key] += 1;
     else keys[key] = 1;
     return true;
   };
 
-  const displayProperties = (element: any) =>
-    Object.keys(element).forEach((k) => add(k));
+  const displayProperties = (element: any, key: string) =>
+    Object.keys(element).forEach((k) => add(k, key));
 
   const runInternalTests = (element: any) => {
     add("_total");
@@ -79,8 +86,7 @@ export const handleFiles = (handlers: any, options: Options) => {
       // Test property types
       add("PROP_TYPE_" + ((Array.isArray(value) && "array") || typeof value));
 
-      if (typeof value === "string")
-        value.length < 6 && add("STRING_VALUE_" + value);
+      if (typeof value === "string") add("STRING_VALUE_" + value);
 
       if (!Array.isArray(value))
         // Test object keys
@@ -89,7 +95,7 @@ export const handleFiles = (handlers: any, options: Options) => {
       if (Array.isArray(value)) {
         // Test property array elements types
         value.forEach((v) =>
-          typeof v !== "string"
+          typeof v !== "string" && typeof v !== "number"
             ? add("ARRAY_OBJECT") &&
               Object.keys(v).forEach((k) =>
                 add(
@@ -97,7 +103,9 @@ export const handleFiles = (handlers: any, options: Options) => {
                     ((Array.isArray(v[k]) && "array") || typeof v[k])
                 )
               )
-            : add("ARRAY_STRING")
+            : typeof v === "string"
+              ? add("ARRAY_STRING")
+              : add("ARRAY_NUMBER")
         );
 
         // Test property array length
@@ -146,7 +154,7 @@ export const handleFiles = (handlers: any, options: Options) => {
             !options.enableCustomTests?.enabled &&
             !options.peek?.enabled
           )
-            displayProperties(copy || x);
+            displayProperties(copy || x, key);
 
           const result = handlers[key](copy || x);
           return peek(result, key);
