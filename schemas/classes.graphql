@@ -1,0 +1,421 @@
+type Class {
+name: String
+source: String
+hitDie: ClassHitDie
+savingThrowProficiencies: [String]
+spellcastingAbility: String
+multiclassSlotsProgression: String
+preparedSpellsFormula: String
+cantripProgression: [Int]
+optionalFeatureProgression: [ClassOptionalFeatureProgression]
+armorProficiencies: ClassArmorProficiencies
+weaponProficiencies: ClassWeaponProficiencies
+toolProficiencies: ClassToolProficiencies
+skillProficiencies: ClassSkillProficiencies
+startingEquipment: [ClassStartingEquipment]
+multiclassing: ClassMulticlassing
+classTableGroups: [ClassClassTableGroups]
+classFeatures: [ClassClassFeatures]
+subclassTitle: String
+spellsKnownProgression: [Int]
+additionalSpells: [ClassAdditionalSpells]
+}
+
+type ClassAdditionalSpells {
+name: String
+spellcastingAbility: String
+spells: [ClassAdditionalSpellsSpells]
+}
+
+type ClassAdditionalSpellsSpells {
+choose: ClassAdditionalSpellsSpellsChoose
+_meta: ClassAdditionalSpellsSpells_meta
+}
+
+type ClassAdditionalSpellsSpells_meta {
+level: Int
+}
+
+type ClassAdditionalSpellsSpellsChoose {
+fromFilter: String
+count: Int
+}
+
+type ClassFeature {
+name: String
+source: String
+className: String
+classSource: String
+level: Int
+entries: [ClassFeatureEntries]
+isClassFeatureVariant: Boolean
+consumes: ClassFeatureConsumes
+}
+
+type ClassFeatureConsumes {
+name: String
+amount: Int
+}
+
+type ClassFeatureEntries {
+type: String
+entry: String
+id: Int
+items: [ClassFeatureEntriesItems]
+name: String
+children: [Int]
+parentId: Int
+attributes: [String]
+classFeature: String
+caption: String
+colLabels: [String]
+colStyles: [String]
+rows: [ClassFeatureEntriesRowsList]
+count: Int
+optionalfeature: String
+source: String
+page: Int
+}
+
+type ClassFeatureEntriesRows {
+_0: String
+_1: String
+_2: String
+_3: String
+}
+
+type ClassFeatureEntriesRowsList {
+items: [ClassFeatureEntriesRows]
+}
+
+type ClassFeatureEntriesItems {
+type: String
+entry: String
+}
+
+type ClassMulticlassing {
+requirements: ClassMulticlassingRequirements
+proficienciesGained: ClassMulticlassingProficienciesGained
+}
+
+type ClassMulticlassingRequirements {
+int: Int
+str: Int
+cha: Int
+wis: Int
+or: [ClassMulticlassingRequirementsOr]
+dex: Int
+}
+
+type ClassMulticlassingRequirementsOr {
+str: Int
+dex: Int
+}
+
+type ClassToolProficiencies {
+items: [String]
+choose: ClassToolProficienciesChoose
+}
+
+type ClassToolProficienciesChoose {
+from: [String]
+count: Int
+}
+
+type ClassWeaponProficiencies {
+items: [String]
+}
+
+type ClassArmorProficiencies {
+items: [String]
+}
+
+type ClassHitDie {
+number: Int
+faces: Int
+}
+
+type ClassOptionalFeatureProgression {
+name: String
+featureType: [String]
+progression: ClassOptionalFeatureProgressionProgression
+}
+
+type ClassSkillProficiencies {
+choose: ClassSkillProficienciesChoose
+items: [String]
+}
+
+type ClassSkillProficienciesChoose {
+from: [String]
+count: Int
+}
+
+type ClassOptionalFeatureProgressionProgression {
+_1: Int
+_2: Int
+_3: Int
+_4: Int
+_5: Int
+_6: Int
+_7: Int
+_8: Int
+_9: Int
+_10: Int
+_11: Int
+_12: Int
+_13: Int
+_14: Int
+_15: Int
+_16: Int
+_17: Int
+_18: Int
+_19: Int
+_20: Int
+}
+
+type ClassStartingEquipment {
+_: [ClassStartingEquipment_]
+a: [ClassStartingEquipmentA]
+b: [ClassStartingEquipmentB]
+c: [ClassStartingEquipmentC]
+}
+
+type ClassStartingEquipmentC {
+filter: String
+item: String
+}
+
+type ClassStartingEquipmentB {
+item: String
+filter: String
+quantity: Int
+}
+
+type ClassStartingEquipmentA {
+item: String
+quantity: Int
+filter: String
+}
+
+type ClassStartingEquipment_ {
+filter: String
+quantity: Int
+item: String
+}
+
+type ClassMulticlassingProficienciesGained {
+armor: ClassMulticlassingProficienciesGainedArmor
+tools: ClassMulticlassingProficienciesGainedTools
+weapons: ClassMulticlassingProficienciesGainedWeapons
+skills: ClassMulticlassingProficienciesGainedSkills
+}
+
+type ClassMulticlassingProficienciesGainedSkills {
+choose: ClassMulticlassingProficienciesGainedSkillsChoose
+}
+
+type ClassMulticlassingProficienciesGainedSkillsChoose {
+from: [String]
+count: Int
+}
+
+type ClassMulticlassingProficienciesGainedWeapons {
+items: [String]
+}
+
+type ClassMulticlassingProficienciesGainedTools {
+items: [String]
+}
+
+type ClassMulticlassingProficienciesGainedArmor {
+items: [String]
+}
+
+type ClassClassTableGroups {
+colLabels: [String]
+rows: [ClassClassTableGroupsRowsList]
+title: String
+rowsSpellProgression: [ClassClassTableGroupsRowsSpellProgressionList]
+}
+
+type ClassClassTableGroupsRows {
+_0: String
+_1: String
+_2: String
+_3: String
+_4: String
+}
+
+type ClassClassTableGroupsRowsSpellProgression {
+_0: Int
+_1: Int
+_2: Int
+_3: Int
+_4: Int
+_5: Int
+_6: Int
+_7: Int
+_8: Int
+}
+
+type ClassClassTableGroupsRowsSpellProgressionList {
+items: [ClassClassTableGroupsRowsSpellProgression]
+}
+
+type ClassClassFeatures {
+featureName: String
+className: String
+level: Int
+source: String
+}
+
+type Subclass {
+name: String
+source: String
+shortName: String
+className: String
+classSource: String
+subclassFeatures: [SubclassSubclassFeatures]
+spellcastingAbility: String
+optionalFeatureProgression: [SubclassOptionalFeatureProgression]
+multiclassSlotsProgression: String
+subclassTableGroups: [SubclassSubclassTableGroups]
+}
+
+type SubclassSubclassTableGroups {
+subclasses: [SubclassSubclassTableGroupsSubclasses]
+colLabels: [String]
+rows: [SubclassSubclassTableGroupsRowsList]
+title: String
+rowsSpellProgression: [SubclassSubclassTableGroupsRowsSpellProgressionList]
+}
+
+type SubclassSubclassTableGroupsRows {
+_0: String
+_1: String
+}
+
+type SubclassSubclassTableGroupsRowsSpellProgression {
+_0: Int
+_1: Int
+_2: Int
+_3: Int
+}
+
+type SubclassSubclassTableGroupsRowsSpellProgressionList {
+items: [SubclassSubclassTableGroupsRowsSpellProgression]
+}
+
+type SubclassSubclassTableGroupsRowsList {
+items: [SubclassSubclassTableGroupsRows]
+}
+
+type SubclassSubclassTableGroupsSubclasses {
+name: String
+source: String
+}
+
+type SubclassOptionalFeatureProgression {
+name: String
+featureType: [String]
+progression: SubclassOptionalFeatureProgressionProgression
+required: SubclassOptionalFeatureProgressionRequired
+}
+
+type SubclassOptionalFeatureProgressionRequired {
+_3: [String]
+}
+
+type SubclassOptionalFeatureProgressionProgression {
+_3: Int
+_7: Int
+_10: Int
+_15: Int
+_18: Int
+_6: Int
+_11: Int
+_17: Int
+}
+
+type SubclassFeature {
+name: String
+source: String
+className: String
+classSource: String
+subclassShortName: String
+subclassSource: String
+level: Int
+entries: [SubclassFeatureEntries]
+type: String
+consumes: SubclassFeatureConsumes
+isClassFeatureVariant: Boolean
+}
+
+type SubclassFeatureConsumes {
+name: String
+amount: Int
+}
+
+type SubclassFeatureEntries {
+type: String
+entry: String
+id: Int
+subclassFeature: String
+caption: String
+colLabels: [String]
+colStyles: [String]
+rows: [SubclassFeatureEntriesRowsList]
+items: [SubclassFeatureEntriesItems]
+children: [Int]
+name: String
+parentId: Int
+style: String
+count: Int
+data: SubclassFeatureEntriesData
+optionalfeature: String
+attributes: [String]
+}
+
+type SubclassFeatureEntriesData {
+tableInclude: Boolean
+isRequiredOption: Boolean
+}
+
+type SubclassFeatureEntriesItems {
+type: String
+entry: String
+subclassFeature: String
+name: String
+entries: [SubclassFeatureEntriesItemsEntries]
+}
+
+type SubclassFeatureEntriesItemsEntries {
+type: String
+entry: String
+}
+
+type SubclassFeatureEntriesRows {
+_0: String
+_1: String
+_2: String
+_3: String
+_4: String
+_5: String
+}
+
+type SubclassFeatureEntriesRowsList {
+items: [SubclassFeatureEntriesRows]
+}
+
+type SubclassSubclassFeatures {
+featureName: String
+className: String
+subclassName: String
+level: Int
+source: String
+}
+
+type ClassClassTableGroupsRowsList {
+items: [ClassClassTableGroupsRows]
+}
