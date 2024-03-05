@@ -1,11 +1,11 @@
-import { handleFiles, utils } from "./utils";
+import { handleFiles, Options, utils } from "./utils";
 import rootDir from "app-root-dir";
 
 const root = rootDir.get();
 
 const input = root + "/data/original/decks/";
 const output = root + "/data/modified/";
-const options = {
+const options: Options = {
   input,
   output,
 };

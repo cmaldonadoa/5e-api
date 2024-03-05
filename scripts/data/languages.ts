@@ -1,11 +1,11 @@
-import { handleFiles } from "./utils";
+import { handleFiles, Options } from "./utils";
 import rootDir from "app-root-dir";
 
 const root = rootDir.get();
 
 const input = root + "/data/original/languages/";
 const output = root + "/data/modified/";
-const options = {
+const options: Options = {
   input,
   output,
 };

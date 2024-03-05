@@ -1,4 +1,4 @@
-import { handleFiles, utils } from "./utils";
+import { handleFiles, Options, utils } from "./utils";
 import rootDir from "app-root-dir";
 import fs from "fs";
 
@@ -6,7 +6,7 @@ const root = rootDir.get();
 
 const input = root + "/data/original/items/";
 const output = root + "/data/modified/";
-const options = {
+const options: Options = {
   input,
   output,
 };

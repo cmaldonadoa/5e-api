@@ -1,14 +1,15 @@
-import { handleFiles, utils } from "./utils";
+import { handleFiles, Options, utils } from "./utils";
 import rootDir from "app-root-dir";
 
 const root = rootDir.get();
 
 const input = root + "/data/original/feats/";
 const output = root + "/data/modified/";
-const options = {
+const options: Options = {
   input,
   output,
 };
+
 function replaceKey(obj, oldKey, newKey) {
   if (obj.hasOwnProperty(oldKey)) {
     obj[newKey] = obj[oldKey];
@@ -52,7 +53,7 @@ handleFiles(
       skillToolLanguageProficiencies: utils.adapt(
         utils.formatObject(e.skillToolLanguageProficiencies)
       ),
-      optionalfeatureProgression: utils.adapt(
+      optionalFeatureProgression: utils.adapt(
         utils.asArray(e.optionalfeatureProgression).map((x: any) => ({
           ...x,
           progression: replaceKey(x.progression, "*", "_"),
