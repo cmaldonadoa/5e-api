@@ -7,7 +7,7 @@ startingEquipment: [BackgroundStartingEquipment]
 entries: [BackgroundEntries]
 feats: BackgroundFeats
 toolProficiencies: BackgroundToolProficiencies
-additionalSpells: BackgroundAdditionalSpells
+additionalSpells: [BackgroundAdditionalSpells]
 }
 
 type BackgroundEntries {
