@@ -2,7 +2,7 @@ import {
   Background,
   BaseItem,
   Book,
-  Card,
+  Card, Class, ClassFeature,
   Deck,
   Feat,
   Item,
@@ -10,7 +10,7 @@ import {
   ItemType,
   Language,
   Race,
-  Spell,
+  Spell, Subclass, SubclassFeature,
   Subrace,
   Vehicle,
 } from "./__generated__/graphql";
@@ -22,6 +22,13 @@ export type Backgrounds = {
 export type Books = {
   book: Book;
 };
+
+export type Classes = {
+  class: Class,
+  subclass: Subclass,
+  classFeature: ClassFeature,
+  subclassFeature: SubclassFeature
+}
 
 export type Decks = {
   deck: Deck;

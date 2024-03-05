@@ -9,6 +9,7 @@ import { Resolvers } from "./__generated__/graphql";
 import {
   Backgrounds,
   Books,
+  Classes,
   Decks,
   Feats,
   Items,
@@ -30,6 +31,7 @@ const loadFilesSync = <T>(dirname: string): T[] => {
 const data = {
   backgrounds: loadFilesSync<Backgrounds>(root + "/data/modified/backgrounds"),
   books: loadFilesSync<Books>(root + "/data/modified/books"),
+  classes: loadFilesSync<Classes>(root + "/data/modified/classes"),
   decks: loadFilesSync<Decks>(root + "/data/modified/decks"),
   feats: loadFilesSync<Feats>(root + "/data/modified/feats"),
   items: loadFilesSync<Items>(root + "/data/modified/items"),
@@ -47,6 +49,10 @@ const resolvers: Resolvers = {
   Query: {
     backgrounds: () => data.backgrounds.flatMap((e) => e.background),
     books: () => data.books.flatMap((e) => e.book),
+    classes: () => data.classes.flatMap((e) => e.class),
+    subclasses: () => data.classes.flatMap((e) => e.subclass),
+    classFeatures: () => data.classes.flatMap((e) => e.classFeature),
+    subclassFeatures: () => data.classes.flatMap((e) => e.subclassFeature),
     decks: () => data.decks.flatMap((e) => e.deck),
     cards: () => data.decks.flatMap((e) => e.card),
     feats: () => data.feats.flatMap((e) => e.feat),
