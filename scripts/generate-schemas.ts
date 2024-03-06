@@ -16,8 +16,7 @@ for (const name of folders) {
     root + "/data/modified/" + name,
     root + "/schemas/",
     "--",
-    "foundry.json",
-    "optionalfeatures.json",
+    "foundry.json"
   ]);
   console.log(stdout.toString());
 
