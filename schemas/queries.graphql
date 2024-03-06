@@ -1,21 +1,40 @@
 type Query {
     backgrounds: [Background]
+    background(name: String!): Background
     books: [Book]
+    book(id: String!): Book
     classes: [Class]
+    class(name: String!): Class
     subclasses: [Subclass]
+    subclass(name: String!): Subclass
     classFeatures: [ClassFeature]
+    classFeature(name: String!): ClassFeature
     subclassFeatures: [SubclassFeature]
+    subclassFeature(name: String!): SubclassFeature
     optionalFeatures: [OptionalFeature]
+    optionalFeature(name: String!): OptionalFeature
     decks: [Deck]
+    deck(name: String!): Deck
     cards: [Card]
+    card(name: String!): Card
     feats: [Feat]
+    feat(name: String!): Feat
     items: [Item]
+    item(name: String!): Item
     baseItems: [BaseItem]
+    baseItem(name: String!): BaseItem
     itemProperties: [ItemProperty]
+    itemProperty(name: String!): ItemProperty
     itemTypes: [ItemType]
+    itemType(name: String!): ItemType
     languages: [Language]
+    language(name: String!): Language
     races: [Race]
+    race(name: String!, source: String!): Race
     subraces: [Subrace]
+    subrace(name: String!, source: String!): Subrace
     spells: [Spell]
+    spell(name: String!): Spell
     vehicles: [Vehicle]
+    vehicle(name: String!): Vehicle
 }
