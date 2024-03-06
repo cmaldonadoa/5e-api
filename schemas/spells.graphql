@@ -61,15 +61,14 @@ v: Boolean
 m: String
 }
 
+type SpellRange {
+type: String
+}
+
 type SpellTime {
 number: Int
 unit: String
 condition: String
-}
-
-type SpellRange {
-type: String
-distance: SpellRangeDistance
 }
 
 type SpellHigherLevel {
@@ -79,9 +78,4 @@ id: Int
 children: [Int]
 entry: String
 parentId: Int
-}
-
-type SpellRangeDistance {
-type: String
-distance: Int
 }
