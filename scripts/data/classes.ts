@@ -8,22 +8,10 @@ const output = root + "/data/modified/";
 const options: Options = {
   input,
   output,
-  peek: {
+  enableInternalTests: {
     enabled: true,
-    key: "subclassFeature",
-    peek: (e) => {
-      e.entries.map((entry) => {
-        if (entry.rows) {
-          entry.rows.map((row) => {
-            if (
-              row.some((x) => typeof x === "string") &&
-              row.some((x) => typeof x === "number")
-            )
-              console.log(entry);
-          });
-        }
-      });
-    },
+    key: "optionalFeature",
+    property: "additionalSpells",
   },
 };
 
@@ -274,6 +262,59 @@ handleFiles(
         amount: utils.asObject(e.consumes).amount || (e.consumes && 1),
       }),
       type: e.type,
+    }),
+    optionalFeature: (e: any) => ({
+      name: e.name,
+      source: e.name,
+      featureType: e.featureType,
+      prerequisite: utils.adapt(
+        e.prerequisite && {
+          level: utils.adapt(utils.asObject(e.prerequisite[0].level).level),
+          class: utils.adapt(
+            utils.asObject(utils.asObject(e.prerequisite[0].level).class).name
+          ),
+          subclass: utils.adapt(
+            utils.asObject(utils.asObject(e.prerequisite[0].level).subclass)
+              .name
+          ),
+          item: utils.adapt(e.prerequisite[0].item),
+          spell: utils.adapt(
+            utils
+              .asArray(e.prerequisite[0].spell)
+              .map((x) => utils.clearName(x))
+          ),
+          pact: utils.adapt(e.prerequisite[0].pact),
+        }
+      ),
+      entries: utils.splitEntries(utils.asArray(e.entries)).map((entry) => ({
+        ...entry,
+        rows: utils.adapt(
+          utils.asArray(entry.rows).map((row) => row.map((x) => "" + x))
+        ),
+      })),
+      skillProficiencies: utils.adapt(utils.formatObject(e.skillProficiencies)),
+      isClassFeatureVariant: e.isClassFeatureVariant,
+      consumes: utils.adapt({
+        name: utils.asObject(e.consumes).name,
+        amount: utils.asObject(e.consumes).amount || (e.consumes && 1),
+      }),
+      optionalFeatureProgression: utils.adapt(
+        utils.asArray(e.optionalfeatureProgression).map((x) => ({
+          ...x,
+          progression: replaceKey(x.progression, "*", "_"),
+        }))
+      ),
+      additionalSpells: utils.adapt(
+        e.additionalSpells &&
+          e.additionalSpells.map((x: any) => ({
+            spellcastingAbility: utils.adapt(utils.formatObject(x.ability)),
+            spells: [
+              ...utils.formatSpells(["_"], x.innate),
+              ...utils.formatSpells(["_"], x.known),
+            ],
+            resource: utils.adapt(x.resourceName),
+          }))
+      ),
     }),
   },
   options

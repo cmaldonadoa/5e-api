@@ -5,6 +5,7 @@ type Query {
     subclasses: [Subclass]
     classFeatures: [ClassFeature]
     subclassFeatures: [SubclassFeature]
+    optionalFeatures: [OptionalFeature]
     decks: [Deck]
     cards: [Card]
     feats: [Feat]

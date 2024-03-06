@@ -53,6 +53,7 @@ const resolvers: Resolvers = {
     subclasses: () => data.classes.flatMap((e) => e.subclass),
     classFeatures: () => data.classes.flatMap((e) => e.classFeature),
     subclassFeatures: () => data.classes.flatMap((e) => e.subclassFeature),
+    optionalFeatures: () => data.classes.flatMap((e) => e.optionalFeature),
     decks: () => data.decks.flatMap((e) => e.deck),
     cards: () => data.decks.flatMap((e) => e.card),
     feats: () => data.feats.flatMap((e) => e.feat),

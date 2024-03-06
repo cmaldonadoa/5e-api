@@ -8,7 +8,7 @@ import {
   Item,
   ItemProperty,
   ItemType,
-  Language,
+  Language, OptionalFeature,
   Race,
   Spell, Subclass, SubclassFeature,
   Subrace,
@@ -27,7 +27,8 @@ export type Classes = {
   class: Class,
   subclass: Subclass,
   classFeature: ClassFeature,
-  subclassFeature: SubclassFeature
+  subclassFeature: SubclassFeature,
+  optionalFeature: OptionalFeature
 }
 
 export type Decks = {

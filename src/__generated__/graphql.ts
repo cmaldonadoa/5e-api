@@ -1084,6 +1084,116 @@ export type Language = {
   type?: Maybe<Scalars["String"]["output"]>;
 };
 
+export type OptionalFeature = {
+  __typename?: "OptionalFeature";
+  additionalSpells?: Maybe<Array<Maybe<OptionalFeatureAdditionalSpells>>>;
+  consumes?: Maybe<OptionalFeatureConsumes>;
+  entries?: Maybe<Array<Maybe<OptionalFeatureEntries>>>;
+  featureType?: Maybe<Array<Maybe<Scalars["String"]["output"]>>>;
+  isClassFeatureVariant?: Maybe<Scalars["Boolean"]["output"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
+  optionalFeatureProgression?: Maybe<
+    Array<Maybe<OptionalFeatureOptionalFeatureProgression>>
+  >;
+  prerequisite?: Maybe<OptionalFeaturePrerequisite>;
+  skillProficiencies?: Maybe<OptionalFeatureSkillProficiencies>;
+  source?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type OptionalFeatureAdditionalSpells = {
+  __typename?: "OptionalFeatureAdditionalSpells";
+  resource?: Maybe<Scalars["String"]["output"]>;
+  spellcastingAbility?: Maybe<OptionalFeatureAdditionalSpellsSpellcastingAbility>;
+  spells?: Maybe<Array<Maybe<OptionalFeatureAdditionalSpellsSpells>>>;
+};
+
+export type OptionalFeatureAdditionalSpellsSpellcastingAbility = {
+  __typename?: "OptionalFeatureAdditionalSpellsSpellcastingAbility";
+  items?: Maybe<Array<Maybe<Scalars["String"]["output"]>>>;
+};
+
+export type OptionalFeatureAdditionalSpellsSpells = {
+  __typename?: "OptionalFeatureAdditionalSpellsSpells";
+  _meta?: Maybe<OptionalFeatureAdditionalSpellsSpells_Meta>;
+  choose?: Maybe<OptionalFeatureAdditionalSpellsSpellsChoose>;
+  item?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type OptionalFeatureAdditionalSpellsSpellsChoose = {
+  __typename?: "OptionalFeatureAdditionalSpellsSpellsChoose";
+  count?: Maybe<Scalars["Int"]["output"]>;
+  fromFilter?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type OptionalFeatureAdditionalSpellsSpells_Meta = {
+  __typename?: "OptionalFeatureAdditionalSpellsSpells_meta";
+  longRest?: Maybe<Scalars["Int"]["output"]>;
+  resource?: Maybe<Scalars["Int"]["output"]>;
+  ritual?: Maybe<Scalars["Boolean"]["output"]>;
+};
+
+export type OptionalFeatureConsumes = {
+  __typename?: "OptionalFeatureConsumes";
+  amount?: Maybe<Scalars["Int"]["output"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type OptionalFeatureEntries = {
+  __typename?: "OptionalFeatureEntries";
+  caption?: Maybe<Scalars["String"]["output"]>;
+  colLabels?: Maybe<Array<Maybe<Scalars["String"]["output"]>>>;
+  colStyles?: Maybe<Array<Maybe<Scalars["String"]["output"]>>>;
+  entry?: Maybe<Scalars["String"]["output"]>;
+  id?: Maybe<Scalars["Int"]["output"]>;
+  items?: Maybe<Array<Maybe<OptionalFeatureEntriesItems>>>;
+  rows?: Maybe<Array<Maybe<OptionalFeatureEntriesRowsList>>>;
+  type?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type OptionalFeatureEntriesItems = {
+  __typename?: "OptionalFeatureEntriesItems";
+  entry?: Maybe<Scalars["String"]["output"]>;
+  type?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type OptionalFeatureEntriesRows = {
+  __typename?: "OptionalFeatureEntriesRows";
+  _0?: Maybe<Scalars["String"]["output"]>;
+  _1?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type OptionalFeatureEntriesRowsList = {
+  __typename?: "OptionalFeatureEntriesRowsList";
+  items?: Maybe<Array<Maybe<OptionalFeatureEntriesRows>>>;
+};
+
+export type OptionalFeatureOptionalFeatureProgression = {
+  __typename?: "OptionalFeatureOptionalFeatureProgression";
+  featureType?: Maybe<Array<Maybe<Scalars["String"]["output"]>>>;
+  name?: Maybe<Scalars["String"]["output"]>;
+  progression?: Maybe<OptionalFeatureOptionalFeatureProgressionProgression>;
+};
+
+export type OptionalFeatureOptionalFeatureProgressionProgression = {
+  __typename?: "OptionalFeatureOptionalFeatureProgressionProgression";
+  _?: Maybe<Scalars["Int"]["output"]>;
+};
+
+export type OptionalFeaturePrerequisite = {
+  __typename?: "OptionalFeaturePrerequisite";
+  class?: Maybe<Scalars["String"]["output"]>;
+  item?: Maybe<Array<Maybe<Scalars["String"]["output"]>>>;
+  level?: Maybe<Scalars["Int"]["output"]>;
+  pact?: Maybe<Scalars["String"]["output"]>;
+  spell?: Maybe<Array<Maybe<Scalars["String"]["output"]>>>;
+  subclass?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type OptionalFeatureSkillProficiencies = {
+  __typename?: "OptionalFeatureSkillProficiencies";
+  items?: Maybe<Array<Maybe<Scalars["String"]["output"]>>>;
+};
+
 export type Query = {
   __typename?: "Query";
   backgrounds?: Maybe<Array<Maybe<Background>>>;
@@ -1098,6 +1208,7 @@ export type Query = {
   itemTypes?: Maybe<Array<Maybe<ItemType>>>;
   items?: Maybe<Array<Maybe<Item>>>;
   languages?: Maybe<Array<Maybe<Language>>>;
+  optionalFeatures?: Maybe<Array<Maybe<OptionalFeature>>>;
   races?: Maybe<Array<Maybe<Race>>>;
   spells?: Maybe<Array<Maybe<Spell>>>;
   subclassFeatures?: Maybe<Array<Maybe<SubclassFeature>>>;
@@ -1243,6 +1354,9 @@ export type RaceSkillProficienciesChoose = {
 
 export type RaceSpeed = {
   __typename?: "RaceSpeed";
+  climb?: Maybe<Scalars["Int"]["output"]>;
+  fly?: Maybe<Scalars["Int"]["output"]>;
+  swim?: Maybe<Scalars["Int"]["output"]>;
   walk?: Maybe<Scalars["Int"]["output"]>;
 };
 
@@ -1345,6 +1459,13 @@ export type SpellHigherLevel = {
 
 export type SpellRange = {
   __typename?: "SpellRange";
+  distance?: Maybe<SpellRangeDistance>;
+  type?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type SpellRangeDistance = {
+  __typename?: "SpellRangeDistance";
+  distance?: Maybe<Scalars["Int"]["output"]>;
   type?: Maybe<Scalars["String"]["output"]>;
 };
 
@@ -1357,6 +1478,8 @@ export type SpellTime = {
 
 export type Subclass = {
   __typename?: "Subclass";
+  additionalSpells?: Maybe<Array<Maybe<SubclassAdditionalSpells>>>;
+  cantripProgression?: Maybe<Array<Maybe<Scalars["Int"]["output"]>>>;
   className?: Maybe<Scalars["String"]["output"]>;
   classSource?: Maybe<Scalars["String"]["output"]>;
   multiclassSlotsProgression?: Maybe<Scalars["String"]["output"]>;
@@ -1367,8 +1490,143 @@ export type Subclass = {
   shortName?: Maybe<Scalars["String"]["output"]>;
   source?: Maybe<Scalars["String"]["output"]>;
   spellcastingAbility?: Maybe<Scalars["String"]["output"]>;
+  spellsKnownProgression?: Maybe<Array<Maybe<Scalars["Int"]["output"]>>>;
   subclassFeatures?: Maybe<Array<Maybe<SubclassSubclassFeatures>>>;
   subclassTableGroups?: Maybe<Array<Maybe<SubclassSubclassTableGroups>>>;
+};
+
+export type SubclassAdditionalSpells = {
+  __typename?: "SubclassAdditionalSpells";
+  expanded?: Maybe<SubclassAdditionalSpellsExpanded>;
+  name?: Maybe<Scalars["String"]["output"]>;
+  spellcastingAbility?: Maybe<Scalars["String"]["output"]>;
+  spells?: Maybe<Array<Maybe<SubclassAdditionalSpellsSpells>>>;
+};
+
+export type SubclassAdditionalSpellsExpanded = {
+  __typename?: "SubclassAdditionalSpellsExpanded";
+  _1?: Maybe<Array<Maybe<SubclassAdditionalSpellsExpanded1>>>;
+  _3?: Maybe<Array<Maybe<SubclassAdditionalSpellsExpanded3>>>;
+  _7?: Maybe<Array<Maybe<SubclassAdditionalSpellsExpanded7>>>;
+  _9?: Maybe<Array<Maybe<SubclassAdditionalSpellsExpanded9>>>;
+  _13?: Maybe<Array<Maybe<SubclassAdditionalSpellsExpanded13>>>;
+  _19?: Maybe<Array<Maybe<SubclassAdditionalSpellsExpanded19>>>;
+  s0?: Maybe<Array<Maybe<SubclassAdditionalSpellsExpandedS0>>>;
+  s1?: Maybe<Array<Maybe<SubclassAdditionalSpellsExpandedS1>>>;
+  s2?: Maybe<Array<Maybe<SubclassAdditionalSpellsExpandedS2>>>;
+  s3?: Maybe<Array<Maybe<SubclassAdditionalSpellsExpandedS3>>>;
+  s4?: Maybe<Array<Maybe<SubclassAdditionalSpellsExpandedS4>>>;
+  s5?: Maybe<Array<Maybe<SubclassAdditionalSpellsExpandedS5>>>;
+  s6?: Maybe<Array<Maybe<SubclassAdditionalSpellsExpandedS6>>>;
+  s7?: Maybe<Array<Maybe<SubclassAdditionalSpellsExpandedS7>>>;
+  s8?: Maybe<Array<Maybe<SubclassAdditionalSpellsExpandedS8>>>;
+  s9?: Maybe<Array<Maybe<SubclassAdditionalSpellsExpandedS9>>>;
+};
+
+export type SubclassAdditionalSpellsExpanded1 = {
+  __typename?: "SubclassAdditionalSpellsExpanded1";
+  all?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type SubclassAdditionalSpellsExpanded3 = {
+  __typename?: "SubclassAdditionalSpellsExpanded3";
+  all?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type SubclassAdditionalSpellsExpanded7 = {
+  __typename?: "SubclassAdditionalSpellsExpanded7";
+  all?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type SubclassAdditionalSpellsExpanded9 = {
+  __typename?: "SubclassAdditionalSpellsExpanded9";
+  item?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type SubclassAdditionalSpellsExpanded13 = {
+  __typename?: "SubclassAdditionalSpellsExpanded13";
+  all?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type SubclassAdditionalSpellsExpanded19 = {
+  __typename?: "SubclassAdditionalSpellsExpanded19";
+  all?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type SubclassAdditionalSpellsExpandedS0 = {
+  __typename?: "SubclassAdditionalSpellsExpandedS0";
+  all?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type SubclassAdditionalSpellsExpandedS1 = {
+  __typename?: "SubclassAdditionalSpellsExpandedS1";
+  all?: Maybe<Scalars["String"]["output"]>;
+  item?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type SubclassAdditionalSpellsExpandedS2 = {
+  __typename?: "SubclassAdditionalSpellsExpandedS2";
+  all?: Maybe<Scalars["String"]["output"]>;
+  item?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type SubclassAdditionalSpellsExpandedS3 = {
+  __typename?: "SubclassAdditionalSpellsExpandedS3";
+  all?: Maybe<Scalars["String"]["output"]>;
+  item?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type SubclassAdditionalSpellsExpandedS4 = {
+  __typename?: "SubclassAdditionalSpellsExpandedS4";
+  all?: Maybe<Scalars["String"]["output"]>;
+  item?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type SubclassAdditionalSpellsExpandedS5 = {
+  __typename?: "SubclassAdditionalSpellsExpandedS5";
+  all?: Maybe<Scalars["String"]["output"]>;
+  item?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type SubclassAdditionalSpellsExpandedS6 = {
+  __typename?: "SubclassAdditionalSpellsExpandedS6";
+  all?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type SubclassAdditionalSpellsExpandedS7 = {
+  __typename?: "SubclassAdditionalSpellsExpandedS7";
+  all?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type SubclassAdditionalSpellsExpandedS8 = {
+  __typename?: "SubclassAdditionalSpellsExpandedS8";
+  all?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type SubclassAdditionalSpellsExpandedS9 = {
+  __typename?: "SubclassAdditionalSpellsExpandedS9";
+  all?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type SubclassAdditionalSpellsSpells = {
+  __typename?: "SubclassAdditionalSpellsSpells";
+  _meta?: Maybe<SubclassAdditionalSpellsSpells_Meta>;
+  choose?: Maybe<SubclassAdditionalSpellsSpellsChoose>;
+  item?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type SubclassAdditionalSpellsSpellsChoose = {
+  __typename?: "SubclassAdditionalSpellsSpellsChoose";
+  count?: Maybe<Scalars["Int"]["output"]>;
+  fromFilter?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type SubclassAdditionalSpellsSpells_Meta = {
+  __typename?: "SubclassAdditionalSpellsSpells_meta";
+  level?: Maybe<Scalars["Int"]["output"]>;
+  longRest?: Maybe<Scalars["Int"]["output"]>;
+  resource?: Maybe<Scalars["Int"]["output"]>;
+  ritual?: Maybe<Scalars["Boolean"]["output"]>;
 };
 
 export type SubclassFeature = {
@@ -1674,6 +1932,8 @@ export type SubraceSkillToolLanguageProficienciesChoose = {
 
 export type SubraceSpeed = {
   __typename?: "SubraceSpeed";
+  fly?: Maybe<Scalars["Int"]["output"]>;
+  swim?: Maybe<Scalars["Int"]["output"]>;
   walk?: Maybe<Scalars["Int"]["output"]>;
 };
 
@@ -1689,6 +1949,7 @@ export type SubraceWeaponProficiencies = {
 
 export type Vehicle = {
   __typename?: "Vehicle";
+  ability?: Maybe<VehicleAbility>;
   actions?: Maybe<Array<Maybe<VehicleActions>>>;
   armorClass?: Maybe<Scalars["Int"]["output"]>;
   conditionImmunities?: Maybe<Array<Maybe<Scalars["String"]["output"]>>>;
@@ -1708,6 +1969,16 @@ export type Vehicle = {
   source?: Maybe<Scalars["String"]["output"]>;
   speed?: Maybe<VehicleSpeed>;
   weapons?: Maybe<Array<Maybe<VehicleWeapons>>>;
+};
+
+export type VehicleAbility = {
+  __typename?: "VehicleAbility";
+  cha?: Maybe<Scalars["Int"]["output"]>;
+  con?: Maybe<Scalars["Int"]["output"]>;
+  dex?: Maybe<Scalars["Int"]["output"]>;
+  int?: Maybe<Scalars["Int"]["output"]>;
+  str?: Maybe<Scalars["Int"]["output"]>;
+  wis?: Maybe<Scalars["Int"]["output"]>;
 };
 
 export type VehicleActions = {
@@ -2087,6 +2358,21 @@ export type ResolversTypes = {
   ItemTypeEntriesRows: ResolverTypeWrapper<ItemTypeEntriesRows>;
   ItemTypeEntriesRowsList: ResolverTypeWrapper<ItemTypeEntriesRowsList>;
   Language: ResolverTypeWrapper<Language>;
+  OptionalFeature: ResolverTypeWrapper<OptionalFeature>;
+  OptionalFeatureAdditionalSpells: ResolverTypeWrapper<OptionalFeatureAdditionalSpells>;
+  OptionalFeatureAdditionalSpellsSpellcastingAbility: ResolverTypeWrapper<OptionalFeatureAdditionalSpellsSpellcastingAbility>;
+  OptionalFeatureAdditionalSpellsSpells: ResolverTypeWrapper<OptionalFeatureAdditionalSpellsSpells>;
+  OptionalFeatureAdditionalSpellsSpellsChoose: ResolverTypeWrapper<OptionalFeatureAdditionalSpellsSpellsChoose>;
+  OptionalFeatureAdditionalSpellsSpells_meta: ResolverTypeWrapper<OptionalFeatureAdditionalSpellsSpells_Meta>;
+  OptionalFeatureConsumes: ResolverTypeWrapper<OptionalFeatureConsumes>;
+  OptionalFeatureEntries: ResolverTypeWrapper<OptionalFeatureEntries>;
+  OptionalFeatureEntriesItems: ResolverTypeWrapper<OptionalFeatureEntriesItems>;
+  OptionalFeatureEntriesRows: ResolverTypeWrapper<OptionalFeatureEntriesRows>;
+  OptionalFeatureEntriesRowsList: ResolverTypeWrapper<OptionalFeatureEntriesRowsList>;
+  OptionalFeatureOptionalFeatureProgression: ResolverTypeWrapper<OptionalFeatureOptionalFeatureProgression>;
+  OptionalFeatureOptionalFeatureProgressionProgression: ResolverTypeWrapper<OptionalFeatureOptionalFeatureProgressionProgression>;
+  OptionalFeaturePrerequisite: ResolverTypeWrapper<OptionalFeaturePrerequisite>;
+  OptionalFeatureSkillProficiencies: ResolverTypeWrapper<OptionalFeatureSkillProficiencies>;
   Query: ResolverTypeWrapper<{}>;
   Race: ResolverTypeWrapper<Race>;
   RaceAbility: ResolverTypeWrapper<RaceAbility>;
@@ -2120,9 +2406,31 @@ export type ResolversTypes = {
   SpellEntriesRowsList: ResolverTypeWrapper<SpellEntriesRowsList>;
   SpellHigherLevel: ResolverTypeWrapper<SpellHigherLevel>;
   SpellRange: ResolverTypeWrapper<SpellRange>;
+  SpellRangeDistance: ResolverTypeWrapper<SpellRangeDistance>;
   SpellTime: ResolverTypeWrapper<SpellTime>;
   String: ResolverTypeWrapper<Scalars["String"]["output"]>;
   Subclass: ResolverTypeWrapper<Subclass>;
+  SubclassAdditionalSpells: ResolverTypeWrapper<SubclassAdditionalSpells>;
+  SubclassAdditionalSpellsExpanded: ResolverTypeWrapper<SubclassAdditionalSpellsExpanded>;
+  SubclassAdditionalSpellsExpanded1: ResolverTypeWrapper<SubclassAdditionalSpellsExpanded1>;
+  SubclassAdditionalSpellsExpanded3: ResolverTypeWrapper<SubclassAdditionalSpellsExpanded3>;
+  SubclassAdditionalSpellsExpanded7: ResolverTypeWrapper<SubclassAdditionalSpellsExpanded7>;
+  SubclassAdditionalSpellsExpanded9: ResolverTypeWrapper<SubclassAdditionalSpellsExpanded9>;
+  SubclassAdditionalSpellsExpanded13: ResolverTypeWrapper<SubclassAdditionalSpellsExpanded13>;
+  SubclassAdditionalSpellsExpanded19: ResolverTypeWrapper<SubclassAdditionalSpellsExpanded19>;
+  SubclassAdditionalSpellsExpandedS0: ResolverTypeWrapper<SubclassAdditionalSpellsExpandedS0>;
+  SubclassAdditionalSpellsExpandedS1: ResolverTypeWrapper<SubclassAdditionalSpellsExpandedS1>;
+  SubclassAdditionalSpellsExpandedS2: ResolverTypeWrapper<SubclassAdditionalSpellsExpandedS2>;
+  SubclassAdditionalSpellsExpandedS3: ResolverTypeWrapper<SubclassAdditionalSpellsExpandedS3>;
+  SubclassAdditionalSpellsExpandedS4: ResolverTypeWrapper<SubclassAdditionalSpellsExpandedS4>;
+  SubclassAdditionalSpellsExpandedS5: ResolverTypeWrapper<SubclassAdditionalSpellsExpandedS5>;
+  SubclassAdditionalSpellsExpandedS6: ResolverTypeWrapper<SubclassAdditionalSpellsExpandedS6>;
+  SubclassAdditionalSpellsExpandedS7: ResolverTypeWrapper<SubclassAdditionalSpellsExpandedS7>;
+  SubclassAdditionalSpellsExpandedS8: ResolverTypeWrapper<SubclassAdditionalSpellsExpandedS8>;
+  SubclassAdditionalSpellsExpandedS9: ResolverTypeWrapper<SubclassAdditionalSpellsExpandedS9>;
+  SubclassAdditionalSpellsSpells: ResolverTypeWrapper<SubclassAdditionalSpellsSpells>;
+  SubclassAdditionalSpellsSpellsChoose: ResolverTypeWrapper<SubclassAdditionalSpellsSpellsChoose>;
+  SubclassAdditionalSpellsSpells_meta: ResolverTypeWrapper<SubclassAdditionalSpellsSpells_Meta>;
   SubclassFeature: ResolverTypeWrapper<SubclassFeature>;
   SubclassFeatureConsumes: ResolverTypeWrapper<SubclassFeatureConsumes>;
   SubclassFeatureEntries: ResolverTypeWrapper<SubclassFeatureEntries>;
@@ -2166,6 +2474,7 @@ export type ResolversTypes = {
   SubraceToolProficiencies: ResolverTypeWrapper<SubraceToolProficiencies>;
   SubraceWeaponProficiencies: ResolverTypeWrapper<SubraceWeaponProficiencies>;
   Vehicle: ResolverTypeWrapper<Vehicle>;
+  VehicleAbility: ResolverTypeWrapper<VehicleAbility>;
   VehicleActions: ResolverTypeWrapper<VehicleActions>;
   VehicleActionsRows: ResolverTypeWrapper<VehicleActionsRows>;
   VehicleActionsRowsList: ResolverTypeWrapper<VehicleActionsRowsList>;
@@ -2320,6 +2629,21 @@ export type ResolversParentTypes = {
   ItemTypeEntriesRows: ItemTypeEntriesRows;
   ItemTypeEntriesRowsList: ItemTypeEntriesRowsList;
   Language: Language;
+  OptionalFeature: OptionalFeature;
+  OptionalFeatureAdditionalSpells: OptionalFeatureAdditionalSpells;
+  OptionalFeatureAdditionalSpellsSpellcastingAbility: OptionalFeatureAdditionalSpellsSpellcastingAbility;
+  OptionalFeatureAdditionalSpellsSpells: OptionalFeatureAdditionalSpellsSpells;
+  OptionalFeatureAdditionalSpellsSpellsChoose: OptionalFeatureAdditionalSpellsSpellsChoose;
+  OptionalFeatureAdditionalSpellsSpells_meta: OptionalFeatureAdditionalSpellsSpells_Meta;
+  OptionalFeatureConsumes: OptionalFeatureConsumes;
+  OptionalFeatureEntries: OptionalFeatureEntries;
+  OptionalFeatureEntriesItems: OptionalFeatureEntriesItems;
+  OptionalFeatureEntriesRows: OptionalFeatureEntriesRows;
+  OptionalFeatureEntriesRowsList: OptionalFeatureEntriesRowsList;
+  OptionalFeatureOptionalFeatureProgression: OptionalFeatureOptionalFeatureProgression;
+  OptionalFeatureOptionalFeatureProgressionProgression: OptionalFeatureOptionalFeatureProgressionProgression;
+  OptionalFeaturePrerequisite: OptionalFeaturePrerequisite;
+  OptionalFeatureSkillProficiencies: OptionalFeatureSkillProficiencies;
   Query: {};
   Race: Race;
   RaceAbility: RaceAbility;
@@ -2353,9 +2677,31 @@ export type ResolversParentTypes = {
   SpellEntriesRowsList: SpellEntriesRowsList;
   SpellHigherLevel: SpellHigherLevel;
   SpellRange: SpellRange;
+  SpellRangeDistance: SpellRangeDistance;
   SpellTime: SpellTime;
   String: Scalars["String"]["output"];
   Subclass: Subclass;
+  SubclassAdditionalSpells: SubclassAdditionalSpells;
+  SubclassAdditionalSpellsExpanded: SubclassAdditionalSpellsExpanded;
+  SubclassAdditionalSpellsExpanded1: SubclassAdditionalSpellsExpanded1;
+  SubclassAdditionalSpellsExpanded3: SubclassAdditionalSpellsExpanded3;
+  SubclassAdditionalSpellsExpanded7: SubclassAdditionalSpellsExpanded7;
+  SubclassAdditionalSpellsExpanded9: SubclassAdditionalSpellsExpanded9;
+  SubclassAdditionalSpellsExpanded13: SubclassAdditionalSpellsExpanded13;
+  SubclassAdditionalSpellsExpanded19: SubclassAdditionalSpellsExpanded19;
+  SubclassAdditionalSpellsExpandedS0: SubclassAdditionalSpellsExpandedS0;
+  SubclassAdditionalSpellsExpandedS1: SubclassAdditionalSpellsExpandedS1;
+  SubclassAdditionalSpellsExpandedS2: SubclassAdditionalSpellsExpandedS2;
+  SubclassAdditionalSpellsExpandedS3: SubclassAdditionalSpellsExpandedS3;
+  SubclassAdditionalSpellsExpandedS4: SubclassAdditionalSpellsExpandedS4;
+  SubclassAdditionalSpellsExpandedS5: SubclassAdditionalSpellsExpandedS5;
+  SubclassAdditionalSpellsExpandedS6: SubclassAdditionalSpellsExpandedS6;
+  SubclassAdditionalSpellsExpandedS7: SubclassAdditionalSpellsExpandedS7;
+  SubclassAdditionalSpellsExpandedS8: SubclassAdditionalSpellsExpandedS8;
+  SubclassAdditionalSpellsExpandedS9: SubclassAdditionalSpellsExpandedS9;
+  SubclassAdditionalSpellsSpells: SubclassAdditionalSpellsSpells;
+  SubclassAdditionalSpellsSpellsChoose: SubclassAdditionalSpellsSpellsChoose;
+  SubclassAdditionalSpellsSpells_meta: SubclassAdditionalSpellsSpells_Meta;
   SubclassFeature: SubclassFeature;
   SubclassFeatureConsumes: SubclassFeatureConsumes;
   SubclassFeatureEntries: SubclassFeatureEntries;
@@ -2399,6 +2745,7 @@ export type ResolversParentTypes = {
   SubraceToolProficiencies: SubraceToolProficiencies;
   SubraceWeaponProficiencies: SubraceWeaponProficiencies;
   Vehicle: Vehicle;
+  VehicleAbility: VehicleAbility;
   VehicleActions: VehicleActions;
   VehicleActionsRows: VehicleActionsRows;
   VehicleActionsRowsList: VehicleActionsRowsList;
@@ -4966,6 +5313,276 @@ export type LanguageResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type OptionalFeatureResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["OptionalFeature"] = ResolversParentTypes["OptionalFeature"],
+> = {
+  additionalSpells?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["OptionalFeatureAdditionalSpells"]>>>,
+    ParentType,
+    ContextType
+  >;
+  consumes?: Resolver<
+    Maybe<ResolversTypes["OptionalFeatureConsumes"]>,
+    ParentType,
+    ContextType
+  >;
+  entries?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["OptionalFeatureEntries"]>>>,
+    ParentType,
+    ContextType
+  >;
+  featureType?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["String"]>>>,
+    ParentType,
+    ContextType
+  >;
+  isClassFeatureVariant?: Resolver<
+    Maybe<ResolversTypes["Boolean"]>,
+    ParentType,
+    ContextType
+  >;
+  name?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  optionalFeatureProgression?: Resolver<
+    Maybe<
+      Array<Maybe<ResolversTypes["OptionalFeatureOptionalFeatureProgression"]>>
+    >,
+    ParentType,
+    ContextType
+  >;
+  prerequisite?: Resolver<
+    Maybe<ResolversTypes["OptionalFeaturePrerequisite"]>,
+    ParentType,
+    ContextType
+  >;
+  skillProficiencies?: Resolver<
+    Maybe<ResolversTypes["OptionalFeatureSkillProficiencies"]>,
+    ParentType,
+    ContextType
+  >;
+  source?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type OptionalFeatureAdditionalSpellsResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["OptionalFeatureAdditionalSpells"] = ResolversParentTypes["OptionalFeatureAdditionalSpells"],
+> = {
+  resource?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  spellcastingAbility?: Resolver<
+    Maybe<ResolversTypes["OptionalFeatureAdditionalSpellsSpellcastingAbility"]>,
+    ParentType,
+    ContextType
+  >;
+  spells?: Resolver<
+    Maybe<
+      Array<Maybe<ResolversTypes["OptionalFeatureAdditionalSpellsSpells"]>>
+    >,
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type OptionalFeatureAdditionalSpellsSpellcastingAbilityResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["OptionalFeatureAdditionalSpellsSpellcastingAbility"] = ResolversParentTypes["OptionalFeatureAdditionalSpellsSpellcastingAbility"],
+> = {
+  items?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["String"]>>>,
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type OptionalFeatureAdditionalSpellsSpellsResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["OptionalFeatureAdditionalSpellsSpells"] = ResolversParentTypes["OptionalFeatureAdditionalSpellsSpells"],
+> = {
+  _meta?: Resolver<
+    Maybe<ResolversTypes["OptionalFeatureAdditionalSpellsSpells_meta"]>,
+    ParentType,
+    ContextType
+  >;
+  choose?: Resolver<
+    Maybe<ResolversTypes["OptionalFeatureAdditionalSpellsSpellsChoose"]>,
+    ParentType,
+    ContextType
+  >;
+  item?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type OptionalFeatureAdditionalSpellsSpellsChooseResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["OptionalFeatureAdditionalSpellsSpellsChoose"] = ResolversParentTypes["OptionalFeatureAdditionalSpellsSpellsChoose"],
+> = {
+  count?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  fromFilter?: Resolver<
+    Maybe<ResolversTypes["String"]>,
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type OptionalFeatureAdditionalSpellsSpells_MetaResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["OptionalFeatureAdditionalSpellsSpells_meta"] = ResolversParentTypes["OptionalFeatureAdditionalSpellsSpells_meta"],
+> = {
+  longRest?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  resource?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  ritual?: Resolver<Maybe<ResolversTypes["Boolean"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type OptionalFeatureConsumesResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["OptionalFeatureConsumes"] = ResolversParentTypes["OptionalFeatureConsumes"],
+> = {
+  amount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  name?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type OptionalFeatureEntriesResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["OptionalFeatureEntries"] = ResolversParentTypes["OptionalFeatureEntries"],
+> = {
+  caption?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  colLabels?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["String"]>>>,
+    ParentType,
+    ContextType
+  >;
+  colStyles?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["String"]>>>,
+    ParentType,
+    ContextType
+  >;
+  entry?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  items?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["OptionalFeatureEntriesItems"]>>>,
+    ParentType,
+    ContextType
+  >;
+  rows?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["OptionalFeatureEntriesRowsList"]>>>,
+    ParentType,
+    ContextType
+  >;
+  type?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type OptionalFeatureEntriesItemsResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["OptionalFeatureEntriesItems"] = ResolversParentTypes["OptionalFeatureEntriesItems"],
+> = {
+  entry?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  type?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type OptionalFeatureEntriesRowsResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["OptionalFeatureEntriesRows"] = ResolversParentTypes["OptionalFeatureEntriesRows"],
+> = {
+  _0?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  _1?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type OptionalFeatureEntriesRowsListResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["OptionalFeatureEntriesRowsList"] = ResolversParentTypes["OptionalFeatureEntriesRowsList"],
+> = {
+  items?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["OptionalFeatureEntriesRows"]>>>,
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type OptionalFeatureOptionalFeatureProgressionResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["OptionalFeatureOptionalFeatureProgression"] = ResolversParentTypes["OptionalFeatureOptionalFeatureProgression"],
+> = {
+  featureType?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["String"]>>>,
+    ParentType,
+    ContextType
+  >;
+  name?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  progression?: Resolver<
+    Maybe<
+      ResolversTypes["OptionalFeatureOptionalFeatureProgressionProgression"]
+    >,
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type OptionalFeatureOptionalFeatureProgressionProgressionResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["OptionalFeatureOptionalFeatureProgressionProgression"] = ResolversParentTypes["OptionalFeatureOptionalFeatureProgressionProgression"],
+> = {
+  _?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type OptionalFeaturePrerequisiteResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["OptionalFeaturePrerequisite"] = ResolversParentTypes["OptionalFeaturePrerequisite"],
+> = {
+  class?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  item?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["String"]>>>,
+    ParentType,
+    ContextType
+  >;
+  level?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  pact?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  spell?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["String"]>>>,
+    ParentType,
+    ContextType
+  >;
+  subclass?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type OptionalFeatureSkillProficienciesResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["OptionalFeatureSkillProficiencies"] = ResolversParentTypes["OptionalFeatureSkillProficiencies"],
+> = {
+  items?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["String"]>>>,
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type QueryResolvers<
   ContextType = any,
   ParentType extends
@@ -5028,6 +5645,11 @@ export type QueryResolvers<
   >;
   languages?: Resolver<
     Maybe<Array<Maybe<ResolversTypes["Language"]>>>,
+    ParentType,
+    ContextType
+  >;
+  optionalFeatures?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["OptionalFeature"]>>>,
     ParentType,
     ContextType
   >;
@@ -5415,6 +6037,9 @@ export type RaceSpeedResolvers<
   ParentType extends
     ResolversParentTypes["RaceSpeed"] = ResolversParentTypes["RaceSpeed"],
 > = {
+  climb?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  fly?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  swim?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
   walk?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -5641,6 +6266,21 @@ export type SpellRangeResolvers<
   ParentType extends
     ResolversParentTypes["SpellRange"] = ResolversParentTypes["SpellRange"],
 > = {
+  distance?: Resolver<
+    Maybe<ResolversTypes["SpellRangeDistance"]>,
+    ParentType,
+    ContextType
+  >;
+  type?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SpellRangeDistanceResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["SpellRangeDistance"] = ResolversParentTypes["SpellRangeDistance"],
+> = {
+  distance?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
   type?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -5665,6 +6305,16 @@ export type SubclassResolvers<
   ParentType extends
     ResolversParentTypes["Subclass"] = ResolversParentTypes["Subclass"],
 > = {
+  additionalSpells?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["SubclassAdditionalSpells"]>>>,
+    ParentType,
+    ContextType
+  >;
+  cantripProgression?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Int"]>>>,
+    ParentType,
+    ContextType
+  >;
   className?: Resolver<
     Maybe<ResolversTypes["String"]>,
     ParentType,
@@ -5697,6 +6347,11 @@ export type SubclassResolvers<
     ParentType,
     ContextType
   >;
+  spellsKnownProgression?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Int"]>>>,
+    ParentType,
+    ContextType
+  >;
   subclassFeatures?: Resolver<
     Maybe<Array<Maybe<ResolversTypes["SubclassSubclassFeatures"]>>>,
     ParentType,
@@ -5707,6 +6362,312 @@ export type SubclassResolvers<
     ParentType,
     ContextType
   >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubclassAdditionalSpellsResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["SubclassAdditionalSpells"] = ResolversParentTypes["SubclassAdditionalSpells"],
+> = {
+  expanded?: Resolver<
+    Maybe<ResolversTypes["SubclassAdditionalSpellsExpanded"]>,
+    ParentType,
+    ContextType
+  >;
+  name?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  spellcastingAbility?: Resolver<
+    Maybe<ResolversTypes["String"]>,
+    ParentType,
+    ContextType
+  >;
+  spells?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["SubclassAdditionalSpellsSpells"]>>>,
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubclassAdditionalSpellsExpandedResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["SubclassAdditionalSpellsExpanded"] = ResolversParentTypes["SubclassAdditionalSpellsExpanded"],
+> = {
+  _1?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["SubclassAdditionalSpellsExpanded1"]>>>,
+    ParentType,
+    ContextType
+  >;
+  _3?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["SubclassAdditionalSpellsExpanded3"]>>>,
+    ParentType,
+    ContextType
+  >;
+  _7?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["SubclassAdditionalSpellsExpanded7"]>>>,
+    ParentType,
+    ContextType
+  >;
+  _9?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["SubclassAdditionalSpellsExpanded9"]>>>,
+    ParentType,
+    ContextType
+  >;
+  _13?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["SubclassAdditionalSpellsExpanded13"]>>>,
+    ParentType,
+    ContextType
+  >;
+  _19?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["SubclassAdditionalSpellsExpanded19"]>>>,
+    ParentType,
+    ContextType
+  >;
+  s0?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["SubclassAdditionalSpellsExpandedS0"]>>>,
+    ParentType,
+    ContextType
+  >;
+  s1?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["SubclassAdditionalSpellsExpandedS1"]>>>,
+    ParentType,
+    ContextType
+  >;
+  s2?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["SubclassAdditionalSpellsExpandedS2"]>>>,
+    ParentType,
+    ContextType
+  >;
+  s3?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["SubclassAdditionalSpellsExpandedS3"]>>>,
+    ParentType,
+    ContextType
+  >;
+  s4?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["SubclassAdditionalSpellsExpandedS4"]>>>,
+    ParentType,
+    ContextType
+  >;
+  s5?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["SubclassAdditionalSpellsExpandedS5"]>>>,
+    ParentType,
+    ContextType
+  >;
+  s6?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["SubclassAdditionalSpellsExpandedS6"]>>>,
+    ParentType,
+    ContextType
+  >;
+  s7?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["SubclassAdditionalSpellsExpandedS7"]>>>,
+    ParentType,
+    ContextType
+  >;
+  s8?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["SubclassAdditionalSpellsExpandedS8"]>>>,
+    ParentType,
+    ContextType
+  >;
+  s9?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["SubclassAdditionalSpellsExpandedS9"]>>>,
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubclassAdditionalSpellsExpanded1Resolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["SubclassAdditionalSpellsExpanded1"] = ResolversParentTypes["SubclassAdditionalSpellsExpanded1"],
+> = {
+  all?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubclassAdditionalSpellsExpanded3Resolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["SubclassAdditionalSpellsExpanded3"] = ResolversParentTypes["SubclassAdditionalSpellsExpanded3"],
+> = {
+  all?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubclassAdditionalSpellsExpanded7Resolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["SubclassAdditionalSpellsExpanded7"] = ResolversParentTypes["SubclassAdditionalSpellsExpanded7"],
+> = {
+  all?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubclassAdditionalSpellsExpanded9Resolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["SubclassAdditionalSpellsExpanded9"] = ResolversParentTypes["SubclassAdditionalSpellsExpanded9"],
+> = {
+  item?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubclassAdditionalSpellsExpanded13Resolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["SubclassAdditionalSpellsExpanded13"] = ResolversParentTypes["SubclassAdditionalSpellsExpanded13"],
+> = {
+  all?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubclassAdditionalSpellsExpanded19Resolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["SubclassAdditionalSpellsExpanded19"] = ResolversParentTypes["SubclassAdditionalSpellsExpanded19"],
+> = {
+  all?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubclassAdditionalSpellsExpandedS0Resolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["SubclassAdditionalSpellsExpandedS0"] = ResolversParentTypes["SubclassAdditionalSpellsExpandedS0"],
+> = {
+  all?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubclassAdditionalSpellsExpandedS1Resolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["SubclassAdditionalSpellsExpandedS1"] = ResolversParentTypes["SubclassAdditionalSpellsExpandedS1"],
+> = {
+  all?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  item?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubclassAdditionalSpellsExpandedS2Resolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["SubclassAdditionalSpellsExpandedS2"] = ResolversParentTypes["SubclassAdditionalSpellsExpandedS2"],
+> = {
+  all?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  item?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubclassAdditionalSpellsExpandedS3Resolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["SubclassAdditionalSpellsExpandedS3"] = ResolversParentTypes["SubclassAdditionalSpellsExpandedS3"],
+> = {
+  all?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  item?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubclassAdditionalSpellsExpandedS4Resolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["SubclassAdditionalSpellsExpandedS4"] = ResolversParentTypes["SubclassAdditionalSpellsExpandedS4"],
+> = {
+  all?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  item?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubclassAdditionalSpellsExpandedS5Resolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["SubclassAdditionalSpellsExpandedS5"] = ResolversParentTypes["SubclassAdditionalSpellsExpandedS5"],
+> = {
+  all?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  item?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubclassAdditionalSpellsExpandedS6Resolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["SubclassAdditionalSpellsExpandedS6"] = ResolversParentTypes["SubclassAdditionalSpellsExpandedS6"],
+> = {
+  all?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubclassAdditionalSpellsExpandedS7Resolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["SubclassAdditionalSpellsExpandedS7"] = ResolversParentTypes["SubclassAdditionalSpellsExpandedS7"],
+> = {
+  all?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubclassAdditionalSpellsExpandedS8Resolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["SubclassAdditionalSpellsExpandedS8"] = ResolversParentTypes["SubclassAdditionalSpellsExpandedS8"],
+> = {
+  all?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubclassAdditionalSpellsExpandedS9Resolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["SubclassAdditionalSpellsExpandedS9"] = ResolversParentTypes["SubclassAdditionalSpellsExpandedS9"],
+> = {
+  all?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubclassAdditionalSpellsSpellsResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["SubclassAdditionalSpellsSpells"] = ResolversParentTypes["SubclassAdditionalSpellsSpells"],
+> = {
+  _meta?: Resolver<
+    Maybe<ResolversTypes["SubclassAdditionalSpellsSpells_meta"]>,
+    ParentType,
+    ContextType
+  >;
+  choose?: Resolver<
+    Maybe<ResolversTypes["SubclassAdditionalSpellsSpellsChoose"]>,
+    ParentType,
+    ContextType
+  >;
+  item?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubclassAdditionalSpellsSpellsChooseResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["SubclassAdditionalSpellsSpellsChoose"] = ResolversParentTypes["SubclassAdditionalSpellsSpellsChoose"],
+> = {
+  count?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  fromFilter?: Resolver<
+    Maybe<ResolversTypes["String"]>,
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubclassAdditionalSpellsSpells_MetaResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["SubclassAdditionalSpellsSpells_meta"] = ResolversParentTypes["SubclassAdditionalSpellsSpells_meta"],
+> = {
+  level?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  longRest?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  resource?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  ritual?: Resolver<Maybe<ResolversTypes["Boolean"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -6478,6 +7439,8 @@ export type SubraceSpeedResolvers<
   ParentType extends
     ResolversParentTypes["SubraceSpeed"] = ResolversParentTypes["SubraceSpeed"],
 > = {
+  fly?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  swim?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
   walk?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -6513,6 +7476,11 @@ export type VehicleResolvers<
   ParentType extends
     ResolversParentTypes["Vehicle"] = ResolversParentTypes["Vehicle"],
 > = {
+  ability?: Resolver<
+    Maybe<ResolversTypes["VehicleAbility"]>,
+    ParentType,
+    ContextType
+  >;
   actions?: Resolver<
     Maybe<Array<Maybe<ResolversTypes["VehicleActions"]>>>,
     ParentType,
@@ -6580,6 +7548,20 @@ export type VehicleResolvers<
     ParentType,
     ContextType
   >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type VehicleAbilityResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["VehicleAbility"] = ResolversParentTypes["VehicleAbility"],
+> = {
+  cha?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  con?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  dex?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  int?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  str?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  wis?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -6987,6 +7969,21 @@ export type Resolvers<ContextType = any> = {
   ItemTypeEntriesRows?: ItemTypeEntriesRowsResolvers<ContextType>;
   ItemTypeEntriesRowsList?: ItemTypeEntriesRowsListResolvers<ContextType>;
   Language?: LanguageResolvers<ContextType>;
+  OptionalFeature?: OptionalFeatureResolvers<ContextType>;
+  OptionalFeatureAdditionalSpells?: OptionalFeatureAdditionalSpellsResolvers<ContextType>;
+  OptionalFeatureAdditionalSpellsSpellcastingAbility?: OptionalFeatureAdditionalSpellsSpellcastingAbilityResolvers<ContextType>;
+  OptionalFeatureAdditionalSpellsSpells?: OptionalFeatureAdditionalSpellsSpellsResolvers<ContextType>;
+  OptionalFeatureAdditionalSpellsSpellsChoose?: OptionalFeatureAdditionalSpellsSpellsChooseResolvers<ContextType>;
+  OptionalFeatureAdditionalSpellsSpells_meta?: OptionalFeatureAdditionalSpellsSpells_MetaResolvers<ContextType>;
+  OptionalFeatureConsumes?: OptionalFeatureConsumesResolvers<ContextType>;
+  OptionalFeatureEntries?: OptionalFeatureEntriesResolvers<ContextType>;
+  OptionalFeatureEntriesItems?: OptionalFeatureEntriesItemsResolvers<ContextType>;
+  OptionalFeatureEntriesRows?: OptionalFeatureEntriesRowsResolvers<ContextType>;
+  OptionalFeatureEntriesRowsList?: OptionalFeatureEntriesRowsListResolvers<ContextType>;
+  OptionalFeatureOptionalFeatureProgression?: OptionalFeatureOptionalFeatureProgressionResolvers<ContextType>;
+  OptionalFeatureOptionalFeatureProgressionProgression?: OptionalFeatureOptionalFeatureProgressionProgressionResolvers<ContextType>;
+  OptionalFeaturePrerequisite?: OptionalFeaturePrerequisiteResolvers<ContextType>;
+  OptionalFeatureSkillProficiencies?: OptionalFeatureSkillProficienciesResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Race?: RaceResolvers<ContextType>;
   RaceAbility?: RaceAbilityResolvers<ContextType>;
@@ -7020,8 +8017,30 @@ export type Resolvers<ContextType = any> = {
   SpellEntriesRowsList?: SpellEntriesRowsListResolvers<ContextType>;
   SpellHigherLevel?: SpellHigherLevelResolvers<ContextType>;
   SpellRange?: SpellRangeResolvers<ContextType>;
+  SpellRangeDistance?: SpellRangeDistanceResolvers<ContextType>;
   SpellTime?: SpellTimeResolvers<ContextType>;
   Subclass?: SubclassResolvers<ContextType>;
+  SubclassAdditionalSpells?: SubclassAdditionalSpellsResolvers<ContextType>;
+  SubclassAdditionalSpellsExpanded?: SubclassAdditionalSpellsExpandedResolvers<ContextType>;
+  SubclassAdditionalSpellsExpanded1?: SubclassAdditionalSpellsExpanded1Resolvers<ContextType>;
+  SubclassAdditionalSpellsExpanded3?: SubclassAdditionalSpellsExpanded3Resolvers<ContextType>;
+  SubclassAdditionalSpellsExpanded7?: SubclassAdditionalSpellsExpanded7Resolvers<ContextType>;
+  SubclassAdditionalSpellsExpanded9?: SubclassAdditionalSpellsExpanded9Resolvers<ContextType>;
+  SubclassAdditionalSpellsExpanded13?: SubclassAdditionalSpellsExpanded13Resolvers<ContextType>;
+  SubclassAdditionalSpellsExpanded19?: SubclassAdditionalSpellsExpanded19Resolvers<ContextType>;
+  SubclassAdditionalSpellsExpandedS0?: SubclassAdditionalSpellsExpandedS0Resolvers<ContextType>;
+  SubclassAdditionalSpellsExpandedS1?: SubclassAdditionalSpellsExpandedS1Resolvers<ContextType>;
+  SubclassAdditionalSpellsExpandedS2?: SubclassAdditionalSpellsExpandedS2Resolvers<ContextType>;
+  SubclassAdditionalSpellsExpandedS3?: SubclassAdditionalSpellsExpandedS3Resolvers<ContextType>;
+  SubclassAdditionalSpellsExpandedS4?: SubclassAdditionalSpellsExpandedS4Resolvers<ContextType>;
+  SubclassAdditionalSpellsExpandedS5?: SubclassAdditionalSpellsExpandedS5Resolvers<ContextType>;
+  SubclassAdditionalSpellsExpandedS6?: SubclassAdditionalSpellsExpandedS6Resolvers<ContextType>;
+  SubclassAdditionalSpellsExpandedS7?: SubclassAdditionalSpellsExpandedS7Resolvers<ContextType>;
+  SubclassAdditionalSpellsExpandedS8?: SubclassAdditionalSpellsExpandedS8Resolvers<ContextType>;
+  SubclassAdditionalSpellsExpandedS9?: SubclassAdditionalSpellsExpandedS9Resolvers<ContextType>;
+  SubclassAdditionalSpellsSpells?: SubclassAdditionalSpellsSpellsResolvers<ContextType>;
+  SubclassAdditionalSpellsSpellsChoose?: SubclassAdditionalSpellsSpellsChooseResolvers<ContextType>;
+  SubclassAdditionalSpellsSpells_meta?: SubclassAdditionalSpellsSpells_MetaResolvers<ContextType>;
   SubclassFeature?: SubclassFeatureResolvers<ContextType>;
   SubclassFeatureConsumes?: SubclassFeatureConsumesResolvers<ContextType>;
   SubclassFeatureEntries?: SubclassFeatureEntriesResolvers<ContextType>;
@@ -7065,6 +8084,7 @@ export type Resolvers<ContextType = any> = {
   SubraceToolProficiencies?: SubraceToolProficienciesResolvers<ContextType>;
   SubraceWeaponProficiencies?: SubraceWeaponProficienciesResolvers<ContextType>;
   Vehicle?: VehicleResolvers<ContextType>;
+  VehicleAbility?: VehicleAbilityResolvers<ContextType>;
   VehicleActions?: VehicleActionsResolvers<ContextType>;
   VehicleActionsRows?: VehicleActionsRowsResolvers<ContextType>;
   VehicleActionsRowsList?: VehicleActionsRowsListResolvers<ContextType>;
