@@ -1,18 +1,13 @@
-import { handleFiles, utils } from "./utils";
+import { handleFiles, Options, utils } from "./utils";
 import rootDir from "app-root-dir";
 
 const root = rootDir.get();
 
 const input = root + "/data/original/spells/";
 const output = root + "/data/modified/";
-const options = {
+const options: Options = {
   input,
   output,
-  enableInternalTests: {
-    enabled: true,
-    property: "time",
-    key: "spell",
-  },
 };
 
 handleFiles(
@@ -33,8 +28,8 @@ handleFiles(
         ),
       },
       components: {
-        v: utils.adapt(x.components.v),
-        s: utils.adapt(x.components.s),
+        v: x.components.v,
+        s: x.components.s,
         m: utils.adapt(
           x.components.m &&
             (typeof x.components.m === "string"
