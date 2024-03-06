@@ -52,7 +52,7 @@ export const handleFiles = (handlers: any, options: Options) => {
   const files = fs.readdirSync(options.input);
   const jsonFiles = files.filter(
     (item) =>
-      /.json$/.test(item) && !/^foundry/.test(item) && !/^optional/.test(item)
+      /.json$/.test(item) && !/^foundry/.test(item)
   );
 
   const keys = {};
@@ -133,7 +133,7 @@ export const handleFiles = (handlers: any, options: Options) => {
     const oldData = JSON.parse(data);
     const additional = {};
     const newData = Object.keys(handlers).reduce((accumulator, key) => {
-      accumulator[key] = oldData[key].map((element: any) => {
+      accumulator[key] = utils.asArray(oldData[key]).map((element: any) => {
         const handle = (x: any) => {
           const copy = utils.getCopy(oldData[key], x._copy);
 
