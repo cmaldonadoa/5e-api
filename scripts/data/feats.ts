@@ -3,8 +3,8 @@ import rootDir from "app-root-dir";
 
 const root = rootDir.get();
 
-const input = root + "/data/original/feats/";
-const output = root + "/data/modified/";
+const input = root + "/storage/data/original/feats/";
+const output = root + "/storage/data/modified/";
 const options: Options = {
   input,
   output,

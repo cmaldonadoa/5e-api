@@ -1,11 +1,11 @@
-import { getQueries, loadFilesSync } from "./utils.js";
+import { getQueries, loadFilesSync } from "../utils";
 import { Background, Resolvers } from "../../__generated__/graphql";
 
 type Backgrounds = {
   background: Background;
 };
 
-const files = loadFilesSync<Backgrounds>("/data/modified/backgrounds");
+const files = loadFilesSync<Backgrounds>("/storage/data/modified/backgrounds");
 const data = {
   backgrounds: files.flatMap((e) => e.background),
 };

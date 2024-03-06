@@ -1,11 +1,11 @@
-import { getQueries, loadFilesSync } from "./utils.js";
+import { getQueries, loadFilesSync } from "../utils";
 import { Resolvers, Spell } from "../../__generated__/graphql";
 
 type Spells = {
   spell: Spell;
 };
 
-const files = loadFilesSync<Spells>("/data/modified/spells");
+const files = loadFilesSync<Spells>("/storage/data/modified/spells");
 const data = {
   spells: files.flatMap((e) => e.spell),
 };

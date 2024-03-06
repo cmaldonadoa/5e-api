@@ -1,11 +1,11 @@
-import { getQueries, loadFilesSync } from "./utils.js";
+import { getQueries, loadFilesSync } from "../utils";
 import { Language, Resolvers } from "../../__generated__/graphql";
 
 type Languages = {
   language: Language;
 };
 
-const files = loadFilesSync<Languages>("/data/modified/languages");
+const files = loadFilesSync<Languages>("/storage/data/modified/languages");
 const data = {
   languages: files.flatMap((e) => e.language),
 };

@@ -1,4 +1,4 @@
-import { getQueries, loadFilesSync } from "./utils.js";
+import { getQueries, loadFilesSync } from "../utils";
 import {
   Class,
   ClassFeature,
@@ -16,7 +16,7 @@ type Classes = {
   optionalFeature: OptionalFeature;
 };
 
-const files = loadFilesSync<Classes>("/data/modified/classes");
+const files = loadFilesSync<Classes>("/storage/data/modified/classes");
 const data = {
   classes: files.flatMap((e) => e.class),
   subclasses: files.flatMap((e) => e.subclass),

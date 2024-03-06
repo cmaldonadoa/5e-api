@@ -1,4 +1,4 @@
-import { getQueries, loadFilesSync } from "./utils.js";
+import { getQueries, loadFilesSync } from "../utils";
 import { Race, Resolvers, Subrace } from "../../__generated__/graphql";
 
 type Races = {
@@ -6,7 +6,7 @@ type Races = {
   subrace: Subrace;
 };
 
-const files = loadFilesSync<Races>("/data/modified/races");
+const files = loadFilesSync<Races>("/storage/data/modified/races");
 const data = {
   races: files.flatMap((e) => e.race),
   subraces: files.flatMap((e) => e.subrace),

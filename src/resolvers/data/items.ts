@@ -1,4 +1,4 @@
-import { getQueries, loadFilesSync } from "./utils.js";
+import { getQueries, loadFilesSync } from "../utils";
 import {
   BaseItem,
   Item,
@@ -13,7 +13,7 @@ type Items = {
   itemProperty: ItemProperty;
   itemType: ItemType;
 };
-const files = loadFilesSync<Items>("/data/modified/items");
+const files = loadFilesSync<Items>("/storage/data/modified/items");
 const data = {
   items: files.flatMap((e) => e.item),
   baseItems: files.flatMap((e) => e.baseItem),

@@ -3,7 +3,7 @@ import rootDir from "app-root-dir";
 import { spawnSync } from "child_process";
 
 const root = rootDir.get();
-const path = root + "/data/original/";
+const path = root + "/storage/data/original/";
 
 const folders = fs.readdirSync(path);
 
@@ -13,10 +13,10 @@ for (const name of folders) {
     "run",
     "generate-schema",
     "--",
-    root + "/data/modified/" + name,
+    root + "/storage/data/modified/" + name,
     root + "/schemas/",
     "--",
-    "foundry.json"
+    "foundry.json",
   ]);
   console.log(stdout.toString());
 

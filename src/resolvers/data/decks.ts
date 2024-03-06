@@ -1,4 +1,4 @@
-import { getQueries, loadFilesSync } from "./utils.js";
+import { getQueries, loadFilesSync } from "../utils";
 import { Card, Deck, Resolvers } from "../../__generated__/graphql";
 
 type Decks = {
@@ -6,7 +6,7 @@ type Decks = {
   card: Card;
 };
 
-const files = loadFilesSync<Decks>("/data/modified/decks");
+const files = loadFilesSync<Decks>("/storage/data/modified/decks");
 const data = {
   decks: files.flatMap((e) => e.deck),
   cards: files.flatMap((e) => e.card),
