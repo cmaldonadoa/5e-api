@@ -139,9 +139,10 @@ export const utils = {
   adapt: <T>(object: T): undefined | T => {
     if (
       !object ||
-      Object.keys(object).length === 0 ||
-      !Object.values(object).every(Boolean) ||
-      (Array.isArray(object) && object.filter(Boolean).length === 0)
+      (typeof object !== "boolean" &&
+        (Object.keys(object).length === 0 ||
+          !Object.values(object).every(Boolean) ||
+          (Array.isArray(object) && object.filter(Boolean).length === 0)))
     )
       return;
     return object;
@@ -299,24 +300,23 @@ export const utils = {
           },
         }));
       else if ("daily" in spell)
-        spellItems = dailyKeys.reduce((accumulator, key) => {
-          const newSpells = utils
-            .asArray((spell as SpellDataValueDaily).daily[key] as any[])
-            .map((o) => ({
-              ...(typeof o === "string" && { item: utils.clearName(o) }),
-              ...(typeof o !== "string" && utils.formatObject(o)),
-              _meta: {
-                ...(Number.isInteger(+level) && { level: +level }),
-                longRest: 1,
-              },
-            }));
+        spellItems = Object.entries(
+          (spell as SpellDataValueDaily).daily
+        ).reduce((accumulator, [k, v]) => {
+          const newSpells = v.map((o) => ({
+            ...(typeof o === "string" && { item: utils.clearName(o) }),
+            ...(typeof o !== "string" && utils.formatObject(o)),
+            _meta: {
+              ...(Number.isInteger(+level) && { level: +level }),
+              longRest: 1,
+            },
+          }));
           return [...accumulator, ...newSpells];
         }, []);
       else if ("rest" in spell)
-        spellItems = restKeys.reduce((accumulator, key) => {
-          const newSpells = utils
-            .asArray((spell as SpellDataValueRest).rest[key] as any[])
-            .map((o) => ({
+        spellItems = Object.entries((spell as SpellDataValueRest).rest).reduce(
+          (accumulator, [k, v]) => {
+            const newSpells = v.map((o) => ({
               ...(typeof o === "string" && { item: utils.clearName(o) }),
               ...(typeof o !== "string" && utils.formatObject(o)),
               _meta: {
@@ -324,21 +324,22 @@ export const utils = {
                 shortRest: 1,
               },
             }));
-          return [...accumulator, ...newSpells];
-        }, []);
+            return [...accumulator, ...newSpells];
+          },
+          []
+        );
       else if ("resource" in spell)
-        spellItems = resourceKeys.reduce((accumulator, key) => {
-          const newSpells = utils
-            .asArray((spell as SpellDataValueResource).resource[key] as any[])
-            .map((o) => ({
-              ...(typeof o === "string" && { item: utils.clearName(o) }),
-              ...(typeof o !== "string" && utils.formatObject(o)),
-              ...(Number.isInteger(+level) && {
-                _meta: {
-                  level: +level,
-                },
-              }),
-            }));
+        spellItems = Object.entries(
+          (spell as SpellDataValueResource).resource
+        ).reduce((accumulator, [k, v]) => {
+          const newSpells = v.map((o) => ({
+            ...(typeof o === "string" && { item: utils.clearName(o) }),
+            ...(typeof o !== "string" && utils.formatObject(o)),
+            _meta: {
+              ...(Number.isInteger(+level) && { level: +level }),
+              resource: k,
+            },
+          }));
           return [...accumulator, ...newSpells];
         }, []);
 
