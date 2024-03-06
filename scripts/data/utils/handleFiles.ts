@@ -51,8 +51,7 @@ export type Options = {
 export const handleFiles = (handlers: any, options: Options) => {
   const files = fs.readdirSync(options.input);
   const jsonFiles = files.filter(
-    (item) =>
-      /.json$/.test(item) && !/^foundry/.test(item)
+    (item) => /.json$/.test(item) && !/^foundry/.test(item)
   );
 
   const keys = {};
@@ -172,7 +171,7 @@ export const handleFiles = (handlers: any, options: Options) => {
     }, {});
 
     Object.keys(newData).forEach(
-      (k) => (newData[k] = newData[k].filter(Boolean))
+      (k) => (newData[k] = utils.adapt(newData[k].filter(Boolean)))
     );
 
     Object.keys(additional).forEach(
