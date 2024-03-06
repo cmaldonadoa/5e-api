@@ -72,7 +72,7 @@ colLabels: [String]
 colStyles: [String]
 rows: [ClassFeatureEntriesRowsList]
 count: Int
-optionalfeature: String
+optionalFeature: String
 source: String
 page: Int
 }
@@ -511,7 +511,7 @@ parentId: Int
 style: String
 count: Int
 data: SubclassFeatureEntriesData
-optionalfeature: String
+optionalFeature: String
 attributes: [String]
 }
 

@@ -235,7 +235,11 @@ handleFiles(
       className: e.className,
       classSource: e.classSource,
       level: e.level,
-      entries: utils.splitEntries(utils.asArray(e.entries)),
+      entries: utils
+        .splitEntries(utils.asArray(e.entries))
+        .map((entry) =>
+          replaceKey(entry, "optionalfeature", "optionalFeature")
+        ),
       isClassFeatureVariant: e.isClassFeatureVariant,
       consumes: utils.adapt({
         name: utils.asObject(e.consumes).name,
@@ -251,7 +255,7 @@ handleFiles(
       subclassSource: e.subclassSource,
       level: e.level,
       entries: utils.splitEntries(utils.asArray(e.entries)).map((entry) => ({
-        ...entry,
+        ...replaceKey(entry, "optionalfeature", "optionalFeature"),
         rows: utils.adapt(
           utils.asArray(entry.rows).map((row) => row.map((x) => "" + x))
         ),
