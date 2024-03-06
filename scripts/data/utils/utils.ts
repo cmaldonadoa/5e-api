@@ -260,10 +260,6 @@ export const utils = {
 
     const spellList = [];
 
-    const dailyKeys = ["1", "1e"];
-    const restKeys = ["1"];
-    const resourceKeys = ["2", "3", "4", "5", "6"];
-
     keys.forEach((level) => {
       let spell = spells[level];
 
@@ -302,7 +298,7 @@ export const utils = {
       else if ("daily" in spell)
         spellItems = Object.entries(
           (spell as SpellDataValueDaily).daily
-        ).reduce((accumulator, [k, v]) => {
+        ).reduce((accumulator, [, v]) => {
           const newSpells = v.map((o) => ({
             ...(typeof o === "string" && { item: utils.clearName(o) }),
             ...(typeof o !== "string" && utils.formatObject(o)),
@@ -315,7 +311,7 @@ export const utils = {
         }, []);
       else if ("rest" in spell)
         spellItems = Object.entries((spell as SpellDataValueRest).rest).reduce(
-          (accumulator, [k, v]) => {
+          (accumulator, [, v]) => {
             const newSpells = v.map((o) => ({
               ...(typeof o === "string" && { item: utils.clearName(o) }),
               ...(typeof o !== "string" && utils.formatObject(o)),
@@ -337,7 +333,7 @@ export const utils = {
             ...(typeof o !== "string" && utils.formatObject(o)),
             _meta: {
               ...(Number.isInteger(+level) && { level: +level }),
-              resource: k,
+              resource: +k,
             },
           }));
           return [...accumulator, ...newSpells];
