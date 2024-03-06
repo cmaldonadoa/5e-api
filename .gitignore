@@ -1,4 +1,12 @@
+# Node
 node_modules
+
+# Code Editors
 .idea
 .vscode
+
+# TypeScript
 dist
+
+# Automated
+src/__generated__
