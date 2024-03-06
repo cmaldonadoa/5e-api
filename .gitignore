@@ -10,3 +10,6 @@ dist
 
 # Automated
 src/__generated__
+
+# Local storage
+storage/authentication
