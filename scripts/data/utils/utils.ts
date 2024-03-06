@@ -281,7 +281,8 @@ export const utils = {
         }));
       else if ("will" in spell)
         spellItems = (spell as SpellDataValueWill).will.map((o) => ({
-          item: utils.clearName(o),
+          ...(typeof o === "string" && { item: utils.clearName(o) }),
+          ...(typeof o !== "string" && utils.formatObject(o)),
           _meta: {
             ...(Number.isInteger(+level) && { level: +level }),
             will: true,
@@ -289,7 +290,8 @@ export const utils = {
         }));
       else if ("ritual" in spell)
         spellItems = (spell as SpellDataValueRitual).ritual.map((o) => ({
-          item: utils.clearName(o),
+          ...(typeof o === "string" && { item: utils.clearName(o) }),
+          ...(typeof o !== "string" && utils.formatObject(o)),
           _meta: {
             ...(Number.isInteger(+level) && { level: +level }),
             ritual: true,
