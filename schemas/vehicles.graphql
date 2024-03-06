@@ -15,6 +15,7 @@ pace: VehiclePace
 weapons: [VehicleWeapons]
 maxCargo: Int
 conditionImmunities: [String]
+ability: VehicleAbility
 controls: [VehicleControls]
 movements: [VehicleMovements]
 maxCrewNote: String
@@ -104,6 +105,19 @@ name: String
 entry: String
 }
 
+type VehicleEntriesRowsList {
+items: [VehicleEntriesRows]
+}
+
+type VehicleAbility {
+str: Int
+dex: Int
+con: Int
+int: Int
+wis: Int
+cha: Int
+}
+
 type VehicleControls {
 name: String
 entries: [VehicleControlsEntries]
@@ -115,10 +129,6 @@ type VehicleControlsEntries {
 type: String
 entry: String
 id: Int
-}
-
-type VehicleEntriesRowsList {
-items: [VehicleEntriesRows]
 }
 
 type VehicleMovements {

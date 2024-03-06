@@ -2,9 +2,9 @@ type Race {
 name: String
 source: String
 size: [String]
+speed: RaceSpeed
 entries: [RaceEntries]
 additionalSpells: RaceAdditionalSpells
-speed: RaceSpeed
 ability: RaceAbility
 languageProficiencies: RaceLanguageProficiencies
 skillProficiencies: RaceSkillProficiencies
@@ -12,14 +12,6 @@ toolProficiencies: RaceToolProficiencies
 weaponProficiencies: RaceWeaponProficiencies
 armorProficiencies: RaceArmorProficiencies
 feats: RaceFeats
-}
-
-type RaceFeats {
-items: [String]
-}
-
-type RaceSpeed {
-walk: Int
 }
 
 type RaceEntries {
@@ -43,6 +35,10 @@ _1: String
 _2: String
 }
 
+type RaceFeats {
+items: [String]
+}
+
 type RaceEntriesRowsList {
 items: [RaceEntriesRows]
 }
@@ -61,6 +57,13 @@ type RaceEntriesItems {
 type: String
 entry: String
 name: String
+}
+
+type RaceSpeed {
+walk: Int
+fly: Int
+climb: Int
+swim: Int
 }
 
 type RaceAdditionalSpellsSpellcastingAbility {
@@ -193,6 +196,8 @@ entry: String
 
 type SubraceSpeed {
 walk: Int
+swim: Int
+fly: Int
 }
 
 type SubraceEntriesRows {

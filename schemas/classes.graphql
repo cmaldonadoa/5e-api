@@ -263,6 +263,28 @@ type ClassClassTableGroupsRowsSpellProgressionList {
 items: [ClassClassTableGroupsRowsSpellProgression]
 }
 
+type OptionalFeature {
+name: String
+source: String
+featureType: [String]
+prerequisite: OptionalFeaturePrerequisite
+entries: [OptionalFeatureEntries]
+isClassFeatureVariant: Boolean
+consumes: OptionalFeatureConsumes
+additionalSpells: [OptionalFeatureAdditionalSpells]
+skillProficiencies: OptionalFeatureSkillProficiencies
+optionalFeatureProgression: [OptionalFeatureOptionalFeatureProgression]
+}
+
+type OptionalFeaturePrerequisite {
+spell: [String]
+level: Int
+class: String
+item: [String]
+pact: String
+subclass: String
+}
+
 type ClassClassFeatures {
 featureName: String
 className: String
@@ -277,9 +299,12 @@ shortName: String
 className: String
 classSource: String
 subclassFeatures: [SubclassSubclassFeatures]
+additionalSpells: [SubclassAdditionalSpells]
 spellcastingAbility: String
 optionalFeatureProgression: [SubclassOptionalFeatureProgression]
 multiclassSlotsProgression: String
+cantripProgression: [Int]
+spellsKnownProgression: [Int]
 subclassTableGroups: [SubclassSubclassTableGroups]
 }
 
@@ -336,6 +361,119 @@ _18: Int
 _6: Int
 _11: Int
 _17: Int
+}
+
+type SubclassAdditionalSpells {
+spells: [SubclassAdditionalSpellsSpells]
+spellcastingAbility: String
+name: String
+expanded: SubclassAdditionalSpellsExpanded
+}
+
+type SubclassAdditionalSpellsExpanded {
+_3: [SubclassAdditionalSpellsExpanded3]
+_7: [SubclassAdditionalSpellsExpanded7]
+_13: [SubclassAdditionalSpellsExpanded13]
+_19: [SubclassAdditionalSpellsExpanded19]
+s0: [SubclassAdditionalSpellsExpandedS0]
+s1: [SubclassAdditionalSpellsExpandedS1]
+s2: [SubclassAdditionalSpellsExpandedS2]
+s3: [SubclassAdditionalSpellsExpandedS3]
+s4: [SubclassAdditionalSpellsExpandedS4]
+s5: [SubclassAdditionalSpellsExpandedS5]
+s6: [SubclassAdditionalSpellsExpandedS6]
+s7: [SubclassAdditionalSpellsExpandedS7]
+s8: [SubclassAdditionalSpellsExpandedS8]
+s9: [SubclassAdditionalSpellsExpandedS9]
+_9: [SubclassAdditionalSpellsExpanded9]
+_1: [SubclassAdditionalSpellsExpanded1]
+}
+
+type SubclassAdditionalSpellsExpanded9 {
+item: String
+}
+
+type SubclassAdditionalSpellsExpandedS9 {
+all: String
+}
+
+type SubclassAdditionalSpellsExpandedS8 {
+all: String
+}
+
+type SubclassAdditionalSpellsExpandedS7 {
+all: String
+}
+
+type SubclassAdditionalSpellsExpandedS6 {
+all: String
+}
+
+type SubclassAdditionalSpellsExpandedS5 {
+all: String
+item: String
+}
+
+type SubclassAdditionalSpellsExpandedS4 {
+all: String
+item: String
+}
+
+type SubclassAdditionalSpellsExpandedS3 {
+all: String
+item: String
+}
+
+type SubclassAdditionalSpellsExpandedS2 {
+all: String
+item: String
+}
+
+type SubclassAdditionalSpellsExpandedS1 {
+all: String
+item: String
+}
+
+type SubclassAdditionalSpellsExpandedS0 {
+all: String
+}
+
+type SubclassAdditionalSpellsExpanded1 {
+all: String
+}
+
+type SubclassAdditionalSpellsExpanded19 {
+all: String
+}
+
+type SubclassAdditionalSpellsExpanded13 {
+all: String
+}
+
+type SubclassAdditionalSpellsExpanded7 {
+all: String
+}
+
+type SubclassAdditionalSpellsExpanded3 {
+all: String
+}
+
+type SubclassAdditionalSpellsSpells {
+item: String
+_meta: SubclassAdditionalSpellsSpells_meta
+choose: SubclassAdditionalSpellsSpellsChoose
+}
+
+type SubclassAdditionalSpellsSpellsChoose {
+fromFilter: String
+count: Int
+}
+
+type SubclassAdditionalSpellsSpells_meta {
+level: Int
+ritual: Boolean
+resource: Int
+longRest: Int
 }
 
 type SubclassFeature {
@@ -418,4 +556,75 @@ source: String
 
 type ClassClassTableGroupsRowsList {
 items: [ClassClassTableGroupsRows]
+}
+
+type OptionalFeatureConsumes {
+name: String
+amount: Int
+}
+
+type OptionalFeatureEntries {
+type: String
+entry: String
+id: Int
+items: [OptionalFeatureEntriesItems]
+caption: String
+colLabels: [String]
+colStyles: [String]
+rows: [OptionalFeatureEntriesRowsList]
+}
+
+type OptionalFeatureEntriesRows {
+_0: String
+_1: String
+}
+
+type OptionalFeatureEntriesRowsList {
+items: [OptionalFeatureEntriesRows]
+}
+
+type OptionalFeatureEntriesItems {
+type: String
+entry: String
+}
+
+type OptionalFeatureAdditionalSpells {
+spells: [OptionalFeatureAdditionalSpellsSpells]
+spellcastingAbility: OptionalFeatureAdditionalSpellsSpellcastingAbility
+resource: String
+}
+
+type OptionalFeatureAdditionalSpellsSpellcastingAbility {
+items: [String]
+}
+
+type OptionalFeatureAdditionalSpellsSpells {
+item: String
+_meta: OptionalFeatureAdditionalSpellsSpells_meta
+choose: OptionalFeatureAdditionalSpellsSpellsChoose
+}
+
+type OptionalFeatureAdditionalSpellsSpellsChoose {
+fromFilter: String
+count: Int
+}
+
+type OptionalFeatureAdditionalSpellsSpells_meta {
+longRest: Int
+ritual: Boolean
+resource: Int
+}
+
+type OptionalFeatureSkillProficiencies {
+items: [String]
+}
+
+type OptionalFeatureOptionalFeatureProgression {
+name: String
+featureType: [String]
+progression: OptionalFeatureOptionalFeatureProgressionProgression
+}
+
+type OptionalFeatureOptionalFeatureProgressionProgression {
+_: Int
 }

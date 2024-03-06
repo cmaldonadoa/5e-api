@@ -6,17 +6,11 @@ school: String
 time: [SpellTime]
 range: SpellRange
 components: SpellComponents
+duration: SpellDuration
 classes: [String]
 entries: [SpellEntries]
 higherLevel: [SpellHigherLevel]
-duration: SpellDuration
 ritual: Boolean
-}
-
-type SpellDuration {
-type: String
-concentration: Boolean
-duration: String
 }
 
 type SpellEntries {
@@ -55,20 +49,27 @@ type SpellEntriesRowsList {
 items: [SpellEntriesRows]
 }
 
+type SpellDuration {
+type: String
+duration: String
+concentration: Boolean
+}
+
 type SpellComponents {
 s: Boolean
 v: Boolean
 m: String
 }
 
-type SpellRange {
-type: String
-}
-
 type SpellTime {
 number: Int
 unit: String
 condition: String
+}
+
+type SpellRange {
+type: String
+distance: SpellRangeDistance
 }
 
 type SpellHigherLevel {
@@ -78,4 +79,9 @@ id: Int
 children: [Int]
 entry: String
 parentId: Int
+}
+
+type SpellRangeDistance {
+type: String
+distance: Int
 }
