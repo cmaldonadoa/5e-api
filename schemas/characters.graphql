@@ -1,0 +1,191 @@
+type CharacterAbilityScores {
+    str: Int!
+    dex: Int!
+    con: Int!
+    int: Int!
+    wis: Int!
+    cha: Int!
+}
+
+input CharacterAbilityScoresInput {
+    str: Int
+    dex: Int
+    con: Int
+    int: Int
+    wis: Int
+    cha: Int
+}
+
+type CharacterProficiencies {
+    armor: [String!]
+    weapon: [String!]
+    language: [String!]
+    tool: [String!]
+    savingThrow: [String!]
+}
+
+input CharacterProficienciesInput {
+    armor: [String]
+    weapon: [String]
+    language: [String]
+    tool: [String]
+    savingThrow: [String]
+}
+
+type CharacterClass {
+    name: String!
+    subclassName: String
+    level: Int!
+}
+
+type CharacterCoins {
+    cp: Int
+    sp: Int
+    ep: Int
+    gp: Int
+    pp: Int
+}
+
+input CharacterCoinsInput {
+    cp: Int
+    sp: Int
+    ep: Int
+    gp: Int
+    pp: Int
+}
+
+type CharacterEntries {
+    type: String
+    style: String
+    items: [CharacterEntriesItems]
+    id: Int
+    name: String
+    data: CharacterEntriesData
+    children: [Int]
+    entry: String
+    parentId: Int
+    colLabels: [String]
+    colStyles: [String]
+    rows: [CharacterEntriesRowsList]
+    caption: String
+    attributes: [String]
+    classFeature: String
+    count: Int
+    optionalFeature: String
+    source: String
+    page: Int
+    subclassFeature: String
+    footnotes: [String]
+    tag: String
+    by: String
+}
+
+input CharacterEntriesInput {
+    type: String
+    style: String
+    items: [CharacterEntriesItemsInput]
+    id: Int
+    name: String
+    data: CharacterEntriesDataInput
+    children: [Int]
+    entry: String
+    parentId: Int
+    colLabels: [String]
+    colStyles: [String]
+    rows: [CharacterEntriesRowsListInput]
+    caption: String
+    attributes: [String]
+    classFeature: String
+    count: Int
+    optionalFeature: String
+    source: String
+    page: Int
+    subclassFeature: String
+    footnotes: [String]
+    tag: String
+    by: String
+}
+
+type CharacterEntriesItems {
+    type: String
+    name: String
+    entry: String
+    subclassFeature: String
+    entries: [CharacterEntriesItemsEntries]
+}
+
+input CharacterEntriesItemsInput {
+    type: String
+    name: String
+    entry: String
+    subclassFeature: String
+    entries: [CharacterEntriesItemsEntriesInput]
+}
+
+type CharacterEntriesItemsEntries {
+    type: String
+    entry: String
+}
+
+input CharacterEntriesItemsEntriesInput {
+    type: String
+    entry: String
+}
+
+type CharacterEntriesData {
+    isFeature: Boolean
+    tableInclude: Boolean
+    isRequiredOption: Boolean
+}
+
+input CharacterEntriesDataInput {
+    isFeature: Boolean
+    tableInclude: Boolean
+    isRequiredOption: Boolean
+}
+
+type CharacterEntriesRowsList {
+    items: [CharacterEntriesRows]
+}
+
+input CharacterEntriesRowsListInput {
+    items: [CharacterEntriesRowsInput]
+}
+
+type CharacterEntriesRows {
+    _0: String
+    _1: String
+    _2: String
+    _3: String
+    _4: String
+    _5: String
+}
+
+input CharacterEntriesRowsInput {
+    _0: String
+    _1: String
+    _2: String
+    _3: String
+    _4: String
+    _5: String
+}
+
+type Character {
+    owner: String!
+    name: String!
+    ability: CharacterAbilityScores
+    raceName: String
+    raceSource: String
+    subraceName: String
+    subraceSource: String
+    classes: [CharacterClass]
+    backgroundName: String
+    spells: [Spell]
+    proficiencies: CharacterProficiencies
+    hitPointMaximum: Int
+    hitPointCurrent: Int
+    items: [Item]
+    baseItems: [BaseItem]
+    coins: CharacterCoins
+    entries: [CharacterEntries]
+}
