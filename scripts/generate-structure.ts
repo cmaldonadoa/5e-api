@@ -14,7 +14,7 @@ fs.writeFileSync(
 
 fs.mkdirSync(root + "/storage/characters/", { recursive: true });
 fs.writeFileSync(
-  root + "/storage/authorization/characters.json",
+  root + "/storage/characters/characters.json",
   JSON.stringify({
     character: [],
   }),
