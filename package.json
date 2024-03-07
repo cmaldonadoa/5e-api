@@ -4,8 +4,9 @@
     "trailingComma": "es5"
   },
   "scripts": {
-    "compile": "npm run generate-types && tsc",
+    "compile": "npm run generate-structure && npm run generate-types && tsc",
     "start": "npm run compile && node --experimental-specifier-resolution=node ./dist/index.js",
+    "generate-structure": "npx ts-node --esm ./scripts/generate-structure.ts",
     "generate-schema": "npx ts-node --esm ./scripts/json2graphql.ts",
     "generate-schemas": "npx ts-node --esm ./scripts/generate-schemas.ts",
     "generate-data": "npx ts-node --esm ./scripts/generate-data.ts",
