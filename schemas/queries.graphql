@@ -37,4 +37,5 @@ type Query {
     spell(name: String!): Spell
     vehicles: [Vehicle]
     vehicle(name: String!): Vehicle
+    getCharacterNames: [String]
 }
