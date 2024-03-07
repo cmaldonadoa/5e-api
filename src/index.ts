@@ -9,11 +9,6 @@ import { resolvers as dataResolvers } from "./resolvers/data";
 import { resolvers as authResolvers } from "./resolvers/authentication";
 import jwt from "jsonwebtoken";
 
-export type ResolverContext = {
-  username?: string;
-  token?: string;
-};
-
 const root = rootDir.get();
 
 const loadedTypeDefs = await loadSchema(root + "/schemas/*.graphql", {
