@@ -13,3 +13,4 @@ src/__generated__
 
 # Local storage
 storage/authentication
+storage/characters
