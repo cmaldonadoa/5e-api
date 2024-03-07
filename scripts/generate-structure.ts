@@ -3,9 +3,9 @@ import rootDir from "app-root-dir";
 
 const root = rootDir.get();
 
-fs.mkdirSync(root + "/storage/authorization/", { recursive: true });
+fs.mkdirSync(root + "/storage/authentication/", { recursive: true });
 fs.writeFileSync(
-  root + "/storage/authorization/users.json",
+  root + "/storage/authentication/users.json",
   JSON.stringify({
     user: [],
   }),
