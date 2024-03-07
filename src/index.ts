@@ -9,6 +9,11 @@ import { resolvers as dataResolvers } from "./resolvers/data";
 import { resolvers as authResolvers } from "./resolvers/authentication";
 import jwt from "jsonwebtoken";
 
+export type ResolverContext = {
+  username?: string;
+  token?: string;
+};
+
 const root = rootDir.get();
 
 const loadedTypeDefs = await loadSchema(root + "/schemas/*.graphql", {
@@ -29,14 +34,14 @@ const { url } = await startStandaloneServer(server, {
     const token = req.headers.authorization;
     if (!token) return {};
 
-    let user: string | jwt.JwtPayload;
+    let username: string | jwt.JwtPayload;
     try {
-      user = jwt.verify(token, process.env.JWT_KEY);
+      username = jwt.verify(token, process.env.JWT_KEY);
     } catch (e) {
       console.log(e);
     }
 
-    return { user, token };
+    return { username, token };
   },
 });
 
