@@ -18,7 +18,7 @@ export const resolvers: Resolvers = {
       if (users.length)
         throw new GraphQLError("User is already taken", {
           extensions: {
-            code: ApolloServerErrorCode.BAD_USER_INPUT,
+            code: ApolloServerErrorCode.BAD_REQUEST,
             http: { status: 403 },
           },
         });
@@ -47,12 +47,12 @@ export const resolvers: Resolvers = {
       if (!isValid)
         throw new GraphQLError("Incorrect password", {
           extensions: {
-            code: ApolloServerErrorCode.BAD_USER_INPUT,
+            code: ApolloServerErrorCode.BAD_REQUEST,
             http: { status: 403 },
           },
         });
 
-      return jwt.sign({ username }, process.env.JWT_KEY);
+      return jwt.sign(username, process.env.JWT_KEY);
     },
   },
 };
