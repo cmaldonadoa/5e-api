@@ -2,7 +2,7 @@ import rootDir from "app-root-dir";
 import fs from "fs";
 import { GraphQLError } from "graphql/error";
 import { ApolloServerErrorCode } from "@apollo/server/errors";
-import { ResolverContext } from "../index";
+import { ResolverContext } from "../context";
 
 const root = rootDir.get();
 
@@ -23,22 +23,14 @@ export const getQueries = <V>(
     return queries;
   }, {});
 
-export const authorize = async <T>(args: T, context: ResolverContext) => {
-  return new Promise<{ args: T; context: ResolverContext }>(
-    (resolve, reject) => {
-      if (!context.token)
-        reject(
-          new GraphQLError("User is not authorized", {
-            extensions: {
-              code: ApolloServerErrorCode.BAD_REQUEST,
-              http: { status: 403 },
-            },
-          })
-        );
-
-      resolve({ args, context });
-    }
-  );
+export const authorize = (context: ResolverContext) => {
+  if (!context.token)
+    throw new GraphQLError("User is not authorized", {
+      extensions: {
+        code: ApolloServerErrorCode.BAD_REQUEST,
+        http: { status: 403 },
+      },
+    });
 };
 
 export class JSONMutator<T> {
