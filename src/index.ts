@@ -5,9 +5,9 @@ import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
 import { loadSchema } from "@graphql-tools/load";
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import rootDir from "app-root-dir";
-import { resolvers as dataResolvers } from "./resolvers/data";
-import { resolvers as authResolvers } from "./resolvers/authentication";
-import { resolvers as charResolvers } from "./resolvers/character";
+import dataResolvers from "./resolvers/data";
+import authResolvers from "./resolvers/authentication";
+import charResolvers from "./resolvers/character";
 import jwt from "jsonwebtoken";
 import { Resolvers } from "./__generated__/graphql";
 
@@ -20,11 +20,8 @@ const typeDefs = mergeTypeDefs(loadedTypeDefs);
 const resolvers: Resolvers = {
   Query: {
     ...dataResolvers.Query,
-    ...authResolvers.Query,
-    ...charResolvers.Query,
   },
   Mutation: {
-    ...dataResolvers.Mutation,
     ...authResolvers.Mutation,
     ...charResolvers.Mutation,
   },
