@@ -11,9 +11,9 @@ type Users = {
 
 const json = new JSONMutator<Users>("/storage/authentication/users.json");
 
-export const resolvers: Resolvers = {
+export default {
   Mutation: {
-    register: async (parent, { username, password }) => {
+    register: async (_parent, { username, password }) => {
       const users = json.get("user", (e: User) => e.username === username);
       if (users.length)
         throw new GraphQLError("User is already taken", {
@@ -31,7 +31,7 @@ export const resolvers: Resolvers = {
       json.save();
       return true;
     },
-    login: async (parent, { username, password }) => {
+    login: async (_parent, { username, password }) => {
       const users = json.get("user", (e: User) => e.username === username);
       if (!users.length)
         throw new GraphQLError("Username does not exist", {
@@ -55,4 +55,4 @@ export const resolvers: Resolvers = {
       return jwt.sign(username, process.env.JWT_KEY);
     },
   },
-};
+} satisfies Resolvers;
