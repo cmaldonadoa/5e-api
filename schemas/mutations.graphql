@@ -1,47 +1,47 @@
 type Mutation {
-  register(username: String!, password: String!): Boolean
-  login(username: String!, password: String!): String!
-  createCharacter(name: String!): Character
-  setCharacterName(characterName: String!, name: String!): Character
-  setCharacterRace(
-    characterName: String!
-    name: String!
-    source: String!
-  ): Character
-  setCharacterSubrace(
-    characterName: String!
-    name: String!
-    source: String!
-  ): Character
-  addCharacterClass(characterName: String!, name: String!): Character
-  setCharacterSubclass(
-    characterName: String!
-    className: String!
-    name: String!
-  ): Character
-  setCharacterBackground(characterName: String!, name: String): Character
-  setAbilityScores(
-    characterName: String!
-    abilities: CharacterAbilityScoresInput
-  ): Character
-  setProficiencies(
-    characterName: String!
-    proficiencies: CharacterProficienciesInput
-  ): Character
-  setHitPointMaximum(characterName: String!, hitPoint: Int!): Character
-  setHitPointCurrent(characterName: String!, hitPoint: Int!): Character
-  addItem(characterName: String!, name: String!, quantity: Int): Character
-  removeItem(characterName: String!, name: String!, quantity: Int): Character
-  setCoins(characterName: String!, coins: CharacterCoinsInput!): Character
-  addFeature(
-    characterName: String!
-    entries: [CharacterEntriesInput!]!
-  ): Character
-  updateFeature(
-    characterName: String!
-    index: Int!
-    entries: [CharacterEntriesInput!]!
-  ): Character
-  removeFeature(characterName: String!, index: Int!): Character
-  levelUp(characterName: String!, className: String!): Character
+    register(username: String!, password: String!): Boolean
+    login(username: String!, password: String!): String!
+    createCharacter(name: String!): Character
+    setCharacterName(characterName: String!, name: String!): Character
+    setCharacterRace(
+        characterName: String!
+        name: String!
+        source: String!
+    ): Character
+    setCharacterSubrace(
+        characterName: String!
+        name: String!
+        source: String!
+    ): Character
+    addCharacterClass(characterName: String!, name: String!): Character
+    setCharacterSubclass(
+        characterName: String!
+        className: String!
+        name: String!
+    ): Character
+    setCharacterBackground(characterName: String!, name: String): Character
+    setAbilityScores(
+        characterName: String!
+        abilityScores: CharacterAbilityScoresInput
+    ): Character
+    setProficiencies(
+        characterName: String!
+        proficiencies: CharacterProficienciesInput
+    ): Character
+    setHitPointMaximum(characterName: String!, hitPoint: Int!): Character
+    setHitPointCurrent(characterName: String!, hitPoint: Int!): Character
+    addItem(characterName: String!, name: String!, quantity: Int): Character
+    removeItem(characterName: String!, name: String!, quantity: Int): Character
+    setCoins(characterName: String!, coins: CharacterCoinsInput!): Character
+    addFeature(
+        characterName: String!
+        entries: [CharacterEntriesInput!]!
+    ): Character
+    updateFeature(
+        characterName: String!
+        index: Int!
+        entries: [CharacterEntriesInput!]!
+    ): Character
+    removeFeature(characterName: String!, index: Int!): Character
+    levelUp(characterName: String!, className: String!): Character
 }
