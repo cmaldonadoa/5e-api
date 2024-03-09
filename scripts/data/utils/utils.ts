@@ -267,7 +267,7 @@ export const utils = {
 
       let spellItems: SpellItem[];
 
-      if ("_" in spell) spell = spell._ as SpellDataValue;
+      if (spell.hasOwnProperty("_")) spell = spell["_"] as SpellDataValue;
 
       if (Array.isArray(spell))
         spellItems = spell.map((o) => ({
@@ -279,7 +279,7 @@ export const utils = {
             },
           }),
         }));
-      else if ("will" in spell)
+      else if (spell.hasOwnProperty("will"))
         spellItems = (spell as SpellDataValueWill).will.map((o) => ({
           ...(typeof o === "string" && { item: utils.clearName(o) }),
           ...(typeof o !== "string" && utils.formatObject(o)),
@@ -288,7 +288,7 @@ export const utils = {
             will: true,
           },
         }));
-      else if ("ritual" in spell)
+      else if (spell.hasOwnProperty("ritual"))
         spellItems = (spell as SpellDataValueRitual).ritual.map((o) => ({
           ...(typeof o === "string" && { item: utils.clearName(o) }),
           ...(typeof o !== "string" && utils.formatObject(o)),
@@ -297,7 +297,7 @@ export const utils = {
             ritual: true,
           },
         }));
-      else if ("daily" in spell)
+      else if (spell.hasOwnProperty("daily"))
         spellItems = Object.entries(
           (spell as SpellDataValueDaily).daily
         ).reduce((accumulator, [, v]) => {
@@ -311,7 +311,7 @@ export const utils = {
           }));
           return [...accumulator, ...newSpells];
         }, []);
-      else if ("rest" in spell)
+      else if (spell.hasOwnProperty("rest"))
         spellItems = Object.entries((spell as SpellDataValueRest).rest).reduce(
           (accumulator, [, v]) => {
             const newSpells = v.map((o) => ({
@@ -326,7 +326,7 @@ export const utils = {
           },
           []
         );
-      else if ("resource" in spell)
+      else if (spell.hasOwnProperty("resource"))
         spellItems = Object.entries(
           (spell as SpellDataValueResource).resource
         ).reduce((accumulator, [k, v]) => {
@@ -361,7 +361,7 @@ export const utils = {
 
     const hasItems = items.length > 0;
 
-    if ("choose" in object) {
+    if (object.hasOwnProperty("choose")) {
       if (typeof object.choose === "string")
         return {
           ...(hasItems && { items }),
@@ -370,7 +370,7 @@ export const utils = {
             count: object.count || 1,
           },
         };
-      else if ("from" in object.choose)
+      else if (object.choose.hasOwnProperty("from"))
         return {
           ...(hasItems && { items }),
           choose: {
@@ -405,7 +405,7 @@ export const utils = {
   },
 
   getVersions: (original: Versioned): BaseData[] => {
-    if (!("_versions" in original)) return [];
+    if (!original.hasOwnProperty("_versions")) return [];
 
     let versions = original._versions;
     delete original._versions;

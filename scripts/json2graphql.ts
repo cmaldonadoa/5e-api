@@ -4,7 +4,7 @@ import path from "path";
 
 const argv: ParsedArgs = minimist(process.argv.slice(2), { "--": true });
 
-if (!("_" in argv) || argv._.length !== 2)
+if (!argv.hasOwnProperty("_") || argv._.length !== 2)
   throw new Error(
     "command usage: json2graphql.js INPUT_FOLDER OUTPUT_FOLDER (-- EXCLUDED_FILES)"
   );
@@ -45,12 +45,12 @@ const toPascalCase = (string: string) =>
     .trim();
 
 class Parser {
-  private readonly object: any;
   public basename: string;
   public type: string;
   public typeName: string;
-  private typeData: any;
   public isParsed: boolean;
+  private readonly object: any;
+  private typeData: any;
   private silent: boolean;
 
   constructor(object: any, basename: string) {
@@ -59,6 +59,12 @@ class Parser {
     this.isParsed = false;
     this.typeData = {};
     this.setName();
+  }
+
+  public static fixInconsistencies(types: string[]) {
+    if (types.every((type) => ["Int", "Float"].includes(type))) return "Float";
+    if (types.every((type) => ["[Int]", "[Float]"].includes(type)))
+      return "[Float]";
   }
 
   public parse() {
@@ -84,17 +90,11 @@ class Parser {
     return Array.isArray(this.object);
   }
 
-  public static fixInconsistencies(types: string[]) {
-    if (types.every((type) => ["Int", "Float"].includes(type))) return "Float";
-    if (types.every((type) => ["[Int]", "[Float]"].includes(type)))
-      return "[Float]";
-  }
-
   private addType() {
-    if (this.typeName in types) {
+    if (types.hasOwnProperty(this.typeName)) {
       const oldType = types[this.typeName];
       Object.entries(this.typeData).forEach(([key, value]) => {
-        if (key in oldType) {
+        if (oldType.hasOwnProperty(key)) {
           if (value !== oldType[key]) {
             if (Array.isArray(oldType[key]))
               oldType[key] = [...oldType[key], value];
@@ -314,7 +314,7 @@ class Parser {
           if (!parser.isParsed) return accumulator;
 
           Object.entries(parser.typeData).forEach(([key, value]) => {
-            if (key in accumulator) {
+            if (accumulator.hasOwnProperty(key)) {
               if (accumulator[key] !== value) {
                 if (Array.isArray(accumulator[key]))
                   accumulator[key] = [...accumulator[key], value];

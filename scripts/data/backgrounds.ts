@@ -28,7 +28,7 @@ handleFiles(
                 if (typeof item === "string")
                   return { item: utils.clearName(item) };
 
-                if ("containsValue" in item) {
+                if (item.hasOwnProperty("containsValue")) {
                   startingGold = item["containsValue"] / 100;
                   delete item["containsValue"];
                   return {
@@ -37,7 +37,7 @@ handleFiles(
                   };
                 }
 
-                if ("value" in item) {
+                if (item.hasOwnProperty("value")) {
                   startingGold = item["value"];
                   return;
                 }

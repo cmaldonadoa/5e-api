@@ -58,13 +58,13 @@ export const handleFiles = (handlers: any, options: Options) => {
 
   const add = (key: string, parent?: string) => {
     if (parent) {
-      if (!(parent in keys)) keys[parent] = {};
-      if (key in keys[parent]) keys[parent][key] += 1;
+      if (!keys.hasOwnProperty(parent)) keys[parent] = {};
+      if (keys[parent].hasOwnProperty(key)) keys[parent][key] += 1;
       else keys[parent][key] = 1;
       return true;
     }
 
-    if (key in keys) keys[key] += 1;
+    if (keys.hasOwnProperty(key)) keys[key] += 1;
     else keys[key] = 1;
     return true;
   };
