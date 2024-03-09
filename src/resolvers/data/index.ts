@@ -1,16 +1,15 @@
-import { resolvers as backgroundsResolvers } from "./backgrounds.js";
-import { resolvers as booksResolvers } from "./books.js";
-import { resolvers as classesResolvers } from "./classes.js";
-import { resolvers as featsResolvers } from "./feats.js";
-import { resolvers as itemsResolvers } from "./items.js";
-import { resolvers as languagesResolvers } from "./languages.js";
-import { resolvers as racesResolvers } from "./races.js";
-import { resolvers as spellsResolvers } from "./spells.js";
-import { resolvers as vehiclesResolvers } from "./vehicles.js";
-
+import backgroundsResolvers from "./backgrounds.js";
+import booksResolvers from "./books.js";
+import classesResolvers from "./classes.js";
+import featsResolvers from "./feats.js";
+import itemsResolvers from "./items.js";
+import languagesResolvers from "./languages.js";
+import racesResolvers from "./races.js";
+import spellsResolvers from "./spells.js";
+import vehiclesResolvers from "./vehicles.js";
 import { Resolvers } from "../../__generated__/graphql";
 
-export const resolvers: Resolvers = {
+export default {
   Query: {
     ...backgroundsResolvers.Query,
     ...booksResolvers.Query,
@@ -22,4 +21,4 @@ export const resolvers: Resolvers = {
     ...spellsResolvers.Query,
     ...vehiclesResolvers.Query,
   },
-};
+} satisfies Resolvers;

@@ -10,9 +10,13 @@ const data = {
   feats: files.flatMap((e) => e.feat),
 };
 
-export const resolvers: Resolvers = {
+export const queries = {
+  feat: (name: string) => data.feats.find((e) => e.name === name),
+};
+
+export default {
   Query: {
     ...getQueries(data),
-    feat: (parent, { name }) => data.feats.find((e) => e.name === name),
+    feat: (_parent, { name }) => queries.feat(name),
   },
-};
+} satisfies Resolvers;

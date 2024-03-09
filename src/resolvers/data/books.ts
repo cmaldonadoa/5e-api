@@ -10,9 +10,13 @@ const data = {
   books: files.flatMap((e) => e.book),
 };
 
-export const resolvers: Resolvers = {
+export const queries = {
+  book: (id: string) => data.books.find((e) => e.id === id),
+};
+
+export default {
   Query: {
     ...getQueries(data),
-    book: (parent, { id }) => data.books.find((e) => e.id === id),
+    book: (_parent, { id }) => queries.book(id),
   },
-};
+} satisfies Resolvers;

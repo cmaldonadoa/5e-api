@@ -10,9 +10,13 @@ const data = {
   languages: files.flatMap((e) => e.language),
 };
 
-export const resolvers: Resolvers = {
+export const queries = {
+  language: (name: string) => data.languages.find((e) => e.name === name),
+};
+
+export default {
   Query: {
     ...getQueries(data),
-    language: (parent, { name }) => data.languages.find((e) => e.name === name),
+    language: (_parent, { name }) => queries.language(name),
   },
-};
+} satisfies Resolvers;

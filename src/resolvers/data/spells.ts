@@ -10,9 +10,13 @@ const data = {
   spells: files.flatMap((e) => e.spell),
 };
 
-export const resolvers: Resolvers = {
+export const queries = {
+  spell: (name: string) => data.spells.find((e) => e.name === name),
+};
+
+export default {
   Query: {
     ...getQueries(data),
-    spell: (parent, { name }) => data.spells.find((e) => e.name === name),
+    spell: (_parent, { name }) => queries.spell(name),
   },
-};
+} satisfies Resolvers;

@@ -21,13 +21,20 @@ const data = {
   itemTypes: files.flatMap((e) => e.itemType),
 };
 
-export const resolvers: Resolvers = {
+export const queries = {
+  item: (name: string) => data.items.find((e) => e.name === name),
+  baseItem: (name: string) => data.baseItems.find((e) => e.name === name),
+  itemProperty: (name: string) =>
+    data.itemProperties.find((e) => e.name === name),
+  itemType: (name: string) => data.itemTypes.find((e) => e.name === name),
+};
+
+export default {
   Query: {
     ...getQueries(data),
-    item: (parent, { name }) => data.items.find((e) => e.name === name),
-    baseItem: (parent, { name }) => data.baseItems.find((e) => e.name === name),
-    itemProperty: (parent, { name }) =>
-      data.itemProperties.find((e) => e.name === name),
-    itemType: (parent, { name }) => data.itemTypes.find((e) => e.name === name),
+    item: (_parent, { name }) => queries.item(name),
+    baseItem: (_parent, { name }) => queries.baseItem(name),
+    itemProperty: (_parent, { name }) => queries.itemProperty(name),
+    itemType: (_parent, { name }) => queries.itemType(name),
   },
-};
+} satisfies Resolvers;

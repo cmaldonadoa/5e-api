@@ -10,10 +10,13 @@ const data = {
   backgrounds: files.flatMap((e) => e.background),
 };
 
-export const resolvers: Resolvers = {
+export const queries = {
+  background: (name: string) => data.backgrounds.find((e) => e.name === name),
+};
+
+export default {
   Query: {
     ...getQueries(data),
-    background: (parent, { name }) =>
-      data.backgrounds.find((e) => e.name === name),
+    background: (_parent, { name }) => queries.background(name),
   },
-};
+} satisfies Resolvers;

@@ -12,10 +12,15 @@ const data = {
   cards: files.flatMap((e) => e.card),
 };
 
-export const resolvers: Resolvers = {
+const queries = {
+  deck: (name: string) => data.decks.find((e) => e.name === name),
+  card: (name: string) => data.cards.find((e) => e.name === name),
+};
+
+export default {
   Query: {
     ...getQueries(data),
-    deck: (parent, { name }) => data.decks.find((e) => e.name === name),
-    card: (parent, { name }) => data.cards.find((e) => e.name === name),
+    deck: (_parent, { name }) => queries.deck(name),
+    card: (_parent, { name }) => queries.card(name),
   },
-};
+} satisfies Resolvers;

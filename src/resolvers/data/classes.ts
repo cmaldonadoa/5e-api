@@ -25,17 +25,24 @@ const data = {
   optionalFeatures: files.flatMap((e) => e.optionalFeature),
 };
 
-export const resolvers: Resolvers = {
+export const queries = {
+  class: (name: string) => data.classes.find((e) => e.name === name),
+  subclass: (name: string) => data.subclasses.find((e) => e.name === name),
+  classFeature: (name: string) =>
+    data.classFeatures.find((e) => e.name === name),
+  subclassFeature: (name: string) =>
+    data.subclassFeatures.find((e) => e.name === name),
+  optionalFeature: (name: string) =>
+    data.optionalFeatures.find((e) => e.name === name),
+};
+
+export default {
   Query: {
     ...getQueries(data),
-    class: (parent, { name }) => data.classes.find((e) => e.name === name),
-    subclass: (parent, { name }) =>
-      data.subclasses.find((e) => e.name === name),
-    classFeature: (parent, { name }) =>
-      data.classFeatures.find((e) => e.name === name),
-    subclassFeature: (parent, { name }) =>
-      data.subclassFeatures.find((e) => e.name === name),
-    optionalFeature: (parent, { name }) =>
-      data.optionalFeatures.find((e) => e.name === name),
+    class: (_parent, { name }) => queries.class(name),
+    subclass: (_parent, { name }) => queries.subclass(name),
+    classFeature: (_parent, { name }) => queries.classFeature(name),
+    subclassFeature: (_parent, { name }) => queries.subclassFeature(name),
+    optionalFeature: (_parent, { name }) => queries.optionalFeature(name),
   },
-};
+} satisfies Resolvers;

@@ -12,12 +12,17 @@ const data = {
   subraces: files.flatMap((e) => e.subrace),
 };
 
-export const resolvers: Resolvers = {
+export const queries = {
+  race: (name: string, source: string) =>
+    data.races.find((e) => e.name === name && e.source === source),
+  subrace: (name: string, source: string) =>
+    data.subraces.find((e) => e.name === name && e.source === source),
+};
+
+export default {
   Query: {
     ...getQueries(data),
-    race: (parent, { name, source }) =>
-      data.races.find((e) => e.name === name && e.source === source),
-    subrace: (parent, { name, source }) =>
-      data.subraces.find((e) => e.name === name && e.source === source),
+    race: (_parent, { name, source }) => queries.race(name, source),
+    subrace: (_parent, { name, source }) => queries.subrace(name, source),
   },
-};
+} satisfies Resolvers;

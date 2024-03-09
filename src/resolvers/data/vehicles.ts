@@ -10,9 +10,13 @@ const data = {
   vehicles: files.flatMap((e) => e.vehicle),
 };
 
-export const resolvers: Resolvers = {
+const queries = {
+  vehicle: (name: string) => data.vehicles.find((e) => e.name === name),
+};
+
+export default {
   Query: {
     ...getQueries(data),
-    vehicle: (parent, { name }) => data.vehicles.find((e) => e.name === name),
+    vehicle: (_parent, { name }) => queries.vehicle(name),
   },
-};
+} satisfies Resolvers;
