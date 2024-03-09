@@ -5,13 +5,18 @@ type Mutation {
     setCharacterName(characterName: String!, name: String!): Character
     setCharacterRace(
         characterName: String!
-        name: String!
-        source: String!
-    ): Character
-    setCharacterSubrace(
-        characterName: String!
-        name: String!
-        source: String!
+        raceName: String!
+        raceSource: String!
+        subraceName: String!
+        subraceSource: String!
+        raceProficiencies: CharacterProficienciesInput
+        raceAbilityScores: CharacterAbilityScoresInput
+        raceSpellcastingAbility: String
+        raceSpells: [CharacterSpellInput]
+        subraceProficiencies: CharacterProficienciesInput
+        subraceAbilityScores: CharacterAbilityScoresInput
+        subraceSpellcastingAbility: String
+        subraceSpells: [CharacterSpellInput]
     ): Character
     addCharacterClass(characterName: String!, name: String!): Character
     setCharacterSubclass(
@@ -24,7 +29,15 @@ type Mutation {
         characterName: String!
         abilityScores: CharacterAbilityScoresInput
     ): Character
+    addAbilityScores(
+        characterName: String!
+        abilityScores: CharacterAbilityScoresInput
+    ): Character
     setProficiencies(
+        characterName: String!
+        proficiencies: CharacterProficienciesInput
+    ): Character
+    addProficiencies(
         characterName: String!
         proficiencies: CharacterProficienciesInput
     ): Character
@@ -33,6 +46,8 @@ type Mutation {
     addItem(characterName: String!, name: String!, quantity: Int): Character
     removeItem(characterName: String!, name: String!, quantity: Int): Character
     setCoins(characterName: String!, coins: CharacterCoinsInput!): Character
+    addCoins(characterName: String!, coins: CharacterCoinsInput!): Character
+    removeCoins(characterName: String!, coins: CharacterCoinsInput!): Character
     addFeature(
         characterName: String!
         entries: [CharacterEntriesInput!]!

@@ -1,3 +1,56 @@
+type Character {
+    owner: String!
+    name: String!
+    abilityScores: CharacterAbilityScores
+    raceName: String
+    raceSource: String
+    subraceName: String
+    subraceSource: String
+    classes: [CharacterClass]
+    backgroundName: String
+    spells: [CharacterSpell]
+    proficiencies: CharacterProficiencies
+    hitPointMaximum: Int
+    hitPointCurrent: Int
+    items: [Item]
+    baseItems: [BaseItem]
+    coins: CharacterCoins
+    features: [CharacterFeature]
+    initiative: Int
+    speed: CharacterSpeed
+    armorClass: Int
+    proficiencyBonus: Int
+}
+
+type CharacterSpell {
+    spell: CharacterDataValue,
+    spellcastingAbility: String
+    _meta: CharacterSpellMeta
+}
+
+input CharacterSpellInput {
+    spell: String
+    _meta: CharacterSpellMetaInput
+}
+
+type CharacterSpellMeta {
+    level: Int
+    longRest: Int
+    shortRest: Int
+}
+
+input CharacterSpellMetaInput {
+    level: Int
+    longRest: Int
+    shortRest: Int
+}
+
+type CharacterDataValue {
+    item: String
+    sourceType: CharacterDataSource
+    sourceText: String
+}
+
 type CharacterAbilityScores {
     str: Int!
     dex: Int!
@@ -17,12 +70,12 @@ input CharacterAbilityScoresInput {
 }
 
 type CharacterProficiencies {
-    armor: [String]
-    weapon: [String]
-    language: [String]
-    tool: [String]
-    savingThrow: [String]
-    ability: [String]
+    armor: [CharacterDataValue]
+    weapon: [CharacterDataValue]
+    language: [CharacterDataValue]
+    tool: [CharacterDataValue]
+    savingThrow: [CharacterDataValue]
+    skill: [CharacterDataValue]
 }
 
 input CharacterProficienciesInput {
@@ -31,7 +84,7 @@ input CharacterProficienciesInput {
     language: [String]
     tool: [String]
     savingThrow: [String]
-    ability: [String]
+    skill: [String]
 }
 
 type CharacterClass {
@@ -58,16 +111,22 @@ input CharacterCoinsInput {
 
 type CharacterFeature {
     entries: [CharacterEntries]
-    sourceType: CharacterFeatureSource
+    sourceType: CharacterDataSource
     sourceText: String
 }
 
-enum CharacterFeatureSource {
-    BACKGROUND,
-    RACE,
-    CLASS,
-    FEAT,
-    ITEM,
+input CharacterFeatureInput {
+    entries: [CharacterEntriesInput]
+    sourceType: CharacterDataSource
+    sourceText: String
+}
+
+enum CharacterDataSource {
+    BACKGROUND
+    RACE
+    CLASS
+    FEAT
+    ITEM
     OTHER
 }
 
@@ -187,22 +246,16 @@ input CharacterEntriesRowsInput {
     _5: String
 }
 
-type Character {
-    owner: String!
-    name: String!
-    abilityScores: CharacterAbilityScores
-    raceName: String
-    raceSource: String
-    subraceName: String
-    subraceSource: String
-    classes: [CharacterClass]
-    backgroundName: String
-    spells: [Spell]
-    proficiencies: CharacterProficiencies
-    hitPointMaximum: Int
-    hitPointCurrent: Int
-    items: [Item]
-    baseItems: [BaseItem]
-    coins: CharacterCoins
-    features: [CharacterFeature]
+type CharacterSpeed {
+    walk: Int
+    fly: Int
+    climb: Int
+    swim: Int
+}
+
+input CharacterSpeed {
+    walk: Int
+    fly: Int
+    climb: Int
+    swim: Int
 }
