@@ -134,7 +134,7 @@ export const handleFiles = (handlers: any, options: Options) => {
     const newData = Object.keys(handlers).reduce((accumulator, key) => {
       accumulator[key] = utils.asArray(oldData[key]).map((element: any) => {
         const handle = (x: any) => {
-          const copy = utils.getCopy(oldData[key], x._copy);
+          const copy = utils.getCopy(oldData[key], x);
 
           if (
             options.enableInternalTests?.enabled &&

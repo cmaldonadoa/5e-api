@@ -114,7 +114,11 @@ const modifyEntries = (base: BaseData, modifierEntries: ModifierEntry[]) => {
           : entry.replace.index
       ] = entry.items;
     else if (entry.mode === "insertArr")
-      (base.entries as Entry[]).splice(entry.index, 0, entry.items);
+      (base.entries as Entry[]).splice(
+        entry.index >= 0 ? entry.index : 0,
+        0,
+        entry.items
+      );
   });
   return base;
 };
@@ -235,24 +239,24 @@ export const utils = {
     return split(0, entries);
   },
 
-  getCopy: (data: Copyable[], copy?: Copy) => {
-    if (!copy) return;
+  getCopy: (data: Copyable[], element?: Copyable) => {
+    const copy: Copy = element._copy;
+    if (!copy) return element;
 
-    let base = {
-      ...data.find((e) => e.name === copy.name && e.source === copy.source),
-    };
+    let base: Copyable = utils.getCopy(
+      data,
+      data.find((e) => e.name === copy.name && e.source === copy.source)
+    );
 
-    if (base._copy) base = utils.getCopy(data, base._copy);
-
-    delete base.name;
-    delete base.source;
-
-    if (copy._mod) {
+    if (copy.hasOwnProperty("_mod")) {
       const entries = utils.asArray(copy._mod.entries);
       base = modifyEntries(base, entries);
     }
 
-    return base;
+    const result: Copyable = { ...base, ...element };
+    delete result._copy;
+
+    return result as BaseData;
   },
 
   formatSpells: (keys: string[], spells?: SpellData) => {
