@@ -6,10 +6,11 @@
   "scripts": {
     "compile": "npm run generate-structure && npm run generate-types && tsc",
     "start": "npm run compile && node --experimental-specifier-resolution=node ./dist/index.js",
-    "generate-structure": "tsx ./scripts/generate-structure.ts",
-    "generate-schema": "tsx ./scripts/json2graphql.ts",
-    "generate-schemas": "tsx ./scripts/generate-schemas.ts",
-    "generate-data": "tsx ./scripts/generate-data.ts",
+    "exec-ts": "dotenv cross-var %TS_EXEC% --experimental-specifier-resolution=node",
+    "generate-structure": "npm run exec-ts ./scripts/generate-structure.ts",
+    "generate-schema": "npm run exec-ts ./scripts/json2graphql.ts",
+    "generate-schemas": "npm run exec-ts ./scripts/generate-schemas.ts",
+    "generate-data": "npm run exec-ts ./scripts/generate-data.ts",
     "generate-types": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
@@ -31,7 +32,10 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/minimist": "^1.2.5",
     "@types/node": "^20.11.19",
+    "cross-var": "^1.1.0",
+    "dotenv-cli": "^7.4.1",
     "prettier": "^3.2.5",
+    "ts-node": "^10.9.2",
     "tsx": "^4.7.1",
     "typescript": "^5.3.3"
   }
