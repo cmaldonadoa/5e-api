@@ -224,6 +224,7 @@ int: Int
 type ItemModifySpeedEqual {
 fly: String
 climb: String
+burrow: String
 }
 
 type ItemPackContents {

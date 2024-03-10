@@ -8,6 +8,7 @@ entries: [BackgroundEntries]
 feats: BackgroundFeats
 toolProficiencies: BackgroundToolProficiencies
 additionalSpells: [BackgroundAdditionalSpells]
+skillToolLanguageProficiencies: BackgroundSkillToolLanguageProficiencies
 }
 
 type BackgroundEntries {
@@ -131,4 +132,13 @@ s2: [String]
 s3: [String]
 s4: [String]
 s5: [String]
+}
+
+type BackgroundSkillToolLanguageProficiencies {
+choose: BackgroundSkillToolLanguageProficienciesChoose
+}
+
+type BackgroundSkillToolLanguageProficienciesChoose {
+from: [String]
+count: Int
 }
