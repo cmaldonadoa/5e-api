@@ -9,10 +9,10 @@ const folders = fs.readdirSync(path);
 
 for (const name of folders) {
   console.log("---", name);
-  const { stdout, stderr } = spawnSync("npm", [
-    "run",
-    "generate-schema",
-    "--",
+  const { stdout, stderr } = spawnSync("npx", [
+    process.env.TS_EXEC,
+    "--experimental-specifier-resolution=node",
+    root + "/scripts/json2graphql.ts",
     root + "/storage/data/modified/" + name,
     root + "/schemas/",
     "--",
