@@ -269,7 +269,7 @@ handleFiles(
     }),
     optionalFeature: (e: any) => ({
       name: e.name,
-      source: e.name,
+      source: e.source,
       featureType: e.featureType,
       prerequisite: utils.adapt(
         e.prerequisite && {
