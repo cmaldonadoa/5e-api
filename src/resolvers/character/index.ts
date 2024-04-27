@@ -1,157 +1,19 @@
 import {
   Character,
-  CharacterAbilityScoresInput,
+  CharacterAbilityScoreValueType,
   CharacterDataSource,
-  CharacterDataValue,
-  CharacterEntries,
-  CharacterFeature,
-  CharacterProficienciesInput,
-  CharacterSpellInput,
   Resolvers,
 } from "../../__generated__/graphql";
-import { authorize, JSONMutator } from "../utils";
+import { authorize } from "../utils";
 import { GraphQLError } from "graphql/error";
 import { ApolloServerErrorCode } from "@apollo/server/errors";
-import { ResolverContext } from "../../context";
 import { queries as raceQueries } from "../data/races";
+import { queries as backgroundQueries } from "../data/backgrounds";
+import { queries as featQueries } from "../data/feats";
+import { queries as classQueries } from "../data/classes";
+import utils, { deleteKeys, json } from "./utils";
 
-type Characters = {
-  character: Character;
-};
-
-const json = new JSONMutator<Characters>("/storage/characters/characters.json");
-
-const getCharacter = (owner: string, name: string) => {
-  const characters = json.get(
-    "character",
-    (e: Character) => e.owner === owner && e.name === name
-  );
-
-  if (!characters.length)
-    throw new GraphQLError("Character not found", {
-      extensions: {
-        code: ApolloServerErrorCode.BAD_REQUEST,
-        http: { status: 403 },
-      },
-    });
-
-  return characters[0];
-};
-
-const getFeatures = (
-  entries: any[],
-  sourceType: CharacterDataSource,
-  sourceText: string
-): CharacterFeature[] => {
-  const features = (entries as CharacterEntries[]).filter(
-    (entry) => !entry.hasOwnProperty("parentId")
-  );
-  return features.map((feature) => ({
-    entries: [
-      feature,
-      ...(entries as CharacterEntries[]).filter(
-        (entry) => entry.parentId === feature.id
-      ),
-    ],
-    sourceType: sourceType,
-    sourceText: sourceText,
-  }));
-};
-
-const addAbilityScores = (
-  character: Character,
-  abilityScores: CharacterAbilityScoresInput
-) =>
-  Object.keys(character.abilityScores).reduce((characterAbilityScores, key) => {
-    characterAbilityScores[key] += (abilityScores || {})[key] || 0;
-    return characterAbilityScores;
-  }, character.abilityScores);
-
-const addProficiencies = (
-  character: Character,
-  proficiencies: CharacterProficienciesInput,
-  handle: (e: string) => CharacterDataValue
-) =>
-  Object.keys(character.proficiencies).reduce((characterProficiencies, key) => {
-    characterProficiencies[key] = [
-      ...characterProficiencies[key],
-      ...((proficiencies || {})[key] || []).map(handle),
-    ];
-    return characterProficiencies;
-  }, character.proficiencies);
-
-const addSpells = (
-  character: Character,
-  spells: CharacterSpellInput[],
-  spellcastingAbility: string,
-  handle: (e: string) => CharacterDataValue
-) => [
-  ...character.spells,
-  ...spells.map((spell) => ({
-    spell: handle(spell.spell),
-    spellcastingAbility,
-    _meta: spell._meta,
-  })),
-];
-
-const toDataValue = (
-  value: string,
-  type: CharacterDataSource,
-  text?: string
-): CharacterDataValue => ({
-  item: value,
-  sourceType: type,
-  sourceText: text,
-});
-
-const deleteKeys = (object: any, ...keys: string[]) => {
-  keys.forEach((key) => delete object[key]);
-  return object;
-};
-
-const StringArrayAbilityScoreAdapter = (
-  abilities: string[]
-): CharacterAbilityScoresInput => {
-  const abilityScores = {
-    str: 0,
-    dex: 0,
-    con: 0,
-    int: 0,
-    wis: 0,
-    cha: 0,
-  };
-  abilities.forEach((key) => (abilityScores[key] += 1));
-  return abilityScores;
-};
-
-const ObjectProficienciesAdapter = (
-  object: any
-): CharacterProficienciesInput => {
-  return {
-    armor: object.armorProficiencies?.items || [],
-    weapon: object.weaponProficiencies?.items || [],
-    tool: object.toolProficiencies?.items || [],
-    language: object.languageProficiencies?.items || [],
-    savingThrow: object.savingThrowProficiencies?.items || [],
-    skill: object.skillProficiencies?.items || [],
-  };
-};
-
-const updateCharacter = (
-  context: ResolverContext,
-  characterName: string,
-  updater: (character: Character) => Character
-) => {
-  authorize(context);
-  let { item: character, index } = getCharacter(
-    context.username,
-    characterName
-  );
-  character = updater(character);
-  json.update("character", index, character);
-  json.save();
-  return character;
-};
+const { add, update, converters } = utils;
 
 export default {
   Mutation: {
@@ -173,17 +35,16 @@ export default {
         owner: context.username,
         name: args.name,
         abilityScores: {
-          str: 0,
-          dex: 0,
-          con: 0,
-          int: 0,
-          wis: 0,
-          cha: 0,
+          str: [],
+          dex: [],
+          con: [],
+          int: [],
+          wis: [],
+          cha: [],
         },
         classes: [],
         features: [],
         items: [],
-        baseItems: [],
         spells: [],
         proficiencies: {
           armor: [],
@@ -193,30 +54,52 @@ export default {
           savingThrow: [],
           skill: [],
         },
+        coins: {
+          gp: 0,
+          sp: 0,
+          cp: 0,
+          pp: 0,
+          ep: 0,
+        },
       };
       json.add("character", character);
       json.save();
       return character;
     },
     setCharacterName: (_parent, args, context) => {
-      return updateCharacter(context, args.characterName, (character) => {
+      return update.character(context, args.characterName, (character) => {
         character.name = args.name;
         return character;
       });
     },
     setCharacterRace: (_parent, args, context) => {
-      return updateCharacter(context, args.characterName, (character) => {
+      return update.character(context, args.characterName, (character) => {
         const race = raceQueries.race(args.raceName, args.raceSource);
         const subrace = raceQueries.subrace(
           args.subraceName,
           args.subraceSource
         );
 
-        const raceHandler = (e: string) =>
-          toDataValue(e, CharacterDataSource.Race, args.raceName);
-        const subraceHandler = (e: string) =>
-          toDataValue(
+        const raceHandlerDV = (e: string) =>
+          converters.DataValue(e, CharacterDataSource.Race, args.raceName);
+        const subraceHandlerDV = (e: string) =>
+          converters.DataValue(
             e,
+            CharacterDataSource.Race,
+            `${args.subraceName} ${args.raceName}`
+          );
+
+        const raceHandlerASV = (e: number) =>
+          converters.AbilityScoreValue(
+            e,
+            CharacterAbilityScoreValueType.Add,
+            CharacterDataSource.Race,
+            args.raceName
+          );
+        const subraceHandlerASV = (e: number) =>
+          converters.AbilityScoreValue(
+            e,
+            CharacterAbilityScoreValueType.Add,
             CharacterDataSource.Race,
             `${args.subraceName} ${args.raceName}`
           );
@@ -227,91 +110,272 @@ export default {
         character.subraceSource = args.subraceSource;
         character.features = [
           ...character.features,
-          ...getFeatures(
+          ...converters.Features(
             race.entries,
             CharacterDataSource.Race,
-            character.raceName
+            args.raceName
           ),
-          ...getFeatures(
+          ...converters.Features(
             subrace.entries,
             CharacterDataSource.Race,
-            `${character.subraceName} ${character.raceName}`
+            `${args.subraceName} ${args.raceName}`
           ),
         ];
-        character.speed = { ...race.speed, ...subrace.speed };
+        character.speed = {
+          walk: subrace.speed?.walk || race.speed?.walk,
+          fly: subrace.speed?.fly || race.speed?.fly,
+          climb: race.speed?.climb,
+          swim: subrace.speed?.swim || race.speed?.swim,
+        };
 
         // Handle race traits
-        character.abilityScores = addAbilityScores(
+        character.abilityScores = add.abilityScores(
           character,
           subrace.overwrite?.ability
             ? {}
             : args.raceAbilityScores ||
-                StringArrayAbilityScoreAdapter(race.ability.items)
+                converters.AbilityScoreInput(race.ability.items),
+          raceHandlerASV
         );
-        character.proficiencies = addProficiencies(
+        character.proficiencies = add.proficiencies(
           character,
           deleteKeys(
-            ObjectProficienciesAdapter(race),
+            converters.ProficienciesInput(race),
             subrace.overwrite?.languageProficiencies ? "language" : "",
             subrace.overwrite?.skillProficiencies ? "skill" : ""
           ),
-          raceHandler
+          raceHandlerDV
         );
-        character.proficiencies = addProficiencies(
+        character.proficiencies = add.proficiencies(
           character,
           args.raceProficiencies,
-          raceHandler
+          raceHandlerDV
         );
-        character.spells = addSpells(
+        character.spells = add.spells(
           character,
           race.additionalSpells.spells.filter((spell) => spell.item),
           args.raceSpellcastingAbility ||
             race.additionalSpells?.spellcastingAbility?.items[0],
-          raceHandler
+          raceHandlerDV
         );
-        character.spells = addSpells(
+        character.spells = add.spells(
           character,
           args.raceSpells,
           args.raceSpellcastingAbility ||
             race.additionalSpells?.spellcastingAbility?.items[0],
-          raceHandler
+          raceHandlerDV
         );
 
         // Handle subrace traits
-        character.abilityScores = addAbilityScores(
+        character.abilityScores = add.abilityScores(
           character,
           args.subraceAbilityScores ||
-            StringArrayAbilityScoreAdapter(subrace.ability.items)
+            converters.AbilityScoreInput(subrace.ability.items),
+          subraceHandlerASV
         );
-        character.proficiencies = addProficiencies(
+        character.proficiencies = add.proficiencies(
           character,
-          ObjectProficienciesAdapter(subrace),
-          subraceHandler
+          converters.ProficienciesInput(subrace),
+          subraceHandlerDV
         );
-        character.proficiencies = addProficiencies(
+        character.proficiencies = add.proficiencies(
           character,
           args.subraceProficiencies,
-          subraceHandler
+          subraceHandlerDV
         );
-        character.spells = addSpells(
+        character.spells = add.spells(
           character,
           subrace.additionalSpells.spells.filter((spell) => spell.item),
           args.subraceSpellcastingAbility ||
             subrace.additionalSpells?.spellcastingAbility?.items[0],
-          subraceHandler
+          subraceHandlerDV
         );
-        character.spells = addSpells(
+        character.spells = add.spells(
           character,
           args.subraceSpells,
           args.subraceSpellcastingAbility ||
             subrace.additionalSpells?.spellcastingAbility?.items[0],
-          subraceHandler
+          subraceHandlerDV
         );
         return character;
       });
     },
+    setCharacterBackground: (_parent, args, context) => {
+      return update.character(context, args.characterName, (character) => {
+        const background = backgroundQueries.background(args.name);
+        const defaultItems = background.startingEquipment.find((itemSet) =>
+          itemSet.hasOwnProperty("_")
+        )._;
+
+        const handler = (e: string) =>
+          converters.DataValue(e, CharacterDataSource.Background, args.name);
+
+        character.backgroundName = args.name;
+        character.proficiencies = add.proficiencies(
+          character,
+          converters.ProficienciesInput(background),
+          handler
+        );
+        character.proficiencies = add.proficiencies(
+          character,
+          args.proficiencies,
+          handler
+        );
+        character.items = add.items(
+          character,
+          defaultItems
+            .filter(
+              (item) =>
+                !item.hasOwnProperty("tool") || !item.hasOwnProperty("value")
+            )
+            .map((item) => ({
+              item: item.item || item.special,
+              quantity: item.quantity,
+              worthValue: item.worthValue,
+              displayName: item.displayName,
+            })),
+          handler
+        );
+        character.items = add.items(character, args.items, handler);
+        character.features = [
+          ...character.features,
+          ...converters.Features(
+            background.entries,
+            CharacterDataSource.Background,
+            args.name,
+            true
+          ),
+        ];
+        character.coins = add.coins(character, {
+          gp: defaultItems.find((item) => item.hasOwnProperty("value")).value,
+        });
+        return character;
+      });
+    },
+    addFeat: (_parent, args, context) => {
+      return update.character(context, args.characterName, (character) => {
+        const feat = featQueries.feat(args.name);
+
+        const handlerDV = (e: string) =>
+          converters.DataValue(e, CharacterDataSource.Feat, args.name);
+        const handlerASV = (e: number) =>
+          converters.AbilityScoreValue(
+            e,
+            CharacterAbilityScoreValueType.Add,
+            CharacterDataSource.Feat,
+            args.name
+          );
+
+        character.features = [
+          ...character.features,
+          ...converters.Features(
+            feat.entries,
+            CharacterDataSource.Feat,
+            args.name
+          ),
+        ];
+        character.abilityScores = add.abilityScores(
+          character,
+          args.abilityScores ||
+            converters.AbilityScoreInput(feat.ability?.items || []),
+          handlerASV
+        );
+        character.proficiencies = add.proficiencies(
+          character,
+          converters.ProficienciesInput(feat),
+          handlerDV
+        );
+        character.proficiencies = add.proficiencies(
+          character,
+          args.proficiencies,
+          handlerDV
+        );
+        character.expertises = add.expertises(
+          character,
+          args.expertises,
+          handlerDV
+        );
+
+        if (feat.additionalSpells?.length === 1)
+          character.spells = add.spells(
+            character,
+            feat.additionalSpells[0].spells.filter((spell) => spell.item),
+            args.spellcastingAbility ||
+              feat.additionalSpells[0].spellcastingAbility?.items[0],
+            handlerDV
+          );
+        character.spells = add.spells(
+          character,
+          args.spells,
+          args.spellcastingAbility ||
+            feat.additionalSpells?.at(0).spellcastingAbility?.items[0],
+          handlerDV
+        );
+        return character;
+      });
+    },
+    addOptionalFeature: (_parent, args, context) => {
+      return update.character(context, args.characterName, (character) => {
+        const feature = classQueries.optionalFeature(args.name);
+
+        let sourceText: string;
+
+        switch (args.sourceType) {
+          case CharacterDataSource.Background:
+            sourceText = character.backgroundName;
+            break;
+          case CharacterDataSource.Class:
+            sourceText = character.classes.at(0)?.name;
+            break;
+          case CharacterDataSource.Race:
+            sourceText = character.raceName;
+            break;
+          default:
+            sourceText = "";
+        }
+
+        const handler = (e: string) =>
+          converters.DataValue(
+            e,
+            args.sourceType,
+            args.sourceText || sourceText
+          );
+
+        character.features = [
+          ...character.features,
+          ...converters.Features(
+            feature.entries,
+            args.sourceType,
+            args.sourceText || sourceText
+          ),
+        ];
+        character.proficiencies = add.proficiencies(
+          character,
+          converters.ProficienciesInput(feature),
+          handler
+        );
+
+        if (feature.additionalSpells)
+          character.spells = add.spells(
+            character,
+            feature.additionalSpells[0].spells.filter((spell) => spell.item),
+            args.spellcastingAbility ||
+              feature.additionalSpells[0].spellcastingAbility?.items[0],
+            handler
+          );
+        character.spells = add.spells(
+          character,
+          args.spells,
+          args.spellcastingAbility ||
+            feature.additionalSpells?.at(0).spellcastingAbility?.items[0],
+          handler
+        );
+
+        return character;
+      });
+    },
     addCharacterClass: (_parent, args, context) => {
-      return updateCharacter(context, args.characterName, (character) => {
+      return update.character(context, args.characterName, (character) => {
         const classes = character.classes;
         if (classes.find((e) => e.name === args.name))
           throw new GraphQLError("Class already exists", {
@@ -331,7 +395,7 @@ export default {
       });
     },
     setCharacterSubclass: (_parent, args, context) => {
-      return updateCharacter(context, args.characterName, (character) => {
+      return update.character(context, args.characterName, (character) => {
         const classes = character.classes;
         const characterClass = classes.find((e) => e.name === args.className);
         const characterClassIndex = classes.findIndex(
@@ -358,121 +422,119 @@ export default {
         return character;
       });
     },
-    setCharacterBackground: (_parent, args, context) => {
-      return updateCharacter(context, args.characterName, (character) => {
-        character.backgroundName = args.name;
-        return character;
-      });
-    },
     setAbilityScores: (_parent, args, context) => {
-      return updateCharacter(context, args.characterName, (character) => {
-        character.abilityScores = {
-          ...character.abilityScores,
-          ...args.abilityScores,
-        };
+      const handler = (e: number) =>
+        converters.AbilityScoreValue(
+          e,
+          CharacterAbilityScoreValueType.Set,
+          CharacterDataSource.Other,
+          args.source
+        );
+
+      return update.character(context, args.characterName, (character) => {
+        character.abilityScores = add.abilityScores(
+          character,
+          args.abilityScores,
+          handler
+        );
         return character;
       });
     },
-    setProficiencies: (_parent, args, context) => {
-      return updateCharacter(context, args.characterName, (character) => {
-        character.proficiencies = {
-          armor: [
-            ...args.proficiencies.armor.map((proficiency) => ({
-              item: proficiency,
-              sourceType: CharacterDataSource.Other,
-            })),
-          ],
-          weapon: [
-            ...args.proficiencies.weapon.map((proficiency) => ({
-              item: proficiency,
-              sourceType: CharacterDataSource.Other,
-            })),
-          ],
-          language: [
-            ...args.proficiencies.language.map((proficiency) => ({
-              item: proficiency,
-              sourceType: CharacterDataSource.Other,
-            })),
-          ],
-          tool: [
-            ...args.proficiencies.tool.map((proficiency) => ({
-              item: proficiency,
-              sourceType: CharacterDataSource.Other,
-            })),
-          ],
-          savingThrow: [
-            ...args.proficiencies.savingThrow.map((proficiency) => ({
-              item: proficiency,
-              sourceType: CharacterDataSource.Other,
-            })),
-          ],
-          skill: [
-            ...args.proficiencies.skill.map((proficiency) => ({
-              item: proficiency,
-              sourceType: CharacterDataSource.Other,
-            })),
-          ],
-        };
+    addAbilityScores: (_parent, args, context) => {
+      const handler = (e: number) =>
+        converters.AbilityScoreValue(
+          e,
+          CharacterAbilityScoreValueType.Add,
+          CharacterDataSource.Other,
+          args.source
+        );
+      return update.character(context, args.characterName, (character) => {
+        character.abilityScores = add.abilityScores(
+          character,
+          args.abilityScores,
+          handler
+        );
+        return character;
+      });
+    },
+    addProficiencies: (_parent, args, context) => {
+      return update.character(context, args.characterName, (character) => {
+        const handler = (e: string) =>
+          converters.DataValue(e, CharacterDataSource.Other, args.source);
+        character.proficiencies = add.proficiencies(
+          character,
+          converters.ProficienciesInput(args.proficiencies),
+          handler
+        );
         return character;
       });
     },
     setHitPointMaximum: (_parent, args, context) => {
-      return updateCharacter(context, args.characterName, (character) => {
+      return update.character(context, args.characterName, (character) => {
         character.hitPointMaximum = args.hitPoint;
         return character;
       });
     },
     setHitPointCurrent: (_parent, args, context) => {
-      return updateCharacter(context, args.characterName, (character) => {
+      return update.character(context, args.characterName, (character) => {
         character.hitPointCurrent = args.hitPoint;
         return character;
       });
     },
     addItem: (_parent, args, context) => {
-      return updateCharacter(context, args.characterName, (character) => {
+      const handler = (e: string) =>
+        converters.DataValue(e, CharacterDataSource.Other, args.item.source);
+      return update.character(context, args.characterName, (character) => {
+        character.items = add.items(character, [args.item], handler);
         return character;
       });
     },
-    removeItem: (_parent, args, context) => {
-      return updateCharacter(context, args.characterName, (character) => {
+    updateItem: (_parent, args, context) => {
+      return update.character(context, args.characterName, (character) => {
+        character.items = update.item(character, args.item);
         return character;
       });
     },
-    setCoins: (_parent, args, context) => {
-      return updateCharacter(context, args.characterName, (character) => {
-        character.coins = { ...character.coins, ...args.coins };
+    updateCoins: (_parent, args, context) => {
+      return update.character(context, args.characterName, (character) => {
+        character.coins = update.coins(character, args.coins);
         return character;
       });
     },
     addFeature: (_parent, args, context) => {
-      return updateCharacter(context, args.characterName, (character) => {
+      return update.character(context, args.characterName, (character) => {
         character.features = [
           ...character.features,
-          {
-            entries: args.entries,
-          },
+          ...converters.Features(
+            args.feature.entries,
+            args.feature.sourceType,
+            args.feature.sourceText
+          ),
         ];
         return character;
       });
     },
     updateFeature: (_parent, args, context) => {
-      return updateCharacter(context, args.characterName, (character) => {
-        character.features[args.index] = {
-          entries: args.entries,
-        };
+      return update.character(context, args.characterName, (character) => {
+        const index = character.features.findIndex(
+          (e) => e.id === args.feature.id
+        );
+        if (index === -1) return character;
+
+        character.features[index] = converters.Features(
+          args.feature.entries,
+          args.feature.sourceType,
+          args.feature.sourceText
+        )[0];
         return character;
       });
     },
     removeFeature: (_parent, args, context) => {
-      return updateCharacter(context, args.characterName, (character) => {
-        character.features[args.index] = {
-          entries: [],
-        };
-        return character;
-      });
-    },
-    levelUp: (_parent, args, context) => {
-      return updateCharacter(context, args.characterName, (character) => {
+      return update.character(context, args.characterName, (character) => {
+        const index = character.features.findIndex((e) => e.id === args.id);
+        if (index === -1) return character;
+
+        character.features.splice(index, 1);
         return character;
       });
     },

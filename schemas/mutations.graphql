@@ -24,39 +24,58 @@ type Mutation {
         className: String!
         name: String!
     ): Character
-    setCharacterBackground(characterName: String!, name: String): Character
+    setCharacterBackground(
+        characterName: String!
+        name: String!
+        proficiencies: CharacterProficienciesInput
+        items: [CharacterItemInput]
+    ): Character
+    addFeat(
+        characterName: String!
+        name: String!
+        proficiencies: CharacterProficienciesInput
+        expertises: CharacterProficienciesInput
+        abilityScores: CharacterAbilityScoresInput
+        spellcastingAbility: String
+        spells: [CharacterSpellInput]
+    ): Character
+    addOptionalFeature(
+        characterName: String!
+        name: String!
+        spellcastingAbility: String
+        spells: [CharacterSpellInput]
+        sourceType: CharacterDataSource!
+        sourceText: String
+    ): Character
     setAbilityScores(
         characterName: String!
         abilityScores: CharacterAbilityScoresInput
+        source: String
     ): Character
     addAbilityScores(
         characterName: String!
         abilityScores: CharacterAbilityScoresInput
-    ): Character
-    setProficiencies(
-        characterName: String!
-        proficiencies: CharacterProficienciesInput
+        source: String
     ): Character
     addProficiencies(
         characterName: String!
         proficiencies: CharacterProficienciesInput
+        source: String
     ): Character
     setHitPointMaximum(characterName: String!, hitPoint: Int!): Character
     setHitPointCurrent(characterName: String!, hitPoint: Int!): Character
-    addItem(characterName: String!, name: String!, quantity: Int): Character
-    removeItem(characterName: String!, name: String!, quantity: Int): Character
-    setCoins(characterName: String!, coins: CharacterCoinsInput!): Character
-    addCoins(characterName: String!, coins: CharacterCoinsInput!): Character
-    removeCoins(characterName: String!, coins: CharacterCoinsInput!): Character
+    addItem(characterName: String!, item: CharacterItemInput!): Character
+    updateItem(characterName: String!, item: CharacterItemInput!): Character
+    updateCoins(characterName: String!, coins: CharacterCoinsInput!): Character
     addFeature(
         characterName: String!
-        entries: [CharacterEntriesInput!]!
+        feature: CharacterFeatureInput!
+        source: String
     ): Character
     updateFeature(
         characterName: String!
-        index: Int!
-        entries: [CharacterEntriesInput!]!
+        feature: CharacterFeatureInput!
     ): Character
-    removeFeature(characterName: String!, index: Int!): Character
+    removeFeature(characterName: String!, id: ID!): Character
     levelUp(characterName: String!, className: String!): Character
 }
