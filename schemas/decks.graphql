@@ -8,12 +8,11 @@ entries: [DeckEntries]
 type DeckEntries {
 type: String
 entry: String
-id: Int
+internalId: Int
 colLabels: [String]
 colStyles: [String]
 rows: [DeckEntriesRowsList]
 name: String
-children: [Int]
 parentId: Int
 footnotes: [String]
 page: Int
@@ -47,7 +46,7 @@ tag: String
 style: String
 source: String
 name: String
-id: Int
+internalId: Int
 entry: String
 }
 

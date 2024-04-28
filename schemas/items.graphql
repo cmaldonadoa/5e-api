@@ -23,9 +23,8 @@ stealth: Boolean
 type BaseItemEntries {
 type: String
 entry: String
-id: Int
+internalId: Int
 name: String
-children: [Int]
 parentId: Int
 }
 
@@ -94,7 +93,7 @@ entries: [ItemPropertyEntries]
 type ItemPropertyEntries {
 type: String
 entry: String
-id: Int
+internalId: Int
 }
 
 type BaseItemPackContents {
@@ -113,9 +112,8 @@ entries: [ItemTypeEntries]
 type ItemEntries {
 type: String
 entry: String
-id: Int
+internalId: Int
 name: String
-children: [Int]
 parentId: Int
 caption: String
 colLabels: [String]
@@ -143,9 +141,8 @@ items: [ItemEntriesRows]
 type ItemTypeEntries {
 type: String
 entry: String
-id: Int
+internalId: Int
 name: String
-children: [Int]
 parentId: Int
 source: String
 page: Int

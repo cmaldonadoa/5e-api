@@ -16,9 +16,8 @@ ritual: Boolean
 type SpellEntries {
 type: String
 entry: String
-id: Int
+internalId: Int
 by: String
-children: [Int]
 parentId: Int
 caption: String
 colLabels: [String]
@@ -75,8 +74,7 @@ distance: SpellRangeDistance
 type SpellHigherLevel {
 type: String
 name: String
-id: Int
-children: [Int]
+internalId: Int
 entry: String
 parentId: Int
 }

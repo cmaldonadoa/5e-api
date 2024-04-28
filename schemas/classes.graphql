@@ -60,10 +60,9 @@ amount: Int
 type ClassFeatureEntries {
 type: String
 entry: String
-id: Int
+internalId: Int
 items: [ClassFeatureEntriesItems]
 name: String
-children: [Int]
 parentId: Int
 attributes: [String]
 classFeature: String
@@ -498,14 +497,13 @@ amount: Int
 type SubclassFeatureEntries {
 type: String
 entry: String
-id: Int
+internalId: Int
 subclassFeature: String
 caption: String
 colLabels: [String]
 colStyles: [String]
 rows: [SubclassFeatureEntriesRowsList]
 items: [SubclassFeatureEntriesItems]
-children: [Int]
 name: String
 parentId: Int
 style: String
@@ -566,7 +564,7 @@ amount: Int
 type OptionalFeatureEntries {
 type: String
 entry: String
-id: Int
+internalId: Int
 items: [OptionalFeatureEntriesItems]
 caption: String
 colLabels: [String]

@@ -15,16 +15,16 @@ type BackgroundEntries {
 type: String
 style: String
 items: [BackgroundEntriesItems]
-id: Int
+internalId: Int
 name: String
 data: BackgroundEntriesData
-children: [Int]
 entry: String
 parentId: Int
 colLabels: [String]
 colStyles: [String]
 rows: [BackgroundEntriesRowsList]
 caption: String
+id: String
 }
 
 type BackgroundFeats {

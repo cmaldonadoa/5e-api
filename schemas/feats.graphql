@@ -87,13 +87,12 @@ count: Int
 type FeatEntries {
 type: String
 entry: String
-id: Int
+internalId: Int
 items: [FeatEntriesItems]
 caption: String
 colLabels: [String]
 colStyles: [String]
 rows: [FeatEntriesRowsList]
-children: [Int]
 parentId: Int
 name: String
 style: String
