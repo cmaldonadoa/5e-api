@@ -234,6 +234,6 @@ export const handleFiles = (handlers: any, options: Options) => {
     console.log("Successfully created", filename);
   }
 
-  options.count && console.log(keys);
+  Object.keys(keys).length > 0 && console.log(keys);
   Object.keys(peekKeys).length > 0 && console.log(peekKeys);
 };
