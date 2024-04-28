@@ -31,7 +31,6 @@ Object describing the speed of the vehicle feet.
 `fly`: flying speed of the vehicle\
 `note`: a text that can be present to further describe the speed\
 
-
 ## Pace
 
 Object describing the speed of the vehicle in miles.
@@ -83,34 +82,20 @@ List of objects describing the movement objects present in the vehicle.
 
 ## Entries
 
-Each entry has an id (`id`), a list of ids that are direct children of it (`children`), and the parent id (`parentId`).
+Each entry has an id (`internalId`), a list of ids that are direct children of it (`children`), and the parent
+id (`parentId`).
 
 For each type, there are some non-null fields:
 
-### Type = Text
+### Text
+
+type=text  
 entry
 
-### Type = List
-items {  
-&emsp;type=item  
-&emsp;name  
-&emsp;entry  
-}  
-style
+### Table
 
-### Type = Entries
-name
-
-### Type = Inset
-source  
-page  
-name
-
-### Type = Table
+type=table  
 caption  
 colLabels  
 colStyles  
 rows
-
-### Type = Quote
-by

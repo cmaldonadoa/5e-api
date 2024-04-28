@@ -66,7 +66,7 @@ A list of spells to be learned.
 
 ## Language Proficiencies
 
-Object describing the languages to be learned. 
+Object describing the languages to be learned.
 
 ***language name***: true\
 `anyStandard`: number of standard languages to be learned\
@@ -95,7 +95,7 @@ Object describing the armors to be learned.
 
 ## Skill Proficiencies
 
-Object describing the skills to be learned. 
+Object describing the skills to be learned.
 
 ***skill name***: true\
 `any`: see [Choose](#choose)\
@@ -122,7 +122,8 @@ Object describing the feats to be learned.
 
 ## Overwrite
 
-Object describing the race fields that will be overwritten with the subrace fields of the same name. Otherwise, both will be merged.
+Object describing the race fields that will be overwritten with the subrace fields of the same name. Otherwise, both
+will be merged.
 
 ***field name***: true if the field is overwritten
 
@@ -136,37 +137,43 @@ An object describing the need of input from the user.
 
 ## Entries
 
-Each entry has an id (`id`), a list of ids that are direct children of it (`children`), and the parent id (`parentId`).
+Each entry has an id (`internalId`), a list of ids that are direct children of it (`children`), and the parent
+id (`parentId`).
 
 For each type, there are some non-null fields:
 
-### Type = Text
+### Text
+
+type=text  
 entry
 
-### Type = List
+### List
+
+type=list  
+style  
 items {  
 &emsp;type=item  
 &emsp;name  
 &emsp;entry  
-}  
-style
-
-### Type = Entries
-name
-data {\
-&emsp;overwrite: entry in the race that will be replaced by this entry \ 
 }
 
-### Type = Inset
-source  
-page  
+### Entries
+
+type=entries  
+name  
+data {  
+&emsp;overwrite  
+}
+
+### Inset
+
+type=inset  
 name
 
-### Type = Table
+### Table
+
+type=table  
 caption  
 colLabels  
 colStyles  
 rows
-
-### Type = Quote
-by

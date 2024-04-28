@@ -16,34 +16,45 @@ card {
 
 ## Entries
 
-Each entry has an id (`id`), a list of ids that are direct children of it (`children`), and the parent id (`parentId`).
+Each entry has an id (`internalId`), a list of ids that are direct children of it (`children`), and the parent
+id (`parentId`).
 
 For each type, there are some non-null fields:
 
-### Type = Text
+### Text
+
+type=text  
 entry
 
-### Type = List
-items {  
-&emsp;type=item  
-&emsp;name  
-&emsp;entry  
-}  
-style
+### Entries
 
-### Type = Entries
+type=entries  
 name
 
-### Type = Inset
-source  
-page  
+### Inset
+
+type=inset  
 name
 
-### Type = Table
+### Table
+
+type=table  
 caption  
 colLabels  
 colStyles  
-rows
+rows  
+footnotes
 
-### Type = Quote
-by
+### Section
+
+type=section  
+name  
+page
+
+### Stat Block
+
+type=statblock  
+tag  
+style  
+source  
+name  

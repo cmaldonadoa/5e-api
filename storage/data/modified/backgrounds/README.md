@@ -54,7 +54,7 @@ Array of objects describing the initial items. Object must have **one** of these
 `value`: starting gold\
 `displayName`: replace item base name  
 `quantity`: item count  
-`worthValue`: value of item  
+`worthValue`: value of item
 
 ## Additional Spells
 
@@ -68,37 +68,54 @@ An object describing the feats to be gained.
 
 ***feat name***: true
 
-
 ## Entries
 
-Each entry has an id (`id`), a list of ids that are direct children of it (`children`), and the parent id (`parentId`).
+Each entry has an id (`internalId`), a list of ids that are direct children of it (`children`), and the parent
+id (`parentId`).
 
 For each type, there are some non-null fields:
 
-### Type = Text
+### Text
+
+type=text  
 entry
 
-### Type = List
+### List
+
+type=list  
+style
 items {  
 &emsp;type=item  
 &emsp;name  
-&emsp;entry  
-}  
-style
+&emsp;entry    
+}
 
-### Type = Entries
+### Entries
+
+type=entries  
+name
+data {  
+&emsp;isFeature  
+}
+
+### Inset
+
+type=inset  
 name
 
-### Type = Inset
-source  
-page  
-name
+### Table
 
-### Type = Table
+type=table  
 caption  
 colLabels  
 colStyles  
-rows
+rows  
+data {  
+&emsp;tableInclude   
+}
 
-### Type = Quote
-by
+### Section
+
+type=section  
+name  
+id

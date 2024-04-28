@@ -66,7 +66,7 @@ A list of spells to be learned.
 
 ## Language Proficiencies
 
-Object describing the languages to be learned. 
+Object describing the languages to be learned.
 
 ***language name***: true\
 `any`: number of languages to be learned
@@ -94,7 +94,7 @@ Object describing the armors to be learned.
 
 ## Skill Proficiencies
 
-Object describing the skills to be learned. 
+Object describing the skills to be learned.
 
 `choose`: see [Choose](#choose)
 
@@ -121,13 +121,14 @@ Possible values are `con`, `cha`, `dex`, `str`, `int` or `wis`.
 
 ## Expertise
 
-Object describing the skill to be mastered. 
+Object describing the skill to be mastered.
 
 `anyProficientSkill`: number of already proficient skills to be mastered
 
 ## OptionalFeature Progression
 
-List of objects used by character to determine progression in certain features (TCE). For more information see Class documentation.
+List of objects used by character to determine progression in certain features (TCE). For more information see Class
+documentation.
 
 ## Choose
 
@@ -139,34 +140,40 @@ An object describing the need of input from the user.
 
 ## Entries
 
-Each entry has an id (`id`), a list of ids that are direct children of it (`children`), and the parent id (`parentId`).
+Each entry has an id (`internalId`), a list of ids that are direct children of it (`children`), and the parent
+id (`parentId`).
 
 For each type, there are some non-null fields:
 
-### Type = Text
+### Text
+
+type=text  
 entry
 
-### Type = List
+### List
+
+type=list  
+style
 items {  
 &emsp;type=item  
 &emsp;name  
 &emsp;entry  
-}  
-style
+&emsp;entries  
+}
 
-### Type = Entries
+### Entries
+
+type=entries  
 name
 
-### Type = Inset
-source  
-page  
-name
+### Table
 
-### Type = Table
+type=table  
 caption  
 colLabels  
 colStyles  
 rows
 
-### Type = Quote
-by
+### Section
+
+type=section  

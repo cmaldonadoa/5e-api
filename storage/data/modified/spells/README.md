@@ -42,30 +42,47 @@ Object describing the spell's duration.
 
 ## Entries
 
-Each entry has an id (`id`), a list of ids that are direct children of it (`children`), and the parent id (`parentId`). 
+Each entry has an id (`internalId`), a list of ids that are direct children of it (`children`), and the parent
+id (`parentId`).
 
 For each type, there are some non-null fields:
 
-### Type = Text
+### Text
+
+type=text  
 entry
 
-### Type = List
-items
-style
+### List
 
-### Type = Entries
+type=list  
+style  
+items {  
+&emsp;type=item  
+&emsp;name  
+&emsp;entry  
+}
+
+### Entries
+
+type=entries  
 name
 
-### Type = Inset
-source  
-page  
-name 
+### Inset
 
-### Type = Table
+type=inset  
+name  
+source  
+page
+
+### Table
+
+type=table  
 caption  
 colLabels  
 colStyles  
 rows
 
-### Type = Quote
+### Quote
+
+type=quote  
 by

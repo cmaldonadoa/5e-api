@@ -150,39 +150,47 @@ Object describing how saving throws are affected.
 `_`: string with modifier to be applied to this all saving throws\
 ***ability***: string with modifier to be applied to this ability saving throws
 
-
 Abilities are `con`, `cha`, `dex`, `str`, `int` or `wis`.
 
 ## Entries
 
-Each entry has an id (`id`), a list of ids that are direct children of it (`children`), and the parent id (`parentId`).
+Each entry has an id (`internalId`), a list of ids that are direct children of it (`children`), and the parent
+id (`parentId`).
 
 For each type, there are some non-null fields:
 
-### Type = Text
+### Text
+
+type=text  
 entry
 
-### Type = List
+### List
+
+type=list  
+style
 items {  
 &emsp;type=item  
-&emsp;name  
-&emsp;entry  
-}  
-style
+&emsp;entry    
+}
 
-### Type = Entries
-name
+### Entries
 
-### Type = Inset
+type=entries  
+name  
 source  
-page  
-name
+page
 
-### Type = Table
+### Inset
+
+type=inset  
+name  
+source  
+page
+
+### Table
+
+type=table  
 caption  
 colLabels  
 colStyles  
-rows
-
-### Type = Quote
-by
+rows  
