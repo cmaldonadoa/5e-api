@@ -2,68 +2,12 @@ import { handleFiles, Options, utils } from "./utils";
 import rootDir from "app-root-dir";
 
 const root = rootDir.get();
-const keys = {};
-
-const add = (key: string, parent?: string) => {
-  if (parent) {
-    if (!keys.hasOwnProperty(parent)) keys[parent] = {};
-    if (keys[parent].hasOwnProperty(key)) keys[parent][key] += 1;
-    else keys[parent][key] = 1;
-    return true;
-  }
-
-  if (keys.hasOwnProperty(key)) keys[key] += 1;
-  else keys[key] = 1;
-  return true;
-};
 
 const input = root + "/storage/data/original/classes/";
 const output = root + "/storage/data/modified/";
 const options: Options = {
   input,
   output,
-  enableCustomTests: {
-    enabled: true,
-    key: "class",
-    property: "classTableGroups",
-    tests: (e) => {
-      if (e.classTableGroups?.rows) {
-        let value = e.classTableGroups.rows;
-
-        // Count occurrences
-        add("_subtotal");
-
-        // Test property types
-        add("PROP_TYPE_" + ((Array.isArray(value) && "array") || typeof value));
-
-        if (typeof value === "string") add("STRING_VALUE_" + value);
-
-        if (!Array.isArray(value))
-          // Test object keys
-          Object.keys(value).forEach((k) => add(k));
-
-        if (Array.isArray(value)) {
-          // Test property array elements types
-          value.forEach((v) =>
-            typeof v !== "string" && typeof v !== "number"
-              ? add("ARRAY_OBJECT") &&
-                Object.keys(v).forEach((k) =>
-                  add(
-                    `ARRAY_OBJECT_KEY_${k}_` +
-                      ((Array.isArray(v[k]) && "array") || typeof v[k])
-                  )
-                )
-              : typeof v === "string"
-                ? add("ARRAY_STRING")
-                : add("ARRAY_NUMBER")
-          );
-
-          // Test property array length
-          if (value.length) add("ARRAY_LENGTH_" + value.length);
-        }
-      }
-    },
-  },
 };
 
 function replaceKey(obj, oldKey, newKey) {
