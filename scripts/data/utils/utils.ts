@@ -212,27 +212,34 @@ export const utils = {
   },
 
   splitEntries: (entries: Entry[]) => {
-    const split = (id: number, entries?: Entries, parentId?: number) => {
+    const split = (
+      internalId: number,
+      entries?: Entries,
+      parentId?: number
+    ) => {
       if (!entries) return;
 
       let result = [];
       utils.formatEntries(utils.asArray(entries)).forEach((entry) => {
-        const descendantNodes = split(id + 1, entry.entries, id) || [];
+        const descendantNodes =
+          split(internalId + 1, entry.entries, internalId) || [];
         const children = utils.adapt(
-          descendantNodes.filter((e) => e.parentId === id).map((e) => e.id)
+          descendantNodes
+            .filter((e) => e.parentId === internalId)
+            .map((e) => e.id)
         );
         delete entry.entries;
         result = [
           ...result,
           {
             ...entry,
-            id,
+            internalId,
             parentId,
             children,
           },
           ...descendantNodes,
         ];
-        id += 1 + descendantNodes.length;
+        internalId += 1 + descendantNodes.length;
       });
       return result;
     };

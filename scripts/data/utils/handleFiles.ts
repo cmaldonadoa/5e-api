@@ -16,7 +16,7 @@ type OptionsTestsDisabled = {
 
 type OptionsCustomTestsEnabled = {
   enabled: true;
-  tests: Function;
+  tests: (element: any) => void;
   property: string;
   key: string;
 };
@@ -30,8 +30,8 @@ type OptionsCustomTestsDisabled = {
 
 type OptionsPeekEnabled = {
   enabled: true;
-  peek: Function;
-  key: string;
+  run: (element: any, count: (element: any, key: string) => void) => void;
+  key?: string;
 };
 
 type OptionsPeekDisabled = {
@@ -43,6 +43,7 @@ type OptionsPeekDisabled = {
 export type Options = {
   input: string;
   output: string;
+  count?: boolean;
   enableInternalTests?: OptionsTestsEnabled | OptionsTestsDisabled;
   enableCustomTests?: OptionsCustomTestsEnabled | OptionsCustomTestsDisabled;
   peek?: OptionsPeekEnabled | OptionsPeekDisabled;
@@ -55,8 +56,9 @@ export const handleFiles = (handlers: any, options: Options) => {
   );
 
   const keys = {};
+  const peekKeys = {};
 
-  const add = (key: string, parent?: string) => {
+  const countKeys = (key: string, parent?: string) => {
     if (parent) {
       if (!keys.hasOwnProperty(parent)) keys[parent] = {};
       if (keys[parent].hasOwnProperty(key)) keys[parent][key] += 1;
@@ -69,53 +71,105 @@ export const handleFiles = (handlers: any, options: Options) => {
     return true;
   };
 
-  const displayProperties = (element: any, key: string) =>
-    Object.keys(element).forEach((k) => add(k, key));
+  const saveProperties = (element: any, key: string) =>
+    Object.keys(element).forEach((k) => countKeys(k, key));
 
   const runInternalTests = (element: any) => {
-    add("_total");
+    countKeys("_total");
     const property = options.enableInternalTests?.property;
 
     if (element[property]) {
       let value = element[property];
 
       // Count occurrences
-      add("_subtotal");
+      countKeys("_subtotal");
 
       // Test property types
-      add("PROP_TYPE_" + ((Array.isArray(value) && "array") || typeof value));
+      countKeys(
+        "PROP_TYPE_" + ((Array.isArray(value) && "array") || typeof value)
+      );
 
-      if (typeof value === "string") add("STRING_VALUE_" + value);
+      if (typeof value === "string") countKeys("STRING_VALUE_" + value);
 
       if (!Array.isArray(value))
         // Test object keys
-        Object.keys(value).forEach((k) => add(k));
+        Object.keys(value).forEach((k) => countKeys(k));
 
       if (Array.isArray(value)) {
         // Test property array elements types
         value.forEach((v) =>
           typeof v !== "string" && typeof v !== "number"
-            ? add("ARRAY_OBJECT") &&
+            ? countKeys("ARRAY_OBJECT") &&
               Object.keys(v).forEach((k) =>
-                add(
+                countKeys(
                   `ARRAY_OBJECT_KEY_${k}_` +
                     ((Array.isArray(v[k]) && "array") || typeof v[k])
                 )
               )
             : typeof v === "string"
-              ? add("ARRAY_STRING")
-              : add("ARRAY_NUMBER")
+              ? countKeys("ARRAY_STRING")
+              : countKeys("ARRAY_NUMBER")
         );
 
         // Test property array length
-        if (value.length) add("ARRAY_LENGTH_" + value.length);
+        if (value.length) countKeys("ARRAY_LENGTH_" + value.length);
       }
     }
   };
 
+  const countPeekKeys = (obj: any, key: string) => {
+    // Helper function to recursively count properties
+    const countPropertiesRecursive = (obj: any, countsObj: any) => {
+      for (let key in obj) {
+        // If the property is an array, process its elements
+        if (Array.isArray(obj[key])) {
+          if (!countsObj[key]) {
+            countsObj[key] = { _count: 0 };
+          }
+          countsObj[key]._count++;
+
+          obj[key].forEach((item) => {
+            if (typeof item === "object" && item !== null) {
+              for (let subKey in item) {
+                if (typeof item[subKey] === "undefined") continue;
+                if (!countsObj[key][subKey]) {
+                  countsObj[key][subKey] = 0;
+                }
+                countsObj[key][subKey]++;
+              }
+            }
+          });
+        } else if (typeof obj[key] === "object" && obj[key] !== null) {
+          // If the property is an object, recursively count its properties
+          if (!countsObj[key]) {
+            countsObj[key] = { _count: 0 };
+          }
+          countsObj[key]._count++;
+          countPropertiesRecursive(obj[key], countsObj[key]);
+        } else {
+          if (typeof obj[key] === "undefined") continue;
+          if (!countsObj[key]) {
+            // Increment the count for other types of properties
+            countsObj[key] = 0;
+          }
+          countsObj[key]++;
+        }
+      }
+    };
+
+    countPropertiesRecursive(obj, peekKeys[key]);
+  };
+
   const peek = (element: any, key: string) => {
-    if (options.peek?.enabled && options.peek?.key === key)
-      options.peek?.peek(element);
+    if (
+      options.peek?.enabled &&
+      (options.peek?.key === key || !options.peek?.key)
+    ) {
+      options.peek?.run(element, (e: any, key: string) => {
+        if (!peekKeys[key]) peekKeys[key] = {};
+        countPeekKeys(e, key);
+      });
+    }
     return element;
   };
 
@@ -148,12 +202,7 @@ export const handleFiles = (handlers: any, options: Options) => {
           )
             runCustomTests(copy || x);
 
-          if (
-            !options.enableInternalTests?.enabled &&
-            !options.enableCustomTests?.enabled &&
-            !options.peek?.enabled
-          )
-            displayProperties(copy || x, key);
+          if (options.count) saveProperties(copy || x, key);
 
           const result = handlers[key](copy || x);
           return peek(result, key);
@@ -182,7 +231,9 @@ export const handleFiles = (handlers: any, options: Options) => {
 
     fs.mkdirSync(output, { recursive: true });
     fs.writeFileSync(output + filename, JSON.stringify(newData));
+    console.log("Successfully created", filename);
   }
 
-  console.log(keys);
+  options.count && console.log(keys);
+  Object.keys(peekKeys).length > 0 && console.log(peekKeys);
 };
