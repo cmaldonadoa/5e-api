@@ -2,7 +2,6 @@ import { handleFiles, Options, utils } from "./utils";
 import rootDir from "app-root-dir";
 
 const root = rootDir.get();
-
 const input = root + "/storage/data/original/classes/";
 const output = root + "/storage/data/modified/";
 const options: Options = {
@@ -11,9 +10,17 @@ const options: Options = {
 };
 
 function replaceKey(obj, oldKey, newKey) {
+  if (!obj) return;
   if (obj.hasOwnProperty(oldKey)) {
     obj[newKey] = obj[oldKey];
     delete obj[oldKey];
+  }
+  return obj;
+}
+
+function replaceKeys(obj, oldKeys, newKeys) {
+  for (let i = 0; i < oldKeys.length; i++) {
+    obj = replaceKey(obj, oldKeys[i], newKeys[i]);
   }
   return obj;
 }
@@ -28,17 +35,28 @@ handleFiles(
       spellcastingAbility: utils.adapt(e.spellcastingAbility),
       multiclassSlotsProgression: utils.adapt(e.casterProgression),
       preparedSpellsFormula: utils.adapt(e.preparedSpells),
-      cantripProgression: utils.adapt(utils.asArray(e.cantripProgression)),
+      cantripProgression: utils.adapt(
+        Object.fromEntries(
+          Object.entries(utils.asObject(e.cantripProgression)).map(
+            ([key, value]) => ["_" + (parseInt(key) + 1), value]
+          )
+        )
+      ),
       optionalFeatureProgression: utils.adapt(
         utils.asArray(e.optionalfeatureProgression).map((x) => ({
           ...x,
           progression: Array.isArray(x.progression)
             ? Object.fromEntries(
                 Object.entries(utils.asObject(x.progression)).map(
-                  ([key, value]) => [parseInt(key) + 1, value]
+                  ([key, value]) => ["_" + (parseInt(key) + 1), value]
                 )
               )
-            : x.progression,
+            : Object.fromEntries(
+                Object.entries(x.progression).map(([key, value]) => [
+                  isNaN(+key) ? key : "_" + key,
+                  value,
+                ])
+              ),
         }))
       ),
       armorProficiencies: utils.adapt(
@@ -75,7 +93,20 @@ handleFiles(
         requirements: utils.adapt(utils.asObject(e.multiclassing).requirements),
         proficienciesGained: utils.adapt(
           Object.entries(
-            utils.asObject(utils.asObject(e.multiclassing).proficienciesGained)
+            utils.asObject(
+              utils.asObject(
+                replaceKeys(
+                  e.multiclassing.proficienciesGained,
+                  ["armor", "weapons", "skills", "tools"],
+                  [
+                    "armorProficiencies",
+                    "weaponProficiencies",
+                    "skillProficiencies",
+                    "toolProficiencies",
+                  ]
+                )
+              )
+            )
           ).reduce((accum, [k, v]) => {
             accum[k] = utils.adapt(utils.formatObject(v));
             return accum;
@@ -86,7 +117,16 @@ handleFiles(
         utils.asArray(e.classTableGroups).map((table) => ({
           ...table,
           rows: utils.adapt(
-            utils.asArray(table.rows).map((row) => row.map((x) => "" + x))
+            utils.asArray(table.rows).map((row) =>
+              row.map((x) =>
+                typeof x === "object"
+                  ? { ...x, value: "" + x.value }
+                  : {
+                      type: "value",
+                      value: "" + x,
+                    }
+              )
+            )
           ),
         }))
       ),
@@ -157,13 +197,28 @@ handleFiles(
       }),
       spellcastingAbility: utils.adapt(e.spellcastingAbility),
       multiclassSlotsProgression: utils.adapt(e.casterProgression),
-      cantripProgression: utils.adapt(utils.asArray(e.cantripProgression)),
+      cantripProgression: utils.adapt(
+        Object.fromEntries(
+          Object.entries(utils.asObject(e.cantripProgression)).map(
+            ([key, value]) => ["_" + (parseInt(key) + 1), value]
+          )
+        )
+      ),
       spellsKnownProgression: utils.adapt(e.spellsKnownProgression),
       subclassTableGroups: utils.adapt(
         utils.asArray(e.subclassTableGroups).map((table) => ({
           ...table,
           rows: utils.adapt(
-            utils.asArray(table.rows).map((row) => row.map((x) => "" + x))
+            utils.asArray(table.rows).map((row) =>
+              row.map((x) =>
+                typeof x === "object"
+                  ? { ...x, value: "" + x.value }
+                  : {
+                      type: "value",
+                      value: "" + x,
+                    }
+              )
+            )
           ),
         }))
       ),
@@ -173,10 +228,15 @@ handleFiles(
           progression: Array.isArray(x.progression)
             ? Object.fromEntries(
                 Object.entries(utils.asObject(x.progression)).map(
-                  ([key, value]) => [parseInt(key) + 1, value]
+                  ([key, value]) => ["_" + (parseInt(key) + 1), value]
                 )
               )
-            : x.progression,
+            : Object.fromEntries(
+                Object.entries(x.progression).map(([key, value]) => [
+                  isNaN(+key) ? key : "_" + key,
+                  value,
+                ])
+              ),
         }))
       ),
       additionalSpells: utils.adapt(
@@ -252,7 +312,9 @@ handleFiles(
       entries: utils.splitEntries(utils.asArray(e.entries)).map((entry) => ({
         ...replaceKey(entry, "optionalfeature", "optionalFeature"),
         rows: utils.adapt(
-          utils.asArray(entry.rows).map((row) => row.map((x) => "" + x))
+          utils
+            .asArray(entry.rows)
+            .map((row) => row.map((x) => (typeof x === "object" ? x : "" + x)))
         ),
       })),
       isClassFeatureVariant: e.isClassFeatureVariant,
@@ -288,7 +350,9 @@ handleFiles(
       entries: utils.splitEntries(utils.asArray(e.entries)).map((entry) => ({
         ...entry,
         rows: utils.adapt(
-          utils.asArray(entry.rows).map((row) => row.map((x) => "" + x))
+          utils
+            .asArray(entry.rows)
+            .map((row) => row.map((x) => (typeof x === "object" ? x : "" + x)))
         ),
       })),
       skillProficiencies: utils.adapt(utils.formatObject(e.skillProficiencies)),
