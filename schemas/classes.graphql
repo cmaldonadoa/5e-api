@@ -6,7 +6,7 @@ savingThrowProficiencies: [String]
 spellcastingAbility: String
 multiclassSlotsProgression: String
 preparedSpellsFormula: String
-cantripProgression: [Int]
+cantripProgression: ClassCantripProgression
 optionalFeatureProgression: [ClassOptionalFeatureProgression]
 armorProficiencies: ClassArmorProficiencies
 weaponProficiencies: ClassWeaponProficiencies
@@ -69,7 +69,7 @@ classFeature: String
 caption: String
 colLabels: [String]
 colStyles: [String]
-rows: [ClassFeatureEntriesRowsList]
+rows: [ClassFeatureEntriesRows]
 count: Int
 optionalFeature: String
 source: String
@@ -81,10 +81,6 @@ _0: String
 _1: String
 _2: String
 _3: String
-}
-
-type ClassFeatureEntriesRowsList {
-items: [ClassFeatureEntriesRows]
 }
 
 type ClassFeatureEntriesItems {
@@ -129,6 +125,29 @@ type ClassArmorProficiencies {
 items: [String]
 }
 
+type ClassCantripProgression {
+_1: Int
+_2: Int
+_3: Int
+_4: Int
+_5: Int
+_6: Int
+_7: Int
+_8: Int
+_9: Int
+_10: Int
+_11: Int
+_12: Int
+_13: Int
+_14: Int
+_15: Int
+_16: Int
+_17: Int
+_18: Int
+_19: Int
+_20: Int
+}
+
 type ClassHitDie {
 number: Int
 faces: Int
@@ -138,16 +157,6 @@ type ClassOptionalFeatureProgression {
 name: String
 featureType: [String]
 progression: ClassOptionalFeatureProgressionProgression
-}
-
-type ClassSkillProficiencies {
-choose: ClassSkillProficienciesChoose
-items: [String]
-}
-
-type ClassSkillProficienciesChoose {
-from: [String]
-count: Int
 }
 
 type ClassOptionalFeatureProgressionProgression {
@@ -173,6 +182,11 @@ _19: Int
 _20: Int
 }
 
+type ClassSkillProficiencies {
+choose: ClassSkillProficienciesChoose
+items: [String]
+}
+
 type ClassStartingEquipment {
 _: [ClassStartingEquipment_]
 a: [ClassStartingEquipmentA]
@@ -183,6 +197,17 @@ c: [ClassStartingEquipmentC]
 type ClassStartingEquipmentC {
 filter: String
 item: String
+}
+
+type ClassStartingEquipment_ {
+filter: String
+quantity: Int
+item: String
+}
+
+type ClassSkillProficienciesChoose {
+from: [String]
+count: Int
 }
 
 type ClassStartingEquipmentB {
@@ -197,53 +222,57 @@ quantity: Int
 filter: String
 }
 
-type ClassStartingEquipment_ {
-filter: String
-quantity: Int
-item: String
-}
-
 type ClassMulticlassingProficienciesGained {
-armor: ClassMulticlassingProficienciesGainedArmor
-tools: ClassMulticlassingProficienciesGainedTools
-weapons: ClassMulticlassingProficienciesGainedWeapons
-skills: ClassMulticlassingProficienciesGainedSkills
+armorProficiencies: ClassMulticlassingProficienciesGainedArmorProficiencies
+toolProficiencies: ClassMulticlassingProficienciesGainedToolProficiencies
+weaponProficiencies: ClassMulticlassingProficienciesGainedWeaponProficiencies
+skillProficiencies: ClassMulticlassingProficienciesGainedSkillProficiencies
 }
 
-type ClassMulticlassingProficienciesGainedSkills {
-choose: ClassMulticlassingProficienciesGainedSkillsChoose
+type ClassMulticlassingProficienciesGainedSkillProficiencies {
+choose: ClassMulticlassingProficienciesGainedSkillProficienciesChoose
 }
 
-type ClassMulticlassingProficienciesGainedSkillsChoose {
+type ClassMulticlassingProficienciesGainedSkillProficienciesChoose {
 from: [String]
 count: Int
 }
 
-type ClassMulticlassingProficienciesGainedWeapons {
+type ClassMulticlassingProficienciesGainedWeaponProficiencies {
 items: [String]
 }
 
-type ClassMulticlassingProficienciesGainedTools {
+type ClassMulticlassingProficienciesGainedToolProficiencies {
 items: [String]
 }
 
-type ClassMulticlassingProficienciesGainedArmor {
+type ClassMulticlassingProficienciesGainedArmorProficiencies {
 items: [String]
 }
 
 type ClassClassTableGroups {
 colLabels: [String]
-rows: [ClassClassTableGroupsRowsList]
+rows: [ClassClassTableGroupsRows]
 title: String
-rowsSpellProgression: [ClassClassTableGroupsRowsSpellProgressionList]
+rowsSpellProgression: [ClassClassTableGroupsRowsSpellProgression]
 }
 
 type ClassClassTableGroupsRows {
-_0: String
-_1: String
-_2: String
-_3: String
-_4: String
+_0: ClassClassTableGroupsRows_0
+_1: ClassClassTableGroupsRows_1
+_2: ClassClassTableGroupsRows_2
+_3: ClassClassTableGroupsRows_3
+_4: ClassClassTableGroupsRows_4
+}
+
+type ClassClassTableGroupsRows_4 {
+type: String
+value: String
+}
+
+type ClassClassTableGroupsRows_3 {
+type: String
+value: String
 }
 
 type ClassClassTableGroupsRowsSpellProgression {
@@ -258,8 +287,14 @@ _7: Int
 _8: Int
 }
 
-type ClassClassTableGroupsRowsSpellProgressionList {
-items: [ClassClassTableGroupsRowsSpellProgression]
+type ClassClassTableGroupsRows_2 {
+type: String
+value: String
+}
+
+type ClassClassTableGroupsRows_1 {
+type: String
+value: String
 }
 
 type OptionalFeature {
@@ -302,7 +337,7 @@ additionalSpells: [SubclassAdditionalSpells]
 spellcastingAbility: String
 optionalFeatureProgression: [SubclassOptionalFeatureProgression]
 multiclassSlotsProgression: String
-cantripProgression: [Int]
+cantripProgression: SubclassCantripProgression
 spellsKnownProgression: [Int]
 subclassTableGroups: [SubclassSubclassTableGroups]
 }
@@ -310,14 +345,14 @@ subclassTableGroups: [SubclassSubclassTableGroups]
 type SubclassSubclassTableGroups {
 subclasses: [SubclassSubclassTableGroupsSubclasses]
 colLabels: [String]
-rows: [SubclassSubclassTableGroupsRowsList]
+rows: [SubclassSubclassTableGroupsRows]
 title: String
-rowsSpellProgression: [SubclassSubclassTableGroupsRowsSpellProgressionList]
+rowsSpellProgression: [SubclassSubclassTableGroupsRowsSpellProgression]
 }
 
 type SubclassSubclassTableGroupsRows {
-_0: String
-_1: String
+_0: SubclassSubclassTableGroupsRows_0
+_1: SubclassSubclassTableGroupsRows_1
 }
 
 type SubclassSubclassTableGroupsRowsSpellProgression {
@@ -327,17 +362,42 @@ _2: Int
 _3: Int
 }
 
-type SubclassSubclassTableGroupsRowsSpellProgressionList {
-items: [SubclassSubclassTableGroupsRowsSpellProgression]
+type SubclassSubclassTableGroupsRows_1 {
+type: String
+value: String
 }
 
-type SubclassSubclassTableGroupsRowsList {
-items: [SubclassSubclassTableGroupsRows]
+type SubclassSubclassTableGroupsRows_0 {
+type: String
+value: String
 }
 
 type SubclassSubclassTableGroupsSubclasses {
 name: String
 source: String
+}
+
+type SubclassCantripProgression {
+_1: Int
+_2: Int
+_3: Int
+_4: Int
+_5: Int
+_6: Int
+_7: Int
+_8: Int
+_9: Int
+_10: Int
+_11: Int
+_12: Int
+_13: Int
+_14: Int
+_15: Int
+_16: Int
+_17: Int
+_18: Int
+_19: Int
+_20: Int
 }
 
 type SubclassOptionalFeatureProgression {
@@ -502,7 +562,7 @@ subclassFeature: String
 caption: String
 colLabels: [String]
 colStyles: [String]
-rows: [SubclassFeatureEntriesRowsList]
+rows: [SubclassFeatureEntriesRows]
 items: [SubclassFeatureEntriesItems]
 name: String
 parentId: Int
@@ -540,10 +600,6 @@ _4: String
 _5: String
 }
 
-type SubclassFeatureEntriesRowsList {
-items: [SubclassFeatureEntriesRows]
-}
-
 type SubclassSubclassFeatures {
 featureName: String
 className: String
@@ -552,8 +608,16 @@ level: Int
 source: String
 }
 
-type ClassClassTableGroupsRowsList {
-items: [ClassClassTableGroupsRows]
+type ClassClassTableGroupsRows_0 {
+type: String
+value: String
+toRoll: [ClassClassTableGroupsRows_0ToRoll]
+rollable: Boolean
+}
+
+type ClassClassTableGroupsRows_0ToRoll {
+number: Int
+faces: Int
 }
 
 type OptionalFeatureConsumes {
@@ -569,16 +633,12 @@ items: [OptionalFeatureEntriesItems]
 caption: String
 colLabels: [String]
 colStyles: [String]
-rows: [OptionalFeatureEntriesRowsList]
+rows: [OptionalFeatureEntriesRows]
 }
 
 type OptionalFeatureEntriesRows {
 _0: String
 _1: String
-}
-
-type OptionalFeatureEntriesRowsList {
-items: [OptionalFeatureEntriesRows]
 }
 
 type OptionalFeatureEntriesItems {

@@ -102,13 +102,6 @@ quantity: Int
 special: Boolean
 }
 
-type ItemType {
-abbreviation: String
-source: String
-name: String
-entries: [ItemTypeEntries]
-}
-
 type ItemEntries {
 type: String
 entry: String
@@ -118,7 +111,7 @@ parentId: Int
 caption: String
 colLabels: [String]
 colStyles: [String]
-rows: [ItemEntriesRowsList]
+rows: [ItemEntriesRows]
 source: String
 page: Int
 items: [ItemEntriesItems]
@@ -134,8 +127,16 @@ _0: String
 _1: String
 }
 
-type ItemEntriesRowsList {
-items: [ItemEntriesRows]
+type ItemType {
+abbreviation: String
+source: String
+name: String
+entries: [ItemTypeEntries]
+}
+
+type ItemDamage {
+_1: String
+_2: String
 }
 
 type ItemTypeEntries {
@@ -149,17 +150,7 @@ page: Int
 caption: String
 colLabels: [String]
 colStyles: [String]
-rows: [ItemTypeEntriesRowsList]
-}
-
-type ItemDamage {
-_1: String
-_2: String
-}
-
-type ItemTypeEntriesRows {
-_0: String
-_1: String
+rows: [ItemTypeEntriesRows]
 }
 
 type ItemAttunedBy {
@@ -172,8 +163,9 @@ race: String
 psionics: Boolean
 }
 
-type ItemTypeEntriesRowsList {
-items: [ItemTypeEntriesRows]
+type ItemTypeEntriesRows {
+_0: String
+_1: String
 }
 
 type ItemModifySpeed {

@@ -11,7 +11,7 @@ entry: String
 internalId: Int
 colLabels: [String]
 colStyles: [String]
-rows: [DeckEntriesRowsList]
+rows: [DeckEntriesRows]
 name: String
 parentId: Int
 footnotes: [String]
@@ -19,17 +19,13 @@ page: Int
 }
 
 type DeckEntriesRows {
-_0: DeckEntriesRowsList0
+_0: DeckEntriesRows_0
 _1: String
 }
 
-type DeckEntriesRowsList {
-items: [DeckEntriesRows]
-}
-
-type DeckEntriesRowsList0 {
+type DeckEntriesRows_0 {
 type: String
-roll: DeckEntriesRowsList0Roll
+roll: DeckEntriesRows_0Roll
 entry: String
 }
 
@@ -50,7 +46,7 @@ internalId: Int
 entry: String
 }
 
-type DeckEntriesRowsList0Roll {
+type DeckEntriesRows_0Roll {
 exact: Int
 min: Int
 max: Int

@@ -22,7 +22,7 @@ parentId: Int
 caption: String
 colLabels: [String]
 colStyles: [String]
-rows: [SpellEntriesRowsList]
+rows: [SpellEntriesRows]
 style: String
 items: [SpellEntriesItems]
 name: String
@@ -42,10 +42,6 @@ _2: String
 _3: String
 _4: String
 _5: String
-}
-
-type SpellEntriesRowsList {
-items: [SpellEntriesRows]
 }
 
 type SpellDuration {

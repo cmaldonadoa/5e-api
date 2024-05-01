@@ -92,7 +92,7 @@ items: [FeatEntriesItems]
 caption: String
 colLabels: [String]
 colStyles: [String]
-rows: [FeatEntriesRowsList]
+rows: [FeatEntriesRows]
 parentId: Int
 name: String
 style: String
@@ -121,10 +121,6 @@ type FeatEntriesRows {
 _0: String
 _1: String
 _2: String
-}
-
-type FeatEntriesRowsList {
-items: [FeatEntriesRows]
 }
 
 type FeatToolProficiencies {

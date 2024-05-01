@@ -41,13 +41,7 @@ internalId: Int
 caption: String
 colLabels: [String]
 colStyles: [String]
-rows: [VehicleEntriesRowsList]
-}
-
-type VehicleEntriesRows {
-_0: String
-_1: String
-_2: String
+rows: [VehicleEntriesRows]
 }
 
 type VehicleActions {
@@ -57,17 +51,13 @@ internalId: Int
 caption: String
 colLabels: [String]
 colStyles: [String]
-rows: [VehicleActionsRowsList]
+rows: [VehicleActionsRows]
 }
 
 type VehicleActionsRows {
 _0: String
 _1: String
 _2: String
-}
-
-type VehicleActionsRowsList {
-items: [VehicleActionsRows]
 }
 
 type VehicleWeapons {
@@ -105,8 +95,10 @@ name: String
 entry: String
 }
 
-type VehicleEntriesRowsList {
-items: [VehicleEntriesRows]
+type VehicleEntriesRows {
+_0: String
+_1: String
+_2: String
 }
 
 type VehicleAbility {

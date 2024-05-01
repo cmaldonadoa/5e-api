@@ -24,22 +24,18 @@ items: [RaceEntriesItems]
 caption: String
 colLabels: [String]
 colStyles: [String]
-rows: [RaceEntriesRowsList]
+rows: [RaceEntriesRows]
 style: String
-}
-
-type RaceEntriesRows {
-_0: String
-_1: String
-_2: String
 }
 
 type RaceFeats {
 items: [String]
 }
 
-type RaceEntriesRowsList {
-items: [RaceEntriesRows]
+type RaceEntriesRows {
+_0: String
+_1: String
+_2: String
 }
 
 type RaceWeaponProficiencies {
@@ -177,9 +173,15 @@ data: SubraceEntriesData
 caption: String
 colLabels: [String]
 colStyles: [String]
-rows: [SubraceEntriesRowsList]
+rows: [SubraceEntriesRows]
 style: String
 items: [SubraceEntriesItems]
+}
+
+type SubraceSpeed {
+walk: Int
+swim: Int
+fly: Int
 }
 
 type SubraceToolProficiencies {
@@ -192,23 +194,13 @@ name: String
 entry: String
 }
 
-type SubraceSpeed {
-walk: Int
-swim: Int
-fly: Int
+type SubraceWeaponProficiencies {
+items: [String]
 }
 
 type SubraceEntriesRows {
 _0: String
 _1: String
-}
-
-type SubraceWeaponProficiencies {
-items: [String]
-}
-
-type SubraceEntriesRowsList {
-items: [SubraceEntriesRows]
 }
 
 type SubraceOverwrite {

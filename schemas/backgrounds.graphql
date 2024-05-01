@@ -22,7 +22,7 @@ entry: String
 parentId: Int
 colLabels: [String]
 colStyles: [String]
-rows: [BackgroundEntriesRowsList]
+rows: [BackgroundEntriesRows]
 caption: String
 id: String
 }
@@ -110,10 +110,6 @@ worthValue: Int
 type BackgroundEntriesRows {
 _0: String
 _1: String
-}
-
-type BackgroundEntriesRowsList {
-items: [BackgroundEntriesRows]
 }
 
 type BackgroundEntriesData {
