@@ -560,6 +560,24 @@ export default {
         return character;
       });
     },
+    addResource: (_parent, args, context) => {
+      return update.character(context, args.characterName, (character) => {
+        add.resource(character, args.resource);
+        return character;
+      });
+    },
+    updateResource: (_parent, args, context) => {
+      return update.character(context, args.characterName, (character) => {
+        update.resource(character, args.resource);
+        return character;
+      });
+    },
+    deleteResource: (_parent, args, context) => {
+      return update.character(context, args.characterName, (character) => {
+        remove.resource(character, args.id);
+        return character;
+      });
+    },
     addSpellcastingSlots: (_parent, args, context) => {
       return update.character(context, args.characterName, (character) => {
         add.spellcastingSlots(character, args.slots);
