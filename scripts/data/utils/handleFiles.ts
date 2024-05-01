@@ -16,14 +16,14 @@ type OptionsTestsDisabled = {
 
 type OptionsCustomTestsEnabled = {
   enabled: true;
-  tests: (element: any) => void;
+  run: (element: any) => void;
   property: string;
   key: string;
 };
 
 type OptionsCustomTestsDisabled = {
   enabled: false;
-  tests?: Function;
+  run?: Function;
   key?: string;
   property?: string;
 };
@@ -76,11 +76,24 @@ export const handleFiles = (handlers: any, options: Options) => {
 
   const runInternalTests = (element: any) => {
     countKeys("_total");
-    const property = options.enableInternalTests?.property;
+    const properties = options.enableInternalTests?.property.split(".");
 
-    if (element[property]) {
-      let value = element[property];
+    function accessNestedProperty(obj, keys) {
+      return keys.reduce((acc, key) => {
+        if (Array.isArray(acc)) {
+          return acc
+            .map((item) =>
+              item && item[key] !== undefined ? item[key] : undefined
+            )
+            .filter((val) => val !== undefined);
+        }
+        return acc && acc[key] !== undefined ? acc[key] : undefined;
+      }, obj);
+    }
 
+    const value = accessNestedProperty(element, properties);
+
+    if (value) {
       // Count occurrences
       countKeys("_subtotal");
 
@@ -96,20 +109,27 @@ export const handleFiles = (handlers: any, options: Options) => {
         Object.keys(value).forEach((k) => countKeys(k));
 
       if (Array.isArray(value)) {
+        function countArray(val, nestLevel = 1) {
+          val.forEach((v) =>
+            typeof v !== "string" && typeof v !== "number"
+              ? countKeys("ARRAY_".repeat(nestLevel) + "OBJECT") &&
+                (Array.isArray(v)
+                  ? countArray(v, nestLevel + 1)
+                  : Object.keys(v).forEach((k) =>
+                      countKeys(
+                        `${"ARRAY_".repeat(nestLevel)}OBJECT_KEY_${k}_` +
+                          ((Array.isArray(v[k]) && "array") ||
+                            typeof v[k] + "_" + v[k])
+                      )
+                    ))
+              : typeof v === "string"
+                ? countKeys("ARRAY_".repeat(nestLevel) + "STRING_VALUE_" + v)
+                : countKeys("ARRAY_".repeat(nestLevel) + "NUMBER")
+          );
+        }
+
         // Test property array elements types
-        value.forEach((v) =>
-          typeof v !== "string" && typeof v !== "number"
-            ? countKeys("ARRAY_OBJECT") &&
-              Object.keys(v).forEach((k) =>
-                countKeys(
-                  `ARRAY_OBJECT_KEY_${k}_` +
-                    ((Array.isArray(v[k]) && "array") || typeof v[k])
-                )
-              )
-            : typeof v === "string"
-              ? countKeys("ARRAY_STRING")
-              : countKeys("ARRAY_NUMBER")
-        );
+        countArray(value);
 
         // Test property array length
         if (value.length) countKeys("ARRAY_LENGTH_" + value.length);
@@ -160,6 +180,28 @@ export const handleFiles = (handlers: any, options: Options) => {
     countPropertiesRecursive(obj, peekKeys[key]);
   };
 
+  const transformNestedArrays = (element: any) => {
+    if (Array.isArray(element)) {
+      if (element.every((e) => Array.isArray(e))) {
+        return element.map((e: any[]) =>
+          e.reduce((acc, obj, index) => {
+            acc["_" + index] = transformNestedArrays(obj);
+            return acc;
+          }, {})
+        );
+      }
+
+      return element.map((e) => transformNestedArrays(e));
+    }
+    if (typeof element === "object") {
+      return Object.keys(element).reduce((acc, key) => {
+        acc[key] = transformNestedArrays(element[key]);
+        return acc;
+      }, {});
+    }
+    return element;
+  };
+
   const peek = (element: any, key: string) => {
     if (
       options.peek?.enabled &&
@@ -177,7 +219,7 @@ export const handleFiles = (handlers: any, options: Options) => {
     const property = options.enableCustomTests?.property;
 
     if (element[property]) {
-      options.enableCustomTests?.tests(element);
+      options.enableCustomTests?.run(element);
     }
   };
 
@@ -205,7 +247,7 @@ export const handleFiles = (handlers: any, options: Options) => {
           if (options.count) saveProperties(copy || x, key);
 
           const result = handlers[key](copy || x);
-          return peek(result, key);
+          return peek(transformNestedArrays(result), key);
         };
 
         const versions = utils.getVersions(element);
