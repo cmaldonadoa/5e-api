@@ -42,23 +42,23 @@ export class JSONMutator<T> {
     this.file = JSON.parse(fs.readFileSync(root + path, "utf-8"));
   }
 
-  add<T>(to: string, object: T) {
-    this.file[to].push(object);
+  add<T>(key: string, object: T) {
+    this.file[key].push(object);
   }
 
-  get<T>(from: string, where: (e: T) => boolean) {
-    return (this.file[from] as T[])
+  get<T>(fromKey: string, where: (e: T) => boolean) {
+    return (this.file[fromKey] as T[])
       .map((item, index) => ({ item, index }))
       .filter((element) => where(element.item));
   }
 
-  update<T>(from: string, index: number, object: T) {
-    (this.file[from] as T[])[index] = object;
+  update<T>(fromKey: string, index: number, object: T) {
+    (this.file[fromKey] as T[])[index] = object;
   }
 
-  delete<T>(from: string, object: T) {
-    const index = (this.file[from] as T[]).indexOf(object);
-    this.file[from] = (this.file[from] as T[]).splice(index, 1);
+  delete<T>(fromKey: string, object: T) {
+    const index = (this.file[fromKey] as T[]).indexOf(object);
+    this.file[fromKey] = (this.file[fromKey] as T[]).splice(index, 1);
   }
 
   save() {
