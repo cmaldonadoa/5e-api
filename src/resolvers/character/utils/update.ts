@@ -317,16 +317,16 @@ const updateResource = (
   const index = character.resources.findIndex((e) => e.type === resource.type);
   if (index === -1) return false;
 
-  const { items, type, used } = resource;
+  const { items, used } = resource;
 
   if (resource.hasOwnProperty("used")) character.resources[index].used = used;
   if (resource.hasOwnProperty("items")) {
     if (
-      resource.items.every((item) =>
+      items.every((item) =>
         character.resources[index].items.find((e) => e.id === item.id)
       )
     )
-      resource.items.forEach((item) => {
+      items.forEach((item) => {
         const itemIndex = character.resources[index].items.findIndex(
           (e) => e.id === item.id
         );
