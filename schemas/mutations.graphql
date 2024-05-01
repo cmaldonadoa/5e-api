@@ -1,81 +1,126 @@
 type Mutation {
     register(username: String!, password: String!): Boolean
     login(username: String!, password: String!): String!
+
     createCharacter(name: String!): Character
+
     setCharacterName(characterName: String!, name: String!): Character
-    setCharacterRace(
+    setCharacterRace(characterName: String!, race: CharacterRaceInput): Character
+    setCharacterSubrace(
         characterName: String!
-        raceName: String!
-        raceSource: String!
-        subraceName: String!
-        subraceSource: String!
-        raceProficiencies: CharacterProficienciesInput
-        raceAbilityScores: CharacterAbilityScoresInput
-        raceSpellcastingAbility: String
-        raceSpells: [CharacterSpellInput]
-        subraceProficiencies: CharacterProficienciesInput
-        subraceAbilityScores: CharacterAbilityScoresInput
-        subraceSpellcastingAbility: String
-        subraceSpells: [CharacterSpellInput]
+        subrace: CharacterSubraceInput
     ): Character
-    addCharacterClass(characterName: String!, name: String!): Character
+
+    addCharacterClass(
+        characterName: String!
+        class: CharacterClassInput
+    ): Character
+    deleteCharacterClass(characterName: String!, name: String!): Character
     setCharacterSubclass(
         characterName: String!
-        className: String!
-        name: String!
+        subclass: CharacterSubclassInput
     ): Character
+
     setCharacterBackground(
         characterName: String!
-        name: String!
-        proficiencies: CharacterProficienciesInput
-        items: [CharacterItemInput]
+        background: CharacterBackgroundInput
     ): Character
-    addFeat(
-        characterName: String!
-        name: String!
-        proficiencies: CharacterProficienciesInput
-        expertises: CharacterProficienciesInput
-        abilityScores: CharacterAbilityScoresInput
-        spellcastingAbility: String
-        spells: [CharacterSpellInput]
-    ): Character
-    addOptionalFeature(
-        characterName: String!
-        name: String!
-        spellcastingAbility: String
-        spells: [CharacterSpellInput]
-        sourceType: CharacterDataSource!
-        sourceText: String
-    ): Character
-    setAbilityScores(
-        characterName: String!
-        abilityScores: CharacterAbilityScoresInput
-        source: String
-    ): Character
+
     addAbilityScores(
         characterName: String!
         abilityScores: CharacterAbilityScoresInput
-        source: String
     ): Character
+    updateAbilityScore(
+        characterName: String!
+        abilityScore: CharacterAbilityScoreInput
+    ): Character
+    deleteAbilityScore(characterName: String!, id: ID!): Character
+
     addProficiencies(
         characterName: String!
         proficiencies: CharacterProficienciesInput
-        source: String
     ): Character
-    setHitPointMaximum(characterName: String!, hitPoint: Int!): Character
-    setHitPointCurrent(characterName: String!, hitPoint: Int!): Character
-    addItem(characterName: String!, item: CharacterItemInput!): Character
-    updateItem(characterName: String!, item: CharacterItemInput!): Character
-    updateCoins(characterName: String!, coins: CharacterCoinsInput!): Character
-    addFeature(
+    updateProficiency(
         characterName: String!
-        feature: CharacterFeatureInput!
-        source: String
+        proficiency: CharacterProficiencyInput
+    ): Character
+    deleteProficiency(characterName: String!, id: ID!): Character
+
+    addExpertises(
+        characterName: String!
+        expertises: CharacterProficienciesInput
+    ): Character
+    updateExpertise(
+        characterName: String!
+        expertise: CharacterProficiencyInput
+    ): Character
+    deleteExpertise(characterName: String!, id: ID!): Character
+
+    addFeatures(
+        characterName: String!
+        features: [CharacterFeatureInput!]!
     ): Character
     updateFeature(
         characterName: String!
         feature: CharacterFeatureInput!
     ): Character
-    removeFeature(characterName: String!, id: ID!): Character
-    levelUp(characterName: String!, className: String!): Character
+    deleteFeature(characterName: String!, id: ID!): Character
+
+    addSpells(characterName: String!, spells: [CharacterSpellInput!]!): Character
+    updateSpell(characterName: String!, spell: CharacterSpellInput!): Character
+    deleteSpell(characterName: String!, id: ID!): Character
+
+    addItems(characterName: String!, items: [CharacterItemInput!]!): Character
+    updateItem(characterName: String!, item: CharacterItemInput!): Character
+    deleteItem(characterName: String!, id: ID!): Character
+
+    addSpellcastingSlots(
+        characterName: String!
+        slots: CharacterSpellSlotsInput
+    ): Character
+    updateSpellcastingSlot(
+        characterName: String!
+        slot: CharacterSpellSlotInput
+    ): Character
+    deleteSpellcastingSlot(characterName: String!, id: ID!): Character
+
+    addPactSlots(
+        characterName: String!
+        slots: CharacterSpellSlotsInput
+    ): Character
+    updatePactSlot(
+        characterName: String!
+        slot: CharacterSpellSlotInput
+    ): Character
+    deletePactSlot(characterName: String!, id: ID!): Character
+
+    addResource(
+        characterName: String!
+        resource: CharacterResourceInput
+    ): Character
+    updateResource(
+        characterName: String!
+        resource: CharacterResourceInput
+    ): Character
+    deleteResource(characterName: String!, id: ID!): Character
+
+    addFeat(characterName: String!, feat: CharacterFeatInput!): Character
+    deleteFeat(characterName: String!, id: ID!): Character
+
+    addOptionalFeature(
+        characterName: String!
+        feature: CharacterOptionalFeatureInput!
+    ): Character
+    deleteOptionalFeature(characterName: String!, id: ID!): Character
+
+    updateCoins(characterName: String!, coins: CharacterCoinsInput!): Character
+    updateSpeed(
+        characterName: String!
+        speed: CharacterSpeedValueInput!
+    ): Character
+
+    setHitPointMaximum(characterName: String!, hitPoint: Int!): Character
+    setHitPointCurrent(characterName: String!, hitPoint: Int!): Character
+
+    levelUp(characterName: String!, options: CharacterLevelUpInput): Character
 }

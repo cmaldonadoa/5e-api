@@ -1,30 +1,37 @@
 type Character {
     owner: String!
     name: String!
-    abilityScores: CharacterAbilityScores
+    abilityScores: CharacterAbilityScores!
     raceName: String
     raceSource: String
     subraceName: String
     subraceSource: String
-    classes: [CharacterClass]
+    classes: [CharacterClass]!
     backgroundName: String
-    spells: [CharacterSpell]
-    proficiencies: CharacterProficiencies
+    spells: [CharacterSpell]!
+    proficiencies: CharacterProficiencies!
     expertises: CharacterProficiencies
     hitPointMaximum: Int
     hitPointCurrent: Int
-    items: [CharacterItem]
+    items: [CharacterItem]!
     coins: CharacterCoins
     features: [CharacterFeature]
     initiative: Int
     speed: CharacterSpeed
     armorClass: Int
     proficiencyBonus: Int
+    chosenOptions: [CharacterChosenOption]
+    spellcastingSlots: CharacterSpellSlots
+    pactMagicSlots: CharacterSpellSlots
+    resources: [CharacterResource]
 }
 
 type CharacterItem {
     id: ID!
-    item: CharacterDataValue!
+    refId: ID
+    name: String!
+    sourceType: CharacterDataSource!
+    sourceText: String
     customDescription: String
     isBaseItem: Boolean!
     quantity: Int!
@@ -34,8 +41,9 @@ type CharacterItem {
 
 input CharacterItemInput {
     id: ID
-    item: String
-    source: String
+    name: String
+    sourceType: CharacterDataSource
+    sourceText: String
     customDescription: String
     quantity: Int
     displayName: String
@@ -43,13 +51,21 @@ input CharacterItemInput {
 }
 
 type CharacterSpell {
-    spell: CharacterDataValue,
+    id: ID!
+    refId: ID
+    name: String!
+    sourceType: CharacterDataSource!
+    sourceText: String
     spellcastingAbility: String
     _meta: CharacterSpellMeta
 }
 
 input CharacterSpellInput {
-    spell: String
+    id: ID
+    name: String
+    sourceType: CharacterDataSource
+    sourceText: String
+    spellcastingAbility: String
     _meta: CharacterSpellMetaInput
 }
 
@@ -65,64 +81,82 @@ input CharacterSpellMetaInput {
     shortRest: Int
 }
 
-type CharacterDataValue {
-    item: String
-    sourceType: CharacterDataSource
-    sourceText: String
-}
-
 type CharacterAbilityScores {
-    str: [CharacterAbilityScoreValue]!
-    dex: [CharacterAbilityScoreValue]!
-    con: [CharacterAbilityScoreValue]!
-    int: [CharacterAbilityScoreValue]!
-    wis: [CharacterAbilityScoreValue]!
-    cha: [CharacterAbilityScoreValue]!
+    str: [CharacterAbilityScore]!
+    dex: [CharacterAbilityScore]!
+    con: [CharacterAbilityScore]!
+    int: [CharacterAbilityScore]!
+    wis: [CharacterAbilityScore]!
+    cha: [CharacterAbilityScore]!
 }
 
-type CharacterAbilityScoreValue {
-    item: Int
-    operation: CharacterAbilityScoreValueType,
+type CharacterAbilityScore {
+    id: ID!
+    refId: ID
+    value: Int
     sourceType: CharacterDataSource
     sourceText: String
-}
-
-enum CharacterAbilityScoreValueType {
-    SET
-    ADD
 }
 
 input CharacterAbilityScoresInput {
-    str: Int
-    dex: Int
-    con: Int
-    int: Int
-    wis: Int
-    cha: Int
+    str: CharacterAbilityScoreInput
+    dex: CharacterAbilityScoreInput
+    con: CharacterAbilityScoreInput
+    int: CharacterAbilityScoreInput
+    wis: CharacterAbilityScoreInput
+    cha: CharacterAbilityScoreInput
+}
+
+input CharacterAbilityScoreInput {
+    id: ID
+    value: Int
+    sourceType: CharacterDataSource
+    sourceText: String
 }
 
 type CharacterProficiencies {
-    armor: [CharacterDataValue]
-    weapon: [CharacterDataValue]
-    language: [CharacterDataValue]
-    tool: [CharacterDataValue]
-    savingThrow: [CharacterDataValue]
-    skill: [CharacterDataValue]
+    armor: [CharacterProficiency]
+    weapon: [CharacterProficiency]
+    language: [CharacterProficiency]
+    tool: [CharacterProficiency]
+    savingThrow: [CharacterProficiency]
+    skill: [CharacterProficiency]
+}
+
+type CharacterProficiency {
+    id: ID!
+    refId: ID
+    name: String
+    sourceType: CharacterDataSource
+    sourceText: String
 }
 
 input CharacterProficienciesInput {
-    armor: [String]
-    weapon: [String]
-    language: [String]
-    tool: [String]
-    savingThrow: [String]
-    skill: [String]
+    armor: [CharacterProficiencyInput]
+    weapon: [CharacterProficiencyInput]
+    language: [CharacterProficiencyInput]
+    tool: [CharacterProficiencyInput]
+    savingThrow: [CharacterProficiencyInput]
+    skill: [CharacterProficiencyInput]
+}
+
+input CharacterProficiencyInput {
+    id: ID
+    name: String
+    sourceType: CharacterDataSource
+    sourceText: String
 }
 
 type CharacterClass {
     name: String!
     subclassName: String
     level: Int!
+    maxHitDice: Int
+    usedHitDice: Int
+    spellcastingAbility: String
+    preparedSpells: Int
+    cantripsKnown: Int
+    spellsKnown: Int
 }
 
 type CharacterCoins {
@@ -143,6 +177,7 @@ input CharacterCoinsInput {
 
 type CharacterFeature {
     id: ID!
+    refId: ID
     entries: [CharacterEntries]
     sourceType: CharacterDataSource
     sourceText: String
@@ -164,8 +199,18 @@ enum CharacterDataSource {
     OTHER
 }
 
+enum CharacterDataSourceInput {
+    BACKGROUND
+    RACE
+    CLASS
+    FEAT
+    ITEM
+    OTHER
+}
+
 type CharacterEntries {
     id: ID!
+    refId: ID
     type: String
     style: String
     items: [CharacterEntriesItems]
@@ -177,7 +222,7 @@ type CharacterEntries {
     parentId: Int
     colLabels: [String]
     colStyles: [String]
-    rows: [CharacterEntriesRowsList]
+    rows: [CharacterEntriesRows]
     caption: String
     attributes: [String]
     classFeature: String
@@ -204,7 +249,7 @@ input CharacterEntriesInput {
     parentId: Int
     colLabels: [String]
     colStyles: [String]
-    rows: [CharacterEntriesRowsListInput]
+    rows: [CharacterEntriesRowsInput]
     caption: String
     attributes: [String]
     classFeature: String
@@ -256,14 +301,6 @@ input CharacterEntriesDataInput {
     isRequiredOption: Boolean
 }
 
-type CharacterEntriesRowsList {
-    items: [CharacterEntriesRows]
-}
-
-input CharacterEntriesRowsListInput {
-    items: [CharacterEntriesRowsInput]
-}
-
 type CharacterEntriesRows {
     _0: String
     _1: String
@@ -283,15 +320,191 @@ input CharacterEntriesRowsInput {
 }
 
 type CharacterSpeed {
-    walk: Int
-    fly: Int
-    climb: Int
-    swim: Int
+    walk: [CharacterSpeedValue]
+    fly: [CharacterSpeedValue]
+    climb: [CharacterSpeedValue]
+    swim: [CharacterSpeedValue]
+}
+
+type CharacterSpeedValue {
+    id: ID!
+    refId: ID
+    value: Int,
+    sourceType: CharacterDataSource
+    sourceText: String
 }
 
 input CharacterSpeedInput {
-    walk: Int
-    fly: Int
-    climb: Int
-    swim: Int
+    walk: CharacterSpeedValueInput
+    fly: CharacterSpeedValueInput
+    climb: CharacterSpeedValueInput
+    swim: CharacterSpeedValueInput
+}
+
+input CharacterSpeedValueInput {
+    id: ID
+    value: Int,
+    sourceType: CharacterDataSource
+    sourceText: String
+}
+
+type CharacterChosenOption {
+    id: ID!
+    refId: ID
+    name: String!
+    category: String
+    consumeType: CharacterResourceType
+    consumeAmount: Int
+}
+
+input CharacterChosenOptionInput {
+    name: String!
+    category: String
+    consumeType: CharacterResourceType
+    consumeAmount: Int
+}
+
+input CharacterFeatInput {
+    name: String!
+    proficiencies: CharacterProficienciesInput
+    expertises: CharacterProficienciesInput
+    abilityScores: CharacterAbilityScoresInput
+    spellcastingAbility: String
+    spells: [CharacterSpellInput]
+    optionalFeatures: [CharacterOptionalFeatureInput]
+}
+
+input CharacterRaceInput {
+    name: String!
+    source: String!
+    proficiencies: CharacterProficienciesInput
+    abilityScores: CharacterAbilityScoresInput
+    spellcastingAbility: String
+    spells: [CharacterSpellInput]
+    feat: CharacterFeatInput
+    subrace: CharacterSubraceInput
+}
+
+input CharacterSubraceInput {
+    name: String!
+    source: String!
+    proficiencies: CharacterProficienciesInput
+    abilityScores: CharacterAbilityScoresInput
+    spellcastingAbility: String
+    spells: [CharacterSpellInput]
+    feat: CharacterFeatInput
+}
+
+input CharacterBackgroundInput {
+    name: String!
+    proficiencies: CharacterProficienciesInput
+    items: [CharacterItemInput]
+    feat: CharacterFeatInput
+}
+
+input CharacterOptionalFeatureInput {
+    name: String!
+    spellcastingAbility: String
+    spells: [CharacterSpellInput]
+    sourceType: CharacterDataSource
+    sourceText: String
+}
+
+input CharacterClassInput {
+    name: String!
+    startingEquipment: [CharacterItemInput]
+    proficiencies: CharacterProficienciesInput
+}
+
+input CharacterSubclassInput {
+    className: String!
+    name: String!
+}
+
+input CharacterLevelUpInput {
+    className: String!
+    addedSpells: [CharacterSpellInput]
+    removedSpells: [ID]
+    addedOptionalFeatures: [CharacterOptionalFeatureInput]
+    removedOptionalFeatures: [ID]
+    abilityScores: CharacterAbilityScoresInput
+    feat: CharacterFeatInput
+    removedProficiencies: [ID]
+    addedProficiencies: CharacterProficienciesInput
+}
+
+type CharacterSpellSlots {
+    _1: [CharacterSpellSlot]
+    _2: [CharacterSpellSlot]
+    _3: [CharacterSpellSlot]
+    _4: [CharacterSpellSlot]
+    _5: [CharacterSpellSlot]
+    _6: [CharacterSpellSlot]
+    _7: [CharacterSpellSlot]
+    _8: [CharacterSpellSlot]
+    _9: [CharacterSpellSlot]
+}
+
+type CharacterSpellSlot {
+    id: ID!
+    refId: ID
+    amount: Int
+    sourceType: CharacterDataSource
+    sourceText: String
+}
+
+input CharacterSpellSlotsInput {
+    _1: [CharacterSpellSlotInput]
+    _2: [CharacterSpellSlotInput]
+    _3: [CharacterSpellSlotInput]
+    _4: [CharacterSpellSlotInput]
+    _5: [CharacterSpellSlotInput]
+    _6: [CharacterSpellSlotInput]
+    _7: [CharacterSpellSlotInput]
+    _8: [CharacterSpellSlotInput]
+    _9: [CharacterSpellSlotInput]
+}
+
+input CharacterSpellSlotInput {
+    id: ID
+    amount: Int
+    sourceType: CharacterDataSource
+    sourceText: String
+}
+
+type CharacterResource {
+    type: CharacterResourceType!
+    used: Int
+    items: [CharacterResourceItem]
+}
+
+type CharacterResourceItem {
+    id: ID!
+    refId: ID
+    amount: Int
+    sourceType: CharacterDataSource
+    sourceText: String
+}
+
+input CharacterResourceInput {
+    type: CharacterResourceType!
+    used: Int
+    items: [CharacterResourceItemInput]
+}
+
+input CharacterResourceItemInput {
+    id: ID
+    amount: Int
+    sourceType: CharacterDataSource
+    sourceText: String
+}
+
+enum CharacterResourceType {
+    KI
+    WILD_SHAPE
+    SORCERY_POINTS
+    SUPERIORITY_DICE
+    ARCANE_SHOT
+    CHANNEL_DIVINITY
+    PSIONIC_ENERGY_DICE
 }
