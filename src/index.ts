@@ -41,12 +41,16 @@ const { url } = await startStandaloneServer(server, {
 
     let username: string | jwt.JwtPayload;
     try {
+      if (!process.env.JWT_KEY) {
+        console.log("No JWT set");
+        return { token };
+      }
       username = jwt.verify(token, process.env.JWT_KEY);
+      return { username, token };
     } catch (e) {
       console.log(e);
     }
-
-    return { username, token };
+    return { token };
   },
 });
 
