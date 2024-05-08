@@ -23,7 +23,7 @@ stealth: Boolean
 type BaseItemEntries {
 type: String
 entry: String
-internalId: Int
+internalId: Int!
 name: String
 parentId: Int
 }
@@ -93,7 +93,7 @@ entries: [ItemPropertyEntries]
 type ItemPropertyEntries {
 type: String
 entry: String
-internalId: Int
+internalId: Int!
 }
 
 type BaseItemPackContents {
@@ -105,7 +105,7 @@ special: Boolean
 type ItemEntries {
 type: String
 entry: String
-internalId: Int
+internalId: Int!
 name: String
 parentId: Int
 caption: String
@@ -142,7 +142,7 @@ _2: String
 type ItemTypeEntries {
 type: String
 entry: String
-internalId: Int
+internalId: Int!
 name: String
 parentId: Int
 source: String

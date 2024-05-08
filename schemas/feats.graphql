@@ -87,7 +87,7 @@ count: Int
 type FeatEntries {
 type: String
 entry: String
-internalId: Int
+internalId: Int!
 items: [FeatEntriesItems]
 caption: String
 colLabels: [String]

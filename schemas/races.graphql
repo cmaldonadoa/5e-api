@@ -17,7 +17,7 @@ feats: RaceFeats
 type RaceEntries {
 type: String
 name: String
-internalId: Int
+internalId: Int!
 entry: String
 parentId: Int
 items: [RaceEntriesItems]
@@ -166,7 +166,7 @@ items: [String]
 type SubraceEntries {
 name: String
 type: String
-internalId: Int
+internalId: Int!
 entry: String
 parentId: Int
 data: SubraceEntriesData

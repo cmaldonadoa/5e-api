@@ -15,7 +15,7 @@ type BackgroundEntries {
 type: String
 style: String
 items: [BackgroundEntriesItems]
-internalId: Int
+internalId: Int!
 name: String
 data: BackgroundEntriesData
 entry: String

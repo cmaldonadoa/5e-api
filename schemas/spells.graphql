@@ -3,7 +3,7 @@ name: String
 source: String
 level: Int
 school: String
-time: [SpellTime]
+time: SpellTime
 range: SpellRange
 components: SpellComponents
 duration: SpellDuration
@@ -16,7 +16,7 @@ ritual: Boolean
 type SpellEntries {
 type: String
 entry: String
-internalId: Int
+internalId: Int!
 by: String
 parentId: Int
 caption: String
@@ -70,7 +70,7 @@ distance: SpellRangeDistance
 type SpellHigherLevel {
 type: String
 name: String
-internalId: Int
+internalId: Int!
 entry: String
 parentId: Int
 }

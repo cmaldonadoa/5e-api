@@ -37,7 +37,7 @@ fly: Int
 type VehicleEntries {
 type: String
 entry: String
-internalId: Int
+internalId: Int!
 caption: String
 colLabels: [String]
 colStyles: [String]
@@ -47,7 +47,7 @@ rows: [VehicleEntriesRows]
 type VehicleActions {
 type: String
 entry: String
-internalId: Int
+internalId: Int!
 caption: String
 colLabels: [String]
 colStyles: [String]
@@ -78,13 +78,13 @@ entries: [VehicleWeaponsActionsEntries]
 type VehicleWeaponsActionsEntries {
 type: String
 entry: String
-internalId: Int
+internalId: Int!
 }
 
 type VehicleWeaponsEntries {
 type: String
 entry: String
-internalId: Int
+internalId: Int!
 style: String
 items: [VehicleWeaponsEntriesItems]
 }
@@ -120,7 +120,7 @@ health: Int
 type VehicleControlsEntries {
 type: String
 entry: String
-internalId: Int
+internalId: Int!
 }
 
 type VehicleMovements {
@@ -139,5 +139,5 @@ entries: [VehicleMovementsSpeedEntries]
 type VehicleMovementsSpeedEntries {
 type: String
 entry: String
-internalId: Int
+internalId: Int!
 }

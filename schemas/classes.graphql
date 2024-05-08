@@ -48,6 +48,7 @@ className: String
 classSource: String
 level: Int
 entries: [ClassFeatureEntries]
+usesFormula: String
 isClassFeatureVariant: Boolean
 consumes: ClassFeatureConsumes
 }
@@ -60,12 +61,12 @@ amount: Int
 type ClassFeatureEntries {
 type: String
 entry: String
-internalId: Int
+internalId: Int!
 items: [ClassFeatureEntriesItems]
 name: String
 parentId: Int
 attributes: [String]
-classFeature: String
+classFeature: ClassFeatureEntriesClassFeature
 caption: String
 colLabels: [String]
 colStyles: [String]
@@ -81,6 +82,13 @@ _0: String
 _1: String
 _2: String
 _3: String
+}
+
+type ClassFeatureEntriesClassFeature {
+featureName: String
+className: String
+source: String
+level: Int
 }
 
 type ClassFeatureEntriesItems {
@@ -307,6 +315,7 @@ isClassFeatureVariant: Boolean
 consumes: OptionalFeatureConsumes
 additionalSpells: [OptionalFeatureAdditionalSpells]
 skillProficiencies: OptionalFeatureSkillProficiencies
+usesFormula: String
 optionalFeatureProgression: [OptionalFeatureOptionalFeatureProgression]
 }
 
@@ -323,7 +332,9 @@ type ClassClassFeatures {
 featureName: String
 className: String
 level: Int
+gainSubclassFeature: Boolean
 source: String
+gainSubclassFeatureHasContent: Boolean
 }
 
 type Subclass {
@@ -544,6 +555,7 @@ subclassShortName: String
 subclassSource: String
 level: Int
 entries: [SubclassFeatureEntries]
+usesFormula: String
 type: String
 consumes: SubclassFeatureConsumes
 isClassFeatureVariant: Boolean
@@ -557,8 +569,8 @@ amount: Int
 type SubclassFeatureEntries {
 type: String
 entry: String
-internalId: Int
-subclassFeature: String
+internalId: Int!
+subclassFeature: SubclassFeatureEntriesSubclassFeature
 caption: String
 colLabels: [String]
 colStyles: [String]
@@ -581,7 +593,7 @@ isRequiredOption: Boolean
 type SubclassFeatureEntriesItems {
 type: String
 entry: String
-subclassFeature: String
+subclassFeature: SubclassFeatureEntriesItemsSubclassFeature
 name: String
 entries: [SubclassFeatureEntriesItemsEntries]
 }
@@ -591,6 +603,14 @@ type: String
 entry: String
 }
 
+type SubclassFeatureEntriesItemsSubclassFeature {
+featureName: String
+className: String
+subclassName: String
+source: String
+level: Int
+}
+
 type SubclassFeatureEntriesRows {
 _0: String
 _1: String
@@ -598,6 +618,14 @@ _2: String
 _3: String
 _4: String
 _5: String
+}
+
+type SubclassFeatureEntriesSubclassFeature {
+featureName: String
+className: String
+subclassName: String
+source: String
+level: Int
 }
 
 type SubclassSubclassFeatures {
@@ -628,7 +656,7 @@ amount: Int
 type OptionalFeatureEntries {
 type: String
 entry: String
-internalId: Int
+internalId: Int!
 items: [OptionalFeatureEntriesItems]
 caption: String
 colLabels: [String]
