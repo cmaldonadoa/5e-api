@@ -17,7 +17,7 @@ handleFiles(
       source: x.source,
       level: x.level,
       school: x.school,
-      time: utils.adapt(x.time.length === 1 && x.time),
+      time: utils.adapt(x.time.length === 1 && x.time[0]),
       range: {
         type: x.range.type,
         distance: utils.adapt(
