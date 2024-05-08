@@ -14,9 +14,9 @@ const data = {
 
 export const queries = {
   race: (name: string, source: string) =>
-    data.races.find((e) => e.name === name && e.source === source),
+    data.races.find((e) => e.name === name && e.source === source) || null,
   subrace: (name: string, source: string) =>
-    data.subraces.find((e) => e.name === name && e.source === source),
+    data.subraces.find((e) => e.name === name && e.source === source) || null,
 };
 
 export default {

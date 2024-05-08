@@ -19,7 +19,7 @@ export const getQueries = <V>(
   data: Record<string, V>
 ): { [k: string]: () => V } =>
   Object.entries(data).reduce((queries, [key, value]) => {
-    queries[key] = () => value;
+    (queries as Record<string, () => V>)[key] = () => value;
     return queries;
   }, {});
 
@@ -43,22 +43,26 @@ export class JSONMutator<T> {
   }
 
   add<T>(key: string, object: T) {
-    this.file[key].push(object);
+    (this.file as Record<string, T[]>)[key].push(object);
   }
 
   get<T>(fromKey: string, where: (e: T) => boolean) {
-    return (this.file[fromKey] as T[])
+    return (this.file as Record<string, T[]>)[fromKey]
       .map((item, index) => ({ item, index }))
       .filter((element) => where(element.item));
   }
 
   update<T>(fromKey: string, index: number, object: T) {
-    (this.file[fromKey] as T[])[index] = object;
+    ((this.file as Record<string, T[]>)[fromKey] as T[])[index] = object;
   }
 
   delete<T>(fromKey: string, object: T) {
-    const index = (this.file[fromKey] as T[]).indexOf(object);
-    this.file[fromKey] = (this.file[fromKey] as T[]).splice(index, 1);
+    const index = ((this.file as Record<string, T[]>)[fromKey] as T[]).indexOf(
+      object
+    );
+    (this.file as Record<string, T[]>)[fromKey] = (
+      (this.file as Record<string, T[]>)[fromKey] as T[]
+    ).splice(index, 1);
   }
 
   save() {

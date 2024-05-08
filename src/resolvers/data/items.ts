@@ -22,11 +22,13 @@ const data = {
 };
 
 export const queries = {
-  item: (name: string) => data.items.find((e) => e.name === name),
-  baseItem: (name: string) => data.baseItems.find((e) => e.name === name),
+  item: (name: string) => data.items.find((e) => e.name === name) || null,
+  baseItem: (name: string) =>
+    data.baseItems.find((e) => e.name === name) || null,
   itemProperty: (name: string) =>
-    data.itemProperties.find((e) => e.name === name),
-  itemType: (name: string) => data.itemTypes.find((e) => e.name === name),
+    data.itemProperties.find((e) => e.name === name) || null,
+  itemType: (name: string) =>
+    data.itemTypes.find((e) => e.name === name) || null,
 };
 
 export default {

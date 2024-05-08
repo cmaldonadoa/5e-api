@@ -11,7 +11,8 @@ const data = {
 };
 
 export const queries = {
-  language: (name: string) => data.languages.find((e) => e.name === name),
+  language: (name: string) =>
+    data.languages.find((e) => e.name === name) || null,
 };
 
 export default {

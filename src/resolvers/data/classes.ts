@@ -26,14 +26,17 @@ const data = {
 };
 
 export const queries = {
-  class: (name: string) => data.classes.find((e) => e.name === name),
-  subclass: (name: string) => data.subclasses.find((e) => e.name === name),
-  classFeature: (name: string) =>
-    data.classFeatures.find((e) => e.name === name),
-  subclassFeature: (name: string) =>
-    data.subclassFeatures.find((e) => e.name === name),
+  class: (name: string) => data.classes.find((e) => e.name === name) || null,
+  subclass: (name: string) =>
+    data.subclasses.find((e) => e.name === name) || null,
+  classFeature: (name: string, level: number) =>
+    data.classFeatures.find((e) => e.name === name && e.level === level) ||
+    null,
+  subclassFeature: (name: string, level: number) =>
+    data.subclassFeatures.find((e) => e.name === name && e.level === level) ||
+    null,
   optionalFeature: (name: string) =>
-    data.optionalFeatures.find((e) => e.name === name),
+    data.optionalFeatures.find((e) => e.name === name) || null,
 };
 
 export default {
@@ -41,8 +44,10 @@ export default {
     ...getQueries(data),
     class: (_parent, { name }) => queries.class(name),
     subclass: (_parent, { name }) => queries.subclass(name),
-    classFeature: (_parent, { name }) => queries.classFeature(name),
-    subclassFeature: (_parent, { name }) => queries.subclassFeature(name),
+    classFeature: (_parent, { name, level }) =>
+      queries.classFeature(name, level || 0),
+    subclassFeature: (_parent, { name, level }) =>
+      queries.subclassFeature(name, level || 0),
     optionalFeature: (_parent, { name }) => queries.optionalFeature(name),
   },
 } satisfies Resolvers;

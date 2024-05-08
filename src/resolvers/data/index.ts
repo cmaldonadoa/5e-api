@@ -2,6 +2,7 @@ import backgroundsResolvers from "./backgrounds.js";
 import booksResolvers from "./books.js";
 import classesResolvers from "./classes.js";
 import featsResolvers from "./feats.js";
+import decksResolvers from "./decks.js";
 import itemsResolvers from "./items.js";
 import languagesResolvers from "./languages.js";
 import racesResolvers from "./races.js";
@@ -15,6 +16,7 @@ export default {
     ...booksResolvers.Query,
     ...classesResolvers.Query,
     ...featsResolvers.Query,
+    ...decksResolvers.Query,
     ...itemsResolvers.Query,
     ...languagesResolvers.Query,
     ...racesResolvers.Query,

@@ -13,8 +13,8 @@ const data = {
 };
 
 const queries = {
-  deck: (name: string) => data.decks.find((e) => e.name === name),
-  card: (name: string) => data.cards.find((e) => e.name === name),
+  deck: (name: string) => data.decks.find((e) => e.name === name) || null,
+  card: (name: string) => data.cards.find((e) => e.name === name) || null,
 };
 
 export default {

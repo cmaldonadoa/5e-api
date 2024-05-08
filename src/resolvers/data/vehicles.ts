@@ -11,7 +11,7 @@ const data = {
 };
 
 const queries = {
-  vehicle: (name: string) => data.vehicles.find((e) => e.name === name),
+  vehicle: (name: string) => data.vehicles.find((e) => e.name === name) || null,
 };
 
 export default {

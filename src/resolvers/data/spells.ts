@@ -11,7 +11,7 @@ const data = {
 };
 
 export const queries = {
-  spell: (name: string) => data.spells.find((e) => e.name === name),
+  spell: (name: string) => data.spells.find((e) => e.name === name) || null,
 };
 
 export default {

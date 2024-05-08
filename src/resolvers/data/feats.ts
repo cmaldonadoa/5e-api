@@ -11,7 +11,7 @@ const data = {
 };
 
 export const queries = {
-  feat: (name: string) => data.feats.find((e) => e.name === name),
+  feat: (name: string) => data.feats.find((e) => e.name === name) || null,
 };
 
 export default {

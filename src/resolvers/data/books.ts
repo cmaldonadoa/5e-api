@@ -11,7 +11,7 @@ const data = {
 };
 
 export const queries = {
-  book: (id: string) => data.books.find((e) => e.id === id),
+  book: (id: string) => data.books.find((e) => e.id === id) || null,
 };
 
 export default {

@@ -11,7 +11,8 @@ const data = {
 };
 
 export const queries = {
-  background: (name: string) => data.backgrounds.find((e) => e.name === name),
+  background: (name: string) =>
+    data.backgrounds.find((e) => e.name === name) || null,
 };
 
 export default {
