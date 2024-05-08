@@ -89,6 +89,8 @@ type TypedEntry = {
   name?: string;
   items?: Entries;
   entries?: Entries;
+  classFeature?: any;
+  subclassFeature?: any;
 };
 
 type Entry = string | TypedEntry;
@@ -153,8 +155,8 @@ export const utils = {
   },
 
   formatEntries: (entries: Entry[]): TypedEntry[] => {
-    return entries.map((entry) =>
-      typeof entry === "string"
+    return entries.map((entry) => {
+      return typeof entry === "string"
         ? { type: "text", entry }
         : entry.type === "list"
           ? {
@@ -163,13 +165,34 @@ export const utils = {
                 utils.formatEntries(utils.asArray(entry.items))
               ),
             }
-          : {
-              ...entry,
-              entries: utils.adapt(
-                utils.formatEntries(utils.asArray(entry.entries))
-              ),
-            }
-    );
+          : entry.type === "refClassFeature"
+            ? {
+                type: entry.type,
+                classFeature: {
+                  featureName: entry.classFeature.split("|")[0],
+                  className: entry.classFeature.split("|")[1],
+                  source: utils.adapt(entry.classFeature.split("|")[2]),
+                  level: +entry.classFeature.split("|")[3],
+                },
+              }
+            : entry.type === "refSubclassFeature"
+              ? {
+                  type: entry.type,
+                  subclassFeature: {
+                    featureName: entry.subclassFeature.split("|")[0],
+                    className: entry.subclassFeature.split("|")[1],
+                    subclassName: entry.subclassFeature.split("|")[3],
+                    source: utils.adapt(entry.subclassFeature.split("|")[4]),
+                    level: +entry.subclassFeature.split("|")[5],
+                  },
+                }
+              : {
+                  ...entry,
+                  entries: utils.adapt(
+                    utils.formatEntries(utils.asArray(entry.entries))
+                  ),
+                };
+    });
   },
 
   renderItemEntries: (item: BaseData, itemEntries: ItemEntry[]) => {
@@ -214,15 +237,16 @@ export const utils = {
   splitEntries: (entries: Entry[]) => {
     const split = (
       internalId: number,
-      entries?: Entries,
+      entries?: TypedEntry[],
       parentId?: number
     ) => {
       if (!entries) return;
 
       let result = [];
-      utils.formatEntries(utils.asArray(entries)).forEach((entry) => {
+      entries.forEach((entry) => {
         const descendantNodes =
-          split(internalId + 1, entry.entries, internalId) || [];
+          split(internalId + 1, entry.entries as TypedEntry[], internalId) ||
+          [];
         const children = utils.adapt(
           descendantNodes
             .filter((e) => e.parentId === internalId)
@@ -243,7 +267,7 @@ export const utils = {
       });
       return result;
     };
-    return split(0, entries);
+    return split(0, utils.formatEntries(utils.asArray(entries)));
   },
 
   getCopy: (data: Copyable[], element?: Copyable) => {
