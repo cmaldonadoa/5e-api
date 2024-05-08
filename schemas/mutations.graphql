@@ -5,54 +5,54 @@ type Mutation {
     createCharacter(name: String!): Character
 
     setCharacterName(characterName: String!, name: String!): Character
-    setCharacterRace(characterName: String!, race: CharacterRaceInput): Character
+    setCharacterRace(characterName: String!, race: CharacterRaceInput!): Character
     setCharacterSubrace(
         characterName: String!
-        subrace: CharacterSubraceInput
+        subrace: CharacterSubraceInput!
     ): Character
 
     addCharacterClass(
         characterName: String!
-        class: CharacterClassInput
+        class: CharacterClassInput!
     ): Character
     deleteCharacterClass(characterName: String!, name: String!): Character
     setCharacterSubclass(
         characterName: String!
-        subclass: CharacterSubclassInput
+        subclass: CharacterSubclassInput!
     ): Character
 
     setCharacterBackground(
         characterName: String!
-        background: CharacterBackgroundInput
+        background: CharacterBackgroundInput!
     ): Character
 
     addAbilityScores(
         characterName: String!
-        abilityScores: CharacterAbilityScoresInput
+        abilityScores: CharacterAbilityScoresInput!
     ): Character
     updateAbilityScore(
         characterName: String!
-        abilityScore: CharacterAbilityScoreInput
+        abilityScore: CharacterAbilityScoreInput!
     ): Character
     deleteAbilityScore(characterName: String!, id: ID!): Character
 
     addProficiencies(
         characterName: String!
-        proficiencies: CharacterProficienciesInput
+        proficiencies: CharacterProficienciesInput!
     ): Character
     updateProficiency(
         characterName: String!
-        proficiency: CharacterProficiencyInput
+        proficiency: CharacterProficiencyInput!
     ): Character
     deleteProficiency(characterName: String!, id: ID!): Character
 
     addExpertises(
         characterName: String!
-        expertises: CharacterProficienciesInput
+        expertises: CharacterProficienciesInput!
     ): Character
     updateExpertise(
         characterName: String!
-        expertise: CharacterProficiencyInput
+        expertise: CharacterProficiencyInput!
     ): Character
     deleteExpertise(characterName: String!, id: ID!): Character
 
@@ -76,31 +76,31 @@ type Mutation {
 
     addSpellcastingSlots(
         characterName: String!
-        slots: CharacterSpellSlotsInput
+        slots: CharacterSpellSlotsInput!
     ): Character
     updateSpellcastingSlot(
         characterName: String!
-        slot: CharacterSpellSlotInput
+        slot: CharacterSpellSlotInput!
     ): Character
     deleteSpellcastingSlot(characterName: String!, id: ID!): Character
 
     addPactSlots(
         characterName: String!
-        slots: CharacterSpellSlotsInput
+        slots: CharacterSpellSlotsInput!
     ): Character
     updatePactSlot(
         characterName: String!
-        slot: CharacterSpellSlotInput
+        slot: CharacterSpellSlotInput!
     ): Character
     deletePactSlot(characterName: String!, id: ID!): Character
 
     addResource(
         characterName: String!
-        resource: CharacterResourceInput
+        resource: CharacterResourceInput!
     ): Character
     updateResource(
         characterName: String!
-        resource: CharacterResourceInput
+        resource: CharacterResourceInput!
     ): Character
     deleteResource(characterName: String!, id: ID!): Character
 
@@ -122,5 +122,5 @@ type Mutation {
     setHitPointMaximum(characterName: String!, hitPoint: Int!): Character
     setHitPointCurrent(characterName: String!, hitPoint: Int!): Character
 
-    levelUp(characterName: String!, options: CharacterLevelUpInput): Character
+    levelUp(characterName: String!, options: CharacterLevelUpInput!): Character
 }
