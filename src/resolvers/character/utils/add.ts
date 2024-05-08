@@ -5,6 +5,7 @@ import {
   CharacterCoinsInput,
   CharacterDataSource,
   CharacterEntries,
+  CharacterEntriesInput,
   CharacterFeatInput,
   CharacterFeature,
   CharacterFeatureInput,
@@ -22,13 +23,28 @@ import {
   CharacterSpellSlot,
   CharacterSpellSlotInput,
   CharacterSpellSlotsInput,
+  Class,
+  FeatAdditionalSpells,
+  FeatAdditionalSpellsSpells,
+  FeatAdditionalSpellsSpells_Meta,
+  OptionalFeatureAdditionalSpellsSpells,
+  OptionalFeatureAdditionalSpellsSpells_Meta,
+  OptionalFeatureEntries,
 } from "../../../__generated__/graphql";
 import { v4 as uuid } from "uuid";
 import { queries as itemQueries } from "../../data/items";
 import { queries as featQueries } from "../../data/feats";
 import converters from "./input";
 import { queries as classQueries } from "../../data/classes";
-import { addSource, parseFormula } from "./index";
+import {
+  AbilityScoreKey,
+  addSource,
+  CoinKey,
+  parseFormula,
+  ProficiencyKey,
+  SlotKey,
+  SpeedKey,
+} from "./index";
 import get from "./get";
 
 type AbilityScoresIds = {
@@ -45,35 +61,37 @@ const addAbilityScores = (
   abilityScores: CharacterAbilityScoresInput,
   refId?: string
 ): AbilityScoresIds => {
-  const ids = {};
+  const ids: AbilityScoresIds = {};
   character.abilityScores = Object.keys(character.abilityScores).reduce(
     (characterAbilityScores, key) => {
       const id = key in abilityScores ? uuid() : null;
-      if (id) ids[key] = id;
-      characterAbilityScores[key] = [
-        ...characterAbilityScores[key],
-        ...(key in abilityScores
-          ? [
-              {
-                id: id,
-                value: abilityScores[key].value,
-                sourceType: abilityScores[key].sourceType,
-                sourceText: abilityScores[key].sourceText,
-                ...(refId && { refId }),
-              },
-            ]
-          : []),
-      ];
+      if (id) {
+        ids[key as AbilityScoreKey] = id;
+        characterAbilityScores[key as AbilityScoreKey] = [
+          ...characterAbilityScores[key as AbilityScoreKey],
+          ...(key in abilityScores
+            ? [
+                {
+                  id: id,
+                  value: abilityScores[key as AbilityScoreKey]?.value || 0,
+                  sourceType: abilityScores[key as AbilityScoreKey]?.sourceType,
+                  sourceText: abilityScores[key as AbilityScoreKey]?.sourceText,
+                  refId: refId,
+                },
+              ]
+            : []),
+        ];
+      }
       return characterAbilityScores;
     },
     character.abilityScores
   );
   character.classes = character.classes.map((e) => {
-    const classData = classQueries.class(e.name);
+    const classData = classQueries.class(e.name) as Class;
     return {
       ...e,
       preparedSpells: parseFormula(
-        classData.preparedSpellsFormula,
+        classData.preparedSpellsFormula || "",
         character,
         e.name
       ),
@@ -91,29 +109,39 @@ type ProficienciesIds = {
   skill?: string[];
 };
 
+const handleProficiency = (
+  e: CharacterProficiencyInput,
+  ids: ProficienciesIds,
+  key: string,
+  refId?: string
+) => {
+  const id = uuid();
+  if (!(key in ids)) ids[key as ProficiencyKey] = [];
+  (ids[key as ProficiencyKey] as string[]).push(id);
+  return {
+    id: id,
+    refId: refId,
+    sourceText: e.sourceText,
+    sourceType: e.sourceType,
+    name: e.name || "",
+  } satisfies CharacterProficiency;
+};
+
 const addProficiencies = (
   character: Character,
   proficiencies: CharacterProficienciesInput,
   refId?: string
 ): ProficienciesIds => {
-  const ids = {};
+  const ids: ProficienciesIds = {};
   character.proficiencies = Object.keys(character.proficiencies).reduce(
     (characterProficiencies, key) => {
-      characterProficiencies[key] = [
-        ...characterProficiencies[key],
+      characterProficiencies[key as ProficiencyKey] = [
+        ...characterProficiencies[key as ProficiencyKey],
         ...(
-          ((proficiencies || {})[key] || []) as CharacterProficiencyInput[]
+          ((proficiencies || {})[key as ProficiencyKey] ||
+            []) as CharacterProficiencyInput[]
         ).map((e) => {
-          const id = uuid();
-          if (!(key in ids)) ids[key] = [];
-          ids[key].push(id);
-          return {
-            id: id,
-            ...(refId && { refId }),
-            sourceText: e.sourceText,
-            sourceType: e.sourceType,
-            name: e.name,
-          } satisfies CharacterProficiency;
+          return handleProficiency(e, ids, key, refId);
         }),
       ];
       return characterProficiencies;
@@ -128,25 +156,17 @@ const addExpertises = (
   expertises: CharacterProficienciesInput,
   refId?: string
 ): ProficienciesIds => {
-  const ids = {};
+  const ids: ProficienciesIds = {};
   character.expertises = Object.keys(character.expertises).reduce(
     (characterExpertises, key) => {
-      characterExpertises[key] = [
-        ...characterExpertises[key],
-        ...(((expertises || {})[key] || []) as CharacterProficiencyInput[]).map(
-          (e) => {
-            const id = uuid();
-            if (!(key in ids)) ids[key] = [];
-            ids[key].push(id);
-            return {
-              id: id,
-              ...(refId && { refId }),
-              sourceText: e.sourceText,
-              sourceType: e.sourceType,
-              name: e.name,
-            } satisfies CharacterProficiency;
-          }
-        ),
+      characterExpertises[key as ProficiencyKey] = [
+        ...characterExpertises[key as ProficiencyKey],
+        ...(
+          ((expertises || {})[key as ProficiencyKey] ||
+            []) as CharacterProficiencyInput[]
+        ).map((e) => {
+          return handleProficiency(e, ids, key, refId);
+        }),
       ];
       return characterExpertises;
     },
@@ -167,13 +187,18 @@ const addSpells = (
       const id = uuid();
       ids.push(id);
       return {
+        ...spell,
         id: id,
-        ...(refId && { refId }),
-        name: spell.name,
-        sourceType: spell.sourceType,
-        sourceText: spell.sourceText,
-        spellcastingAbility: spell.spellcastingAbility,
-        _meta: spell._meta,
+        refId: refId,
+        name: spell.name || "",
+        entries: (spell.entries || []).map(
+          (entry) =>
+            ({ ...entry, id: uuid(), refId: id }) satisfies CharacterEntries
+        ),
+        higherLevel: (spell.higherLevel || []).map(
+          (entry) =>
+            ({ ...entry, id: uuid(), refId: id }) satisfies CharacterEntries
+        ),
       } satisfies CharacterSpell;
     }),
   ];
@@ -193,12 +218,12 @@ const addItems = (
       ids.push(id);
       return {
         id: id,
-        ...(refId && { refId }),
-        name: item.name,
+        refId: refId,
+        name: item.name || "",
         sourceText: item.sourceText,
         sourceType: item.sourceType,
-        isBaseItem: Boolean(itemQueries.baseItem(item.name)),
-        quantity: item.quantity,
+        isBaseItem: Boolean(item.name && itemQueries.baseItem(item.name)),
+        quantity: item.quantity || 0,
         displayName: item.displayName,
         worthValue: item.worthValue,
       } satisfies CharacterItem;
@@ -219,30 +244,30 @@ const addResource = (
     character.resources.push({
       type: resource.type,
       used: resource.used,
-      items: resource.items.map((item) => {
+      items: (resource.items || []).map((item) => {
         const id = uuid();
         ids.push(id);
         return {
           id: id,
-          ...(refId && { refId }),
+          refId: refId,
           sourceText: item.sourceText,
           sourceType: item.sourceType,
-          amount: item.amount,
+          amount: item.amount || 0,
         } satisfies CharacterResourceItem;
       }),
     });
   } else {
     character.resources[index].items = [
       ...character.resources[index].items,
-      ...resource.items.map((item) => {
+      ...(resource.items || []).map((item) => {
         const id = uuid();
         ids.push(id);
         return {
           id: id,
-          ...(refId && { refId }),
+          refId: refId,
           sourceText: item.sourceText,
           sourceType: item.sourceType,
-          amount: item.amount,
+          amount: item.amount || 0,
         } satisfies CharacterResourceItem;
       }),
     ];
@@ -254,7 +279,9 @@ const addResource = (
 const addCoins = (character: Character, coins: CharacterCoinsInput): void => {
   character.coins = Object.keys(character.coins).reduce(
     (characterCoins, key) => {
-      characterCoins[key] = characterCoins[key] + ((coins || {})[key] || 0);
+      characterCoins[key as CoinKey] =
+        (characterCoins[key as CoinKey] || 0) +
+        ((coins || {})[key as CoinKey] || 0);
       return characterCoins;
     },
     character.coins
@@ -268,17 +295,20 @@ const addFeatures = (
 ): string[] => {
   const ids: string[] = [];
   character.features = [
-    ...character.features,
+    ...(character.features || []),
     ...features.map((feature) => {
       const id = uuid();
       ids.push(id);
       return {
         id: id,
-        ...(refId && { refId }),
+        refId: refId,
+        consumeType: feature.consumeType,
+        consumeAmount: feature.consumeAmount,
         sourceText: feature.sourceText,
         sourceType: feature.sourceType,
-        entries: feature.entries.map(
-          (entry) => ({ id: uuid(), ...entry }) satisfies CharacterEntries
+        entries: (feature.entries || []).map(
+          (entry) =>
+            ({ ...entry, id: uuid(), refId: id }) satisfies CharacterEntries
         ),
       } satisfies CharacterFeature;
     }),
@@ -298,25 +328,27 @@ const addSpeed = (
   speed: CharacterSpeedInput,
   refId?: string
 ): SpeedIds => {
-  const ids = {};
+  const ids: SpeedIds = {};
   character.speed = Object.keys(character.speed).reduce(
     (characterSpeed, key) => {
       const id = key in speed ? uuid() : null;
-      if (id) ids[key] = id;
-      characterSpeed[key] = [
-        ...characterSpeed[key],
-        ...(key in speed
-          ? [
-              {
-                id: id,
-                value: speed[key].value,
-                sourceType: speed[key].sourceType,
-                sourceText: speed[key].sourceText,
-                ...(refId && { refId }),
-              },
-            ]
-          : []),
-      ];
+      if (id) {
+        ids[key as SpeedKey] = id;
+        characterSpeed[key as SpeedKey] = [
+          ...(characterSpeed[key as SpeedKey] || []),
+          ...(key in speed
+            ? [
+                {
+                  id: id,
+                  value: speed[key as SpeedKey]?.value || 0,
+                  sourceType: speed[key as SpeedKey]?.sourceType,
+                  sourceText: speed[key as SpeedKey]?.sourceText,
+                  refId: refId,
+                },
+              ]
+            : []),
+        ];
+      }
       return characterSpeed;
     },
     character.speed
@@ -336,29 +368,39 @@ type SlotsIds = {
   _9?: string[];
 };
 
+const handleSlot = (
+  e: CharacterSpellSlotInput,
+  ids: SlotsIds,
+  key: string,
+  refId?: string
+) => {
+  const id = uuid();
+  if (!(key in ids)) ids[key as SlotKey] = [];
+  (ids[key as SlotKey] as string[]).push(id);
+  return {
+    id: id,
+    refId: refId,
+    sourceText: e.sourceText,
+    sourceType: e.sourceType,
+    amount: e.amount || 0,
+  } satisfies CharacterSpellSlot;
+};
+
 const addSpellcastingSlots = (
   character: Character,
   spellcastingSlots: CharacterSpellSlotsInput,
   refId?: string
 ): SlotsIds => {
-  const ids = {};
+  const ids: SlotsIds = {};
   character.spellcastingSlots = Object.keys(character.spellcastingSlots).reduce(
     (characterSpellcastingSlots, key) => {
-      characterSpellcastingSlots[key] = [
-        ...characterSpellcastingSlots[key],
+      characterSpellcastingSlots[key as SlotKey] = [
+        ...(characterSpellcastingSlots[key as SlotKey] || []),
         ...(
-          ((spellcastingSlots || {})[key] || []) as CharacterSpellSlotInput[]
+          ((spellcastingSlots || {})[key as SlotKey] ||
+            []) as CharacterSpellSlotInput[]
         ).map((e) => {
-          const id = uuid();
-          if (!(key in ids)) ids[key] = [];
-          ids[key].push(id);
-          return {
-            id: id,
-            ...(refId && { refId }),
-            sourceText: e.sourceText,
-            sourceType: e.sourceType,
-            amount: e.amount,
-          } satisfies CharacterSpellSlot;
+          return handleSlot(e, ids, key, refId);
         }),
       ];
       return characterSpellcastingSlots;
@@ -373,25 +415,16 @@ const addPactSlots = (
   pactSlots: CharacterSpellSlotsInput,
   refId?: string
 ): SlotsIds => {
-  const ids = {};
+  const ids: SlotsIds = {};
   character.pactMagicSlots = Object.keys(character.pactMagicSlots).reduce(
     (characterPactSlots, key) => {
-      characterPactSlots[key] = [
-        ...characterPactSlots[key],
-        ...(((pactSlots || {})[key] || []) as CharacterSpellSlotInput[]).map(
-          (e) => {
-            const id = uuid();
-            if (!(key in ids)) ids[key] = [];
-            ids[key].push(id);
-            return {
-              id: id,
-              ...(refId && { refId }),
-              sourceText: e.sourceText,
-              sourceType: e.sourceType,
-              amount: e.amount,
-            } satisfies CharacterSpellSlot;
-          }
-        ),
+      characterPactSlots[key as SlotKey] = [
+        ...(characterPactSlots[key as SlotKey] || []),
+        ...(
+          ((pactSlots || {})[key as SlotKey] || []) as CharacterSpellSlotInput[]
+        ).map((e) => {
+          return handleSlot(e, ids, key, refId);
+        }),
       ];
       return characterPactSlots;
     },
@@ -410,7 +443,7 @@ const addChosenOption = (
     ...character.chosenOptions,
     {
       id: id,
-      ...(refId && { refId }),
+      refId: refId,
       name: option.name,
       category: option.category,
     },
@@ -424,10 +457,11 @@ const addFeat = (
   refId?: string
 ) => {
   const feat = featQueries.feat(inputFeat.name);
+  if (!feat) return;
 
   const id = addChosenOption(
     character,
-    converters.ChosenOption(feat.name, "Feats"),
+    converters.ChosenOption(feat.name as string, "Feats", null),
     refId
   );
 
@@ -436,11 +470,17 @@ const addFeat = (
     inputFeat.name
   );
 
-  addFeatures(character, converters.Features(feat.entries, source), id);
+  addFeatures(
+    character,
+    converters.Features(feat.entries as CharacterEntriesInput[], source, null),
+    id
+  );
   addAbilityScores(
     character,
     converters.AbilityScoreInput(
-      inputFeat.abilityScores || feat.ability?.items || [],
+      inputFeat.abilityScores ||
+        (feat.ability?.items as AbilityScoreKey[]) ||
+        [],
       source
     ),
     id
@@ -448,26 +488,36 @@ const addFeat = (
   addProficiencies(character, converters.ProficienciesInput(feat, source), id);
   addProficiencies(
     character,
-    converters.ProficienciesInput(inputFeat.proficiencies, source),
+    converters.ProficienciesInput(
+      (inputFeat.proficiencies || {}) as CharacterProficienciesInput,
+      source
+    ),
     id
   );
   addExpertises(
     character,
-    converters.ProficienciesInput(inputFeat.expertises, source),
+    converters.ProficienciesInput(
+      (inputFeat.expertises || {}) as CharacterProficienciesInput,
+      source
+    ),
     id
   );
 
   if (feat.additionalSpells?.length === 1)
     addSpells(
       character,
-      feat.additionalSpells[0].spells
+      (
+        (feat.additionalSpells as FeatAdditionalSpells[])[0]
+          .spells as FeatAdditionalSpellsSpells[]
+      )
         .filter((spell) => spell.item)
         .map((spell) =>
-          converters.Spell(
-            spell.item,
+          converters.SpellOfficial(
+            spell.item as string,
             inputFeat.spellcastingAbility ||
-              feat.additionalSpells[0].spellcastingAbility?.items[0],
-            spell._meta,
+              feat.additionalSpells?.at(0)?.spellcastingAbility?.items?.at(0) ||
+              "int",
+            spell._meta as FeatAdditionalSpellsSpells_Meta,
             source
           )
         ),
@@ -475,19 +525,20 @@ const addFeat = (
     );
   addSpells(
     character,
-    inputFeat.spells.map((spell) =>
-      converters.Spell(
-        spell.name,
+    (inputFeat.spells || []).map((spell) =>
+      converters.SpellOfficial(
+        spell.name || "",
         inputFeat.spellcastingAbility ||
-          feat.additionalSpells?.at(0).spellcastingAbility?.items[0],
-        spell._meta,
+          feat.additionalSpells?.at(0)?.spellcastingAbility?.items?.at(0) ||
+          "int",
+        spell._meta || {},
         source
       )
     ),
     id
   );
 
-  inputFeat.optionalFeatures.forEach((feature) =>
+  inputFeat.optionalFeatures?.forEach((feature) =>
     addOptionalFeature(character, addSource(feature, source), id)
   );
 };
@@ -498,16 +549,21 @@ const addOptionalFeature = (
   refId?: string
 ) => {
   const feature = classQueries.optionalFeature(inputFeature.name);
+  if (!feature) return;
+
+  const consume = feature.consumes
+    ? converters.ConsumeData(
+        feature.consumes.name as string,
+        feature.consumes.amount || 1
+      )
+    : null;
 
   const id = addChosenOption(
     character,
     converters.ChosenOption(
-      feature.name,
-      get.featureType(feature.featureType[0]),
-      converters.ConsumeData(
-        get.resourceType(feature.consumes.name),
-        feature.consumes.amount || 1
-      )
+      feature.name as string,
+      get.featureType((feature.featureType as string[])[0]),
+      consume
     ),
     refId
   );
@@ -516,13 +572,13 @@ const addOptionalFeature = (
 
   switch (inputFeature.sourceType) {
     case CharacterDataSource.Background:
-      sourceText = character.backgroundName;
+      sourceText = character.backgroundName || "";
       break;
     case CharacterDataSource.Class:
-      sourceText = character.classes.at(0)?.name;
+      sourceText = character.classes.at(0)?.name || "";
       break;
     case CharacterDataSource.Race:
-      sourceText = character.raceName;
+      sourceText = character.raceName || "";
       break;
     default:
       sourceText = "";
@@ -536,8 +592,12 @@ const addOptionalFeature = (
   addFeatures(
     character,
     converters.Features(
-      converters.NamedEntries(feature.name, feature.entries),
-      source
+      converters.NamedEntries(
+        feature.name as string,
+        feature.entries as OptionalFeatureEntries[]
+      ),
+      source,
+      consume
     ),
     id
   );
@@ -550,14 +610,20 @@ const addOptionalFeature = (
   if (feature.additionalSpells)
     addSpells(
       character,
-      feature.additionalSpells[0].spells
+      (
+        feature.additionalSpells.at(0)
+          ?.spells as OptionalFeatureAdditionalSpellsSpells[]
+      )
         .filter((spell) => spell.item)
         .map((spell) =>
-          converters.Spell(
-            spell.item,
+          converters.SpellOfficial(
+            spell.item as string,
             inputFeature.spellcastingAbility ||
-              feature.additionalSpells[0].spellcastingAbility?.items[0],
-            spell._meta,
+              feature.additionalSpells
+                ?.at(0)
+                ?.spellcastingAbility?.items?.at(0) ||
+              "int",
+            spell._meta as OptionalFeatureAdditionalSpellsSpells_Meta,
             source
           )
         ),
@@ -565,12 +631,13 @@ const addOptionalFeature = (
     );
   addSpells(
     character,
-    inputFeature.spells.map((spell) =>
-      converters.Spell(
-        spell.name,
+    (inputFeature.spells || []).map((spell) =>
+      converters.SpellOfficial(
+        spell.name as string,
         inputFeature.spellcastingAbility ||
-          feature.additionalSpells?.at(0).spellcastingAbility?.items[0],
-        spell._meta,
+          feature.additionalSpells?.at(0)?.spellcastingAbility?.items?.at(0) ||
+          "int",
+        spell._meta || {},
         source
       )
     ),

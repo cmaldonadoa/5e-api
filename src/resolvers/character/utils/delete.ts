@@ -9,10 +9,17 @@ import {
   CharacterSpeedValue,
   CharacterSpell,
   CharacterSpellSlot,
+  Class,
 } from "../../../__generated__/graphql";
 import get from "./get";
 import { queries as classQueries } from "../../data/classes";
-import { parseFormula } from "./index";
+import {
+  AbilityScoreKey,
+  parseFormula,
+  ProficiencyKey,
+  SlotKey,
+  SpeedKey,
+} from "./index";
 
 const deleteAbilityScores = (
   character: Character,
@@ -20,18 +27,19 @@ const deleteAbilityScores = (
 ): void => {
   character.abilityScores = Object.keys(character.abilityScores).reduce(
     (characterAbilityScores, key) => {
-      characterAbilityScores[key] = characterAbilityScores[key].filter(handle);
+      characterAbilityScores[key as AbilityScoreKey] =
+        characterAbilityScores[key as AbilityScoreKey].filter(handle);
       return characterAbilityScores;
     },
     character.abilityScores
   );
 
   character.classes = character.classes.map((e) => {
-    const classData = classQueries.class(e.name);
+    const classData = classQueries.class(e.name) as Class;
     return {
       ...e,
       preparedSpells: parseFormula(
-        classData.preparedSpellsFormula,
+        classData.preparedSpellsFormula || "",
         character,
         e.name
       ),
@@ -48,7 +56,8 @@ const deleteProficiencies = (
 ): void => {
   character.proficiencies = Object.keys(character.proficiencies).reduce(
     (characterProficiencies, key) => {
-      characterProficiencies[key] = characterProficiencies[key].filter(handle);
+      characterProficiencies[key as ProficiencyKey] =
+        characterProficiencies[key as ProficiencyKey].filter(handle);
       return characterProficiencies;
     },
     character.proficiencies
@@ -64,7 +73,8 @@ const deleteExpertises = (
 ): void => {
   character.expertises = Object.keys(character.expertises).reduce(
     (characterExpertises, key) => {
-      characterExpertises[key] = characterExpertises[key].filter(handle);
+      characterExpertises[key as ProficiencyKey] =
+        characterExpertises[key as ProficiencyKey].filter(handle);
       return characterExpertises;
     },
     character.expertises
@@ -98,7 +108,7 @@ const deleteFeatures = (
   character: Character,
   handle: (e: CharacterFeature) => void
 ): void => {
-  character.features = character.features.filter(handle);
+  character.features = character.features?.filter(handle);
 };
 const deleteFeature = (character: Character, id: string): void => {
   deleteFeatures(character, (e) => e.id === id);
@@ -110,7 +120,8 @@ const deleteSpeed = (
 ): void => {
   character.speed = Object.keys(character.speed).reduce(
     (characterSpeed, key) => {
-      characterSpeed[key] = characterSpeed[key].filter(handle);
+      characterSpeed[key as SpeedKey] =
+        characterSpeed[key as SpeedKey]?.filter(handle);
       return characterSpeed;
     },
     character.speed
@@ -123,8 +134,8 @@ const deleteSpellcastingSlots = (
 ): void => {
   character.spellcastingSlots = Object.keys(character.spellcastingSlots).reduce(
     (characterSpellcastingSlots, key) => {
-      characterSpellcastingSlots[key] =
-        characterSpellcastingSlots[key].filter(handle);
+      characterSpellcastingSlots[key as SlotKey] =
+        characterSpellcastingSlots[key as SlotKey]?.filter(handle);
       return characterSpellcastingSlots;
     },
     character.spellcastingSlots
@@ -140,7 +151,8 @@ const deletePactSlots = (
 ): void => {
   character.pactMagicSlots = Object.keys(character.pactMagicSlots).reduce(
     (characterPactSlots, key) => {
-      characterPactSlots[key] = characterPactSlots[key].filter(handle);
+      characterPactSlots[key as SlotKey] =
+        characterPactSlots[key as SlotKey]?.filter(handle);
       return characterPactSlots;
     },
     character.pactMagicSlots
@@ -154,7 +166,9 @@ const deletePactSlot = (character: Character, id: string): void => {
 const deleteClass = (character: Character, className: string): void => {
   const subclassName = character.classes.find(
     (e) => e.name === className
-  ).subclassName;
+  )?.subclassName;
+
+  if (!subclassName) return;
 
   const classHandler = (e: any) =>
     e.sourceType === CharacterDataSource.Class && e.sourceText === className;
@@ -168,9 +182,11 @@ const deleteClass = (character: Character, className: string): void => {
 };
 
 const deleteRace = (character: Character): void => {
+  if (!character.raceName) return;
+
   deleteSubrace(character);
 
-  const id = get.refId(character, character.raceName);
+  const id = get.refId(character, character.raceName) as string;
   const handler = (e: any) => e.refId === id;
 
   delete character.raceName;
@@ -181,12 +197,16 @@ const deleteRace = (character: Character): void => {
   deleteAbilityScores(character, handler);
   deleteProficiencies(character, handler);
   deleteSpells(character, handler);
-  deleteFeat(character, get.chosenOptionId(character, id));
+  get
+    .chosenOptionsIds(character, id)
+    .forEach((chosenId) => deleteFeat(character, chosenId));
   deleteChosenOption(character, id);
 };
 
 const deleteSubrace = (character: Character): void => {
-  const id = get.refId(character, character.subraceName);
+  if (!character.subraceName) return;
+
+  const id = get.refId(character, character.subraceName) as string;
   const handler = (e: any) => e.refId === id;
 
   delete character.subraceName;
@@ -197,19 +217,25 @@ const deleteSubrace = (character: Character): void => {
   deleteAbilityScores(character, handler);
   deleteProficiencies(character, handler);
   deleteSpells(character, handler);
-  deleteFeat(character, get.chosenOptionId(character, id));
+  get
+    .chosenOptionsIds(character, id)
+    .forEach((chosenId) => deleteFeat(character, chosenId));
   deleteChosenOption(character, id);
 };
 
 const deleteBackground = (character: Character): void => {
-  const id = get.refId(character, character.backgroundName);
+  if (!character.backgroundName) return;
+
+  const id = get.refId(character, character.backgroundName) as string;
   const handler = (e: any) => e.refId === id;
 
   delete character.backgroundName;
   deleteFeatures(character, handler);
   deleteProficiencies(character, handler);
   deleteItems(character, handler);
-  deleteFeat(character, get.chosenOptionId(character, id));
+  get
+    .chosenOptionsIds(character, id)
+    .forEach((chosenId) => deleteFeat(character, chosenId));
   deleteChosenOption(character, id);
 };
 
@@ -224,14 +250,13 @@ const deleteFeat = (character: Character, id: string): void => {
   deleteChosenOption(character, id);
 };
 
-const deleteOptionalFeature = (character: Character, id: string): Character => {
+const deleteOptionalFeature = (character: Character, id: string): void => {
   const handler = (e: any) => e.refId === id;
 
   deleteFeatures(character, handler);
   deleteProficiencies(character, handler);
   deleteSpells(character, handler);
   deleteChosenOption(character, id);
-  return character;
 };
 
 const deleteChosenOption = (character: Character, id: string): void => {
@@ -240,12 +265,17 @@ const deleteChosenOption = (character: Character, id: string): void => {
 
 const deleteResources = (
   character: Character,
-  handler: (e: CharacterResourceItem) => void
+  handler: (e: CharacterResourceItem) => void,
+  fromType?: string
 ): void => {
-  character.resources = character.resources.map((resource) => ({
-    ...resource,
-    items: resource.items.filter(handler),
-  }));
+  character.resources = character.resources.map((resource) =>
+    !fromType || resource.type === fromType
+      ? {
+          ...resource,
+          items: resource.items.filter(handler),
+        }
+      : resource
+  );
 };
 const deleteResource = (character: Character, id: string): void =>
   deleteResources(character, (e) => e.id !== id);
@@ -263,6 +293,7 @@ export default {
   item: deleteItem,
   features: deleteFeatures,
   feature: deleteFeature,
+  speed: deleteSpeed,
   class: deleteClass,
   race: deleteRace,
   subrace: deleteSubrace,

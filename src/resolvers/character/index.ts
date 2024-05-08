@@ -1,9 +1,19 @@
 import {
+  BackgroundEntries,
+  BackgroundStartingEquipment_,
   Character,
   CharacterDataSource,
+  CharacterSpellInput,
   CharacterSubraceInput,
+  ClassMulticlassing,
+  ClassMulticlassingRequirements,
+  RaceAdditionalSpellsSpells,
+  RaceAdditionalSpellsSpells_Meta,
+  RaceEntries,
   RequireFields,
   Resolvers,
+  SubraceAdditionalSpellsSpells,
+  SubraceEntries,
 } from "../../__generated__/graphql";
 import { authorize } from "../utils";
 import { GraphQLError } from "graphql/error";
@@ -11,7 +21,16 @@ import { ApolloServerErrorCode } from "@apollo/server/errors";
 import { queries as raceQueries } from "../data/races";
 import { queries as backgroundQueries } from "../data/backgrounds";
 import { queries as classQueries } from "../data/classes";
-import utils, { addSource, deleteKeys, json, parseFormula } from "./utils";
+import utils, {
+  AbilityScoreKey,
+  addSource,
+  ClassLevelKey,
+  ClassNameKey,
+  deleteKeys,
+  json,
+  parseFormula,
+} from "./utils";
+import classHandlers from "./classHandlers";
 
 const { get, add, update, remove, inputs } = utils;
 
@@ -21,10 +40,17 @@ const setSubrace = (
 ): void => {
   remove.subrace(character);
   const subrace = raceQueries.subrace(args.name, args.source);
+  if (!subrace)
+    throw new GraphQLError("Subrace not found", {
+      extensions: {
+        code: ApolloServerErrorCode.BAD_REQUEST,
+        http: { status: 400 },
+      },
+    });
 
   const id = add.chosenOption(
     character,
-    inputs.ChosenOption(subrace.name, "Subrace")
+    inputs.ChosenOption(subrace.name as string, "Subrace", null)
   );
 
   const source = inputs.SourceData(
@@ -35,67 +61,86 @@ const setSubrace = (
   character.subraceName = args.name;
   character.subraceSource = args.source;
 
-  add.features(character, inputs.Features(subrace.entries, source), id);
+  add.features(
+    character,
+    inputs.Features(subrace.entries as SubraceEntries[], source, null),
+    id
+  );
 
   add.speed(
     character,
     {
-      walk: inputs.SpeedValue(subrace.speed?.walk, source),
-      fly: inputs.SpeedValue(subrace.speed?.fly, source),
-      swim: inputs.SpeedValue(subrace.speed?.swim, source),
+      ...(subrace.speed?.hasOwnProperty("walk") && {
+        walk: inputs.SpeedValue(subrace.speed?.walk as number, source),
+      }),
+      ...(subrace.speed?.hasOwnProperty("fly") && {
+        walk: inputs.SpeedValue(subrace.speed?.fly as number, source),
+      }),
+      ...(subrace.speed?.hasOwnProperty("swim") && {
+        walk: inputs.SpeedValue(subrace.speed?.swim as number, source),
+      }),
     },
     id
   );
 
-  add.abilityScores(
-    character,
-    inputs.AbilityScoreInput(
-      args.abilityScores || subrace.ability.items,
-      source
-    ),
-    id
-  );
+  if (args.abilityScores || subrace.ability?.items)
+    add.abilityScores(
+      character,
+      inputs.AbilityScoreInput(
+        args.abilityScores || (subrace.ability?.items as AbilityScoreKey[]),
+        source
+      ),
+      id
+    );
   add.proficiencies(character, inputs.ProficienciesInput(subrace, source), id);
-  add.proficiencies(
-    character,
-    inputs.ProficienciesInput(args.proficiencies, source),
-    id
-  );
-  add.spells(
-    character,
-    subrace.additionalSpells.spells
-      .filter((spell) => spell.item)
-      .map((spell) =>
-        inputs.Spell(
-          spell.item,
+  if (args.proficiencies)
+    add.proficiencies(
+      character,
+      inputs.ProficienciesInput(args.proficiencies, source),
+      id
+    );
+  if (subrace.additionalSpells)
+    add.spells(
+      character,
+      (subrace.additionalSpells.spells as SubraceAdditionalSpellsSpells[])
+        .filter((spell) => spell.item)
+        .map((spell) =>
+          inputs.SpellOfficial(
+            spell.item as string,
+            args.spellcastingAbility ||
+              subrace.additionalSpells?.spellcastingAbility?.items?.at(0) ||
+              "int",
+            spell._meta || {},
+            source
+          )
+        ),
+      id
+    );
+
+  if (args.spells)
+    add.spells(
+      character,
+      args.spells.map((spell) =>
+        inputs.SpellOfficial(
+          spell.name as string,
           args.spellcastingAbility ||
-            subrace.additionalSpells?.spellcastingAbility?.items[0],
-          spell._meta,
+            subrace.additionalSpells?.spellcastingAbility?.items?.at(0) ||
+            "int",
+          spell._meta || {},
           source
         )
       ),
-    id
-  );
-  add.spells(
-    character,
-    args.spells.map((spell) =>
-      inputs.Spell(
-        spell.name,
-        args.spellcastingAbility ||
-          subrace.additionalSpells?.spellcastingAbility?.items[0],
-        spell._meta,
-        source
-      )
-    ),
-    id
-  );
-  add.feat(character, args.feat, id);
+      id
+    );
+
+  if (args.feat) add.feat(character, args.feat, id);
 };
 
 export default {
   Mutation: {
     createCharacter: (_parent, args, context) => {
       authorize(context);
+
       const characters = json.get(
         "character",
         (e: Character) => e.owner === context.username && e.name === args.name
@@ -109,7 +154,7 @@ export default {
         });
 
       const character: Character = {
-        owner: context.username,
+        owner: context.username as string,
         name: args.name,
         abilityScores: {
           str: [],
@@ -131,6 +176,14 @@ export default {
           savingThrow: [],
           skill: [],
         },
+        expertises: {
+          armor: [],
+          weapon: [],
+          tool: [],
+          language: [],
+          savingThrow: [],
+          skill: [],
+        },
         coins: {
           gp: 0,
           sp: 0,
@@ -138,6 +191,11 @@ export default {
           pp: 0,
           ep: 0,
         },
+        chosenOptions: [],
+        resources: [],
+        spellcastingSlots: {},
+        pactMagicSlots: {},
+        speed: {},
       };
       json.add("character", character);
       json.save();
@@ -152,15 +210,26 @@ export default {
     setCharacterRace: (_parent, args, context) => {
       return update.character(context, args.characterName, (character) => {
         remove.race(character);
+
         const race = raceQueries.race(args.race.name, args.race.source);
-        const subrace = raceQueries.subrace(
-          args.race.subrace.name,
-          args.race.subrace.source
-        );
+        const subrace = args.race.subrace
+          ? raceQueries.subrace(
+              args.race.subrace.name,
+              args.race.subrace.source
+            )
+          : null;
+
+        if (!race)
+          throw new GraphQLError("Race not found", {
+            extensions: {
+              code: ApolloServerErrorCode.BAD_REQUEST,
+              http: { status: 400 },
+            },
+          });
 
         const id = add.chosenOption(
           character,
-          inputs.ChosenOption(race.name, "Race")
+          inputs.ChosenOption(args.race.name, "Race", null)
         );
 
         const source = inputs.SourceData(
@@ -170,18 +239,30 @@ export default {
         character.raceName = args.race.name;
         character.raceSource = args.race.source;
 
-        add.features(character, inputs.Features(race.entries, source), id);
+        add.features(
+          character,
+          inputs.Features(race.entries as RaceEntries[], source, null),
+          id
+        );
 
         add.speed(
           character,
           deleteKeys(
             {
-              walk: inputs.SpeedValue(race.speed?.walk, source),
-              fly: inputs.SpeedValue(race.speed?.fly, source),
-              climb: inputs.SpeedValue(race.speed?.climb, source),
-              swim: inputs.SpeedValue(race.speed?.swim, source),
+              ...(race.speed?.hasOwnProperty("walk") && {
+                walk: inputs.SpeedValue(race.speed?.walk as number, source),
+              }),
+              ...(race.speed?.hasOwnProperty("fly") && {
+                walk: inputs.SpeedValue(race.speed?.fly as number, source),
+              }),
+              ...(race.speed?.hasOwnProperty("climb") && {
+                walk: inputs.SpeedValue(race.speed?.climb as number, source),
+              }),
+              ...(race.speed?.hasOwnProperty("swim") && {
+                walk: inputs.SpeedValue(race.speed?.swim as number, source),
+              }),
             },
-            ...Object.keys(subrace.speed)
+            ...Object.keys(subrace?.speed || {})
           ),
           id
         );
@@ -189,10 +270,11 @@ export default {
         // Handle race traits
         add.abilityScores(
           character,
-          subrace.overwrite?.ability
+          subrace?.overwrite?.ability
             ? {}
             : inputs.AbilityScoreInput(
-                args.race.abilityScores || race.ability.items,
+                args.race.abilityScores ||
+                  ((race.ability?.items || []) as AbilityScoreKey[]),
                 source
               ),
           id
@@ -201,26 +283,30 @@ export default {
           character,
           deleteKeys(
             inputs.ProficienciesInput(race, source),
-            subrace.overwrite?.languageProficiencies ? "language" : "",
-            subrace.overwrite?.skillProficiencies ? "skill" : ""
+            subrace?.overwrite?.languageProficiencies ? "language" : "",
+            subrace?.overwrite?.skillProficiencies ? "skill" : ""
           ),
           id
         );
         add.proficiencies(
           character,
-          inputs.ProficienciesInput(args.race.proficiencies, source),
+          inputs.ProficienciesInput(args.race.proficiencies || {}, source),
           id
         );
         add.spells(
           character,
-          race.additionalSpells.spells
+          (
+            (race.additionalSpells?.spells ||
+              []) as RaceAdditionalSpellsSpells[]
+          )
             .filter((spell) => spell.item)
             .map((spell) =>
-              inputs.Spell(
-                spell.item,
+              inputs.SpellOfficial(
+                spell.item as string,
                 args.race.spellcastingAbility ||
-                  race.additionalSpells?.spellcastingAbility?.items[0],
-                spell._meta,
+                  race.additionalSpells?.spellcastingAbility?.items?.at(0) ||
+                  "int",
+                spell._meta as RaceAdditionalSpellsSpells_Meta,
                 source
               )
             ),
@@ -228,19 +314,20 @@ export default {
         );
         add.spells(
           character,
-          args.race.spells.map((spell) =>
-            inputs.Spell(
-              spell.name,
+          ((args.race.spells || []) as CharacterSpellInput[]).map((spell) =>
+            inputs.SpellOfficial(
+              spell.name || "",
               args.race.spellcastingAbility ||
-                race.additionalSpells?.spellcastingAbility?.items[0],
-              spell._meta,
+                race.additionalSpells?.spellcastingAbility?.items?.at(0) ||
+                "int",
+              spell._meta || {},
               source
             )
           ),
           id
         );
-        add.feat(character, args.race.feat, id);
-        setSubrace(character, args.race.subrace);
+        if (args.race.feat) add.feat(character, args.race.feat, id);
+        if (args.race.subrace) setSubrace(character, args.race.subrace);
         return character;
       });
     },
@@ -254,13 +341,21 @@ export default {
       return update.character(context, args.characterName, (character) => {
         remove.background(character);
         const background = backgroundQueries.background(args.background.name);
-        const defaultItems = background.startingEquipment.find((itemSet) =>
-          itemSet.hasOwnProperty("_")
-        )._;
+        if (!background)
+          throw new GraphQLError("Background not found", {
+            extensions: {
+              code: ApolloServerErrorCode.BAD_REQUEST,
+              http: { status: 400 },
+            },
+          });
+
+        const defaultItems = (background.startingEquipment?.find((itemSet) =>
+          (itemSet || {}).hasOwnProperty("_")
+        )?._ || []) as BackgroundStartingEquipment_[];
 
         const id = add.chosenOption(
           character,
-          inputs.ChosenOption(background.name, "Background")
+          inputs.ChosenOption(args.background.name, "Background", null)
         );
 
         const source = inputs.SourceData(
@@ -276,48 +371,59 @@ export default {
         );
         add.proficiencies(
           character,
-          inputs.ProficienciesInput(args.background.proficiencies, source),
+          inputs.ProficienciesInput(
+            args.background.proficiencies || {},
+            source
+          ),
           id
         );
+        if (defaultItems)
+          add.items(
+            character,
+            defaultItems
+              .filter(
+                (item) =>
+                  !item.hasOwnProperty("tool") || !item.hasOwnProperty("value")
+              )
+              .map((item) =>
+                inputs.Item(
+                  (item.item || item.special) as string,
+                  item.quantity || 1,
+                  item.displayName || ((item.item || item.special) as string),
+                  item.worthValue || undefined,
+                  source
+                )
+              ),
+            id
+          );
         add.items(
           character,
-          defaultItems
-            .filter(
-              (item) =>
-                !item.hasOwnProperty("tool") || !item.hasOwnProperty("value")
-            )
+          args.background.items
+            ?.filter((item) => item.name)
             .map((item) =>
               inputs.Item(
-                item.item || item.special,
-                item.quantity,
-                item.displayName,
-                item.worthValue,
+                item.name as string,
+                item.quantity ?? 1,
+                item.displayName || (item.name as string),
+                item.worthValue ?? undefined,
                 source
               )
-            ),
-          id
-        );
-        add.items(
-          character,
-          args.background.items.map((item) =>
-            inputs.Item(
-              item.name,
-              item.quantity,
-              item.displayName,
-              item.worthValue,
-              source
-            )
-          ),
+            ) || [],
           id
         );
         add.features(
           character,
-          inputs.Features(background.entries, source, true),
+          inputs.Features(
+            background.entries as BackgroundEntries[],
+            source,
+            null,
+            true
+          ),
           id
         );
-        add.feat(character, args.background.feat, id);
+        if (args.background.feat) add.feat(character, args.background.feat, id);
         add.coins(character, {
-          gp: defaultItems.find((item) => item.hasOwnProperty("value")).value,
+          gp: defaultItems.find((item) => item.hasOwnProperty("value"))?.value,
         });
         return character;
       });
@@ -358,23 +464,31 @@ export default {
           });
 
         const classData = classQueries.class(args.class.name);
+        if (!classData)
+          throw new GraphQLError("Class not found", {
+            extensions: {
+              code: ApolloServerErrorCode.BAD_REQUEST,
+              http: { status: 400 },
+            },
+          });
 
         const isMulticlass = classes.length > 0;
         if (isMulticlass) {
           const meetsRequirement = (key: string, value: number): boolean =>
             !value || get.abilityScoreValue(character, key) >= value;
-          const { str, dex, wis, cha, int, or } =
-            classData.multiclassing.requirements;
+          const { str, dex, wis, cha, int, or } = (
+            classData.multiclassing as ClassMulticlassing
+          ).requirements as ClassMulticlassingRequirements;
 
           if (
-            !meetsRequirement("str", str) ||
-            !meetsRequirement("dex", dex) ||
-            !meetsRequirement("wis", wis) ||
-            !meetsRequirement("cha", cha) ||
-            !meetsRequirement("int", int) ||
+            !meetsRequirement("str", str || 0) ||
+            !meetsRequirement("dex", dex || 0) ||
+            !meetsRequirement("wis", wis || 0) ||
+            !meetsRequirement("cha", cha || 0) ||
+            !meetsRequirement("int", int || 0) ||
             (or &&
-              !meetsRequirement("dex", or[0].dex) &&
-              !meetsRequirement("str", or[0].str))
+              !meetsRequirement("dex", or?.at(0)?.dex || 0) &&
+              !meetsRequirement("str", or?.at(0)?.str || 0))
           )
             throw new GraphQLError("Character doesn't meet requirements", {
               extensions: {
@@ -386,7 +500,7 @@ export default {
 
         const source = inputs.SourceData(
           CharacterDataSource.Class,
-          classData.name
+          args.class.name
         );
 
         character.classes = [
@@ -404,7 +518,8 @@ export default {
           character,
           inputs.ProficienciesInput(
             isMulticlass
-              ? classData.multiclassing.proficienciesGained
+              ? (classData.multiclassing as ClassMulticlassing)
+                  .proficienciesGained || {}
               : classData,
             source
           ),
@@ -413,21 +528,23 @@ export default {
 
         add.proficiencies(
           character,
-          inputs.ProficienciesInput(args.class.proficiencies, source),
+          inputs.ProficienciesInput(args.class.proficiencies || {}, source),
           args.class.name
         );
 
         add.items(
           character,
-          args.class.startingEquipment.map((item) =>
-            inputs.Item(
-              item.name,
-              item.quantity,
-              item.displayName,
-              item.worthValue,
-              source
-            )
-          ),
+          (args.class.startingEquipment || [])
+            .filter((item) => item.name)
+            .map((item) =>
+              inputs.Item(
+                item.name as string,
+                item.quantity ?? 1,
+                item.displayName || (item.name as string),
+                item.worthValue ?? undefined,
+                source
+              )
+            ),
           args.class.name
         );
 
@@ -675,56 +792,73 @@ export default {
           });
 
         const classData = classQueries.class(args.options.className);
+        const subclassData = classQueries.subclass(
+          characterClass.subclassName || args.options.subclassName || ""
+        );
+
+        if (!classData)
+          throw new GraphQLError("Class does not exist", {
+            extensions: {
+              code: ApolloServerErrorCode.BAD_REQUEST,
+              http: { status: 400 },
+            },
+          });
+
+        if (subclassData)
+          character.classes[characterClassIndex].subclassName =
+            character.classes[characterClassIndex].subclassName ||
+            args.options.subclassName;
 
         const level = characterClass.level++;
         character.classes[characterClassIndex].level = level;
-        character.classes[characterClassIndex].maxHitDice++;
+        character.classes[characterClassIndex].maxHitDice =
+          (character.classes[characterClassIndex].maxHitDice || 0) + 1;
+        character.classes[characterClassIndex].spellcastingAbility =
+          character.classes[characterClassIndex].spellcastingAbility ||
+          args.options.spellcastingAbility ||
+          classData.spellcastingAbility ||
+          subclassData?.spellcastingAbility;
         character.classes[characterClassIndex].preparedSpells = parseFormula(
-          classData.preparedSpellsFormula,
+          classData.preparedSpellsFormula || "",
           character,
           args.options.className
         );
         character.classes[characterClassIndex].cantripsKnown =
-          classData.cantripProgression["_" + level];
+          (classData.cantripProgression ||
+            subclassData?.cantripProgression ||
+            {})[("_" + level) as ClassLevelKey] ?? 0;
         character.classes[characterClassIndex].spellsKnown =
-          classData.spellsKnownProgression["_" + level];
+          (classData.spellsKnownProgression ||
+            subclassData?.spellsKnownProgression ||
+            [])[level] ?? 0;
+        character.proficiencyBonus = get.proficiencyBonus(character);
 
         const source = inputs.SourceData(
           CharacterDataSource.Class,
           args.options.className + " Level " + level
         );
 
-        const classFeatures = classData.classFeatures.filter(
-          (e) => e.level === level
-        );
-
-        classFeatures.forEach((e) => {
-          const featureData = classQueries.classFeature(e.featureName);
-          add.features(
-            character,
-            inputs.Features(featureData.entries, source),
-            args.options.className
-          );
-        });
-
-        args.options.removedSpells.forEach((e) => remove.spell(character, e));
+        args.options.removedSpells?.forEach((e) => remove.spell(character, e));
         add.spells(
           character,
-          args.options.addedSpells.map((e) =>
-            inputs.Spell(
-              e.name,
-              characterClass.spellcastingAbility,
-              e._meta,
-              source
-            )
-          ),
+          (args.options.addedSpells || [])
+            .filter((e) => e.name)
+            .map((e) =>
+              inputs.SpellOfficial(
+                e.name as string,
+                character.classes[characterClassIndex].spellcastingAbility ||
+                  "int",
+                e._meta || {},
+                source
+              )
+            ),
           args.options.className
         );
 
-        args.options.removedOptionalFeatures.forEach((e) =>
+        args.options.removedOptionalFeatures?.forEach((e) =>
           remove.optionalFeature(character, e)
         );
-        args.options.addedOptionalFeatures.forEach((e) =>
+        args.options.addedOptionalFeatures?.forEach((e) =>
           add.optionalFeature(
             character,
             addSource(e, source),
@@ -732,36 +866,45 @@ export default {
           )
         );
 
-        add.abilityScores(
-          character,
-          addSource(args.options.abilityScores, source),
-          args.options.className
-        );
+        if (args.options.abilityScores)
+          add.abilityScores(
+            character,
+            addSource(args.options.abilityScores, source),
+            args.options.className
+          );
 
-        add.feat(
-          character,
-          addSource(args.options.feat, source),
-          args.options.className
-        );
+        if (args.options.feat)
+          add.feat(
+            character,
+            addSource(args.options.feat, source),
+            args.options.className
+          );
 
-        args.options.removedProficiencies.map((e) =>
+        args.options.removedProficiencies?.map((e) =>
           remove.proficiency(character, e)
         );
         add.proficiencies(
           character,
-          inputs.ProficienciesInput(args.options.addedProficiencies, source),
+          inputs.ProficienciesInput(
+            args.options.addedProficiencies || {},
+            source
+          ),
           args.options.className
         );
 
         remove.spellcastingSlots(character, (e) => e.refId === "Spellcasting");
-        remove.pactMagicSlots(character, (e) => e.refId === "Pact Magic");
 
         add.spellcastingSlots(
           character,
           get.spellcastingSlots(character),
           "Spellcasting"
         );
-        add.pactMagicSlots(character, get.pactSlots(character), "Pact Magic");
+
+        classHandlers[args.options.className as ClassNameKey](
+          character,
+          source,
+          args.options.gainedFeatureNames || []
+        );
 
         return character;
       });

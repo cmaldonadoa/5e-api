@@ -9,7 +9,8 @@ import {
   CharacterFeatureInput,
   CharacterItemInput,
   CharacterProficienciesInput,
-  CharacterResourceType,
+  CharacterResourceInput,
+  CharacterResourceItemInput,
   CharacterSpeedValueInput,
   CharacterSpellInput,
   CharacterSpellMetaInput,
@@ -27,7 +28,15 @@ import {
   Subrace,
   SubraceEntries,
 } from "../../../__generated__/graphql";
-import { addSource, ConsumeDataType, SourceDataType } from "./index";
+import {
+  AbilityScoreKey,
+  addSource,
+  ConsumeDataType,
+  SourceDataType,
+} from "./index";
+import { queries as spellQueries } from "../../data/spells";
+import { GraphQLError } from "graphql/error";
+import { ApolloServerErrorCode } from "@apollo/server/errors";
 
 const SourceData = (
   sourceType: CharacterDataSource,
@@ -38,7 +47,7 @@ const SourceData = (
 });
 
 const ConsumeData = (
-  consumeType: CharacterResourceType,
+  consumeType: string,
   consumeAmount: number
 ): ConsumeDataType => ({
   consumeType: consumeType,
@@ -46,7 +55,7 @@ const ConsumeData = (
 });
 
 const AbilityScoreInput = (
-  abilities: string[] | CharacterAbilityScoresInput,
+  abilities: AbilityScoreKey[] | CharacterAbilityScoresInput,
   source: SourceDataType
 ): CharacterAbilityScoresInput => {
   const abilityScores = {
@@ -59,16 +68,21 @@ const AbilityScoreInput = (
   };
   if (Array.isArray(abilities))
     abilities.forEach((key) => (abilityScores[key] += 1));
+
   return Object.keys(abilityScores).reduce((scores, key) => {
-    scores[key] = {
+    if (Array.isArray(abilities) && abilityScores[key as AbilityScoreKey] === 0)
+      return scores;
+
+    scores[key as AbilityScoreKey] = {
       value: Array.isArray(abilities)
-        ? abilityScores[key]
-        : (abilities[key] as CharacterAbilityScoreInput).value,
+        ? abilityScores[key as AbilityScoreKey]
+        : (abilities[key as AbilityScoreKey] as CharacterAbilityScoreInput)
+            .value,
       sourceType: source.sourceType,
       sourceText: source.sourceText,
     } satisfies CharacterAbilityScoreInput;
     return scores;
-  }, abilityScores) as CharacterAbilityScoresInput;
+  }, {} as CharacterAbilityScoresInput);
 };
 
 const ProficienciesInput = (
@@ -86,43 +100,43 @@ const ProficienciesInput = (
   return {
     armor:
       "armorProficiencies" in object
-        ? object.armorProficiencies.items.map((e) => ({
+        ? object.armorProficiencies?.items?.map((e) => ({
             name: e,
             sourceType: source.sourceType,
             sourceText: source.sourceText,
           }))
         : "armor" in object
-          ? object.armor.map((e) => addSource(e, source))
+          ? object.armor?.map((e) => addSource(e, source))
           : [],
     weapon:
       "weaponProficiencies" in object
-        ? object.weaponProficiencies.items.map((e) => ({
+        ? object.weaponProficiencies?.items?.map((e) => ({
             name: e,
             sourceType: source.sourceType,
             sourceText: source.sourceText,
           }))
         : "weapon" in object
-          ? object.weapon.map((e) => addSource(e, source))
+          ? object.weapon?.map((e) => addSource(e, source))
           : [],
     tool:
       "toolProficiencies" in object
-        ? object.toolProficiencies.items.map((e) => ({
+        ? object.toolProficiencies?.items?.map((e) => ({
             name: e,
             sourceType: source.sourceType,
             sourceText: source.sourceText,
           }))
         : "tool" in object
-          ? object.tool.map((e) => addSource(e, source))
+          ? object.tool?.map((e) => addSource(e, source))
           : [],
     language:
       "languageProficiencies" in object
-        ? object.languageProficiencies.items.map((e) => ({
+        ? object.languageProficiencies?.items?.map((e) => ({
             name: e,
             sourceType: source.sourceType,
             sourceText: source.sourceText,
           }))
         : "language" in object
-          ? object.language.map((e) => addSource(e, source))
+          ? object.language?.map((e) => addSource(e, source))
           : [],
     savingThrow:
       "savingThrowProficiencies" in object
@@ -134,23 +148,51 @@ const ProficienciesInput = (
             }))
           : []
         : "savingThrow" in object
-          ? object.savingThrow.map((e) => addSource(e, source))
+          ? object.savingThrow?.map((e) => addSource(e, source))
           : [],
     skill:
       "skillProficiencies" in object
-        ? "items" in object.skillProficiencies &&
-          object.skillProficiencies.items.map((e) => ({
-            name: e,
-            sourceType: source.sourceType,
-            sourceText: source.sourceText,
-          }))
+        ? (object.skillProficiencies &&
+            "items" in object.skillProficiencies &&
+            object.skillProficiencies.items?.map((e) => ({
+              name: e,
+              sourceType: source.sourceType,
+              sourceText: source.sourceText,
+            }))) ||
+          undefined
         : "skill" in object
-          ? object.skill.map((e) => addSource(e, source))
+          ? object.skill?.map((e) => addSource(e, source))
           : [],
   };
 };
 
-const Spell = (
+const SpellOfficial = (
+  name: string,
+  spellcastingAbility: string,
+  meta: CharacterSpellMetaInput,
+  source: SourceDataType
+): CharacterSpellInput => {
+  const spellData = spellQueries.spell(name);
+  if (!spellData)
+    throw new GraphQLError("Invalid spell name", {
+      extensions: {
+        code: ApolloServerErrorCode.BAD_REQUEST,
+        http: { status: 400 },
+      },
+    });
+
+  return {
+    ...spellData,
+    entries: spellData.entries as CharacterEntriesInput[],
+    higherLevel: spellData.higherLevel as CharacterEntriesInput[],
+    sourceText: source.sourceText,
+    sourceType: source.sourceType,
+    spellcastingAbility: spellcastingAbility,
+    _meta: meta,
+  };
+};
+
+const SpellCustom = (
   name: string,
   spellcastingAbility: string,
   meta: CharacterSpellMetaInput,
@@ -169,7 +211,7 @@ const Item = (
   name: string,
   quantity: number,
   displayName: string,
-  worthValue: number,
+  worthValue: number | undefined,
   source: SourceDataType
 ): CharacterItemInput => {
   return {
@@ -192,6 +234,7 @@ const Features = (
     | SubclassFeatureEntries[]
     | CharacterEntriesInput[],
   source: SourceDataType,
+  consume: ConsumeDataType | null,
   hasFeaturesMarked?: boolean
 ): CharacterFeatureInput[] => {
   const features = entries.filter(
@@ -199,17 +242,20 @@ const Features = (
       !entry.hasOwnProperty("parentId") ||
       (hasFeaturesMarked &&
         "data" in entry &&
+        entry.data &&
         "isFeature" in entry.data &&
         entry.data.isFeature)
   );
 
   return features.map((feature) => ({
     entries: [
-      <CharacterFeatureInput>feature,
-      ...(<CharacterFeatureInput[]>(
-        entries.filter((entry) => entry.parentId === feature.internalId)
-      )),
+      feature as CharacterEntriesInput,
+      ...(entries as CharacterEntriesInput[]).filter(
+        (entry) => entry.parentId === feature.internalId
+      ),
     ],
+    consumeType: consume?.consumeType,
+    consumeAmount: consume?.consumeAmount,
     sourceType: source.sourceType,
     sourceText: source.sourceText,
   }));
@@ -219,11 +265,14 @@ const NamedEntries = (
   name: string,
   entries: OptionalFeatureEntries[]
 ): CharacterEntriesInput[] => {
-  const newEntries = entries.map((entry) => ({
-    parentId: 0,
-    ...entry,
-    internalId: entry.internalId + 1,
-  }));
+  const newEntries = entries.map(
+    (entry) =>
+      ({
+        parentId: 0,
+        ...entry,
+        internalId: entry.internalId + 1,
+      }) satisfies CharacterEntriesInput
+  );
   return [
     {
       internalId: 0,
@@ -239,7 +288,6 @@ const SpeedValue = (
   value: number,
   source: SourceDataType
 ): CharacterSpeedValueInput => {
-  if (typeof value === "undefined") return;
   return {
     value: value,
     sourceType: source.sourceType,
@@ -251,7 +299,6 @@ const SpellSlot = (
   amount: number,
   source: SourceDataType
 ): CharacterSpellSlotInput => {
-  if (typeof amount === "undefined") return;
   return {
     amount: amount,
     sourceType: source.sourceType,
@@ -262,13 +309,36 @@ const SpellSlot = (
 const ChosenOption = (
   name: string,
   category: string,
-  consume?: ConsumeDataType
+  consume: ConsumeDataType | null
 ): CharacterChosenOptionInput => {
   return {
     name: name,
     category: category,
-    consumeType: consume.consumeType,
-    consumeAmount: consume.consumeAmount,
+    consumeType: consume?.consumeType,
+    consumeAmount: consume?.consumeAmount,
+  };
+};
+
+const Resource = (
+  type: string,
+  used: number,
+  items: CharacterResourceItemInput[]
+): CharacterResourceInput => {
+  return {
+    type: type,
+    used: used,
+    items: items,
+  };
+};
+
+const ResourceItem = (
+  amount: number,
+  source: SourceDataType
+): CharacterResourceItemInput => {
+  return {
+    amount: amount,
+    sourceType: source.sourceType,
+    sourceText: source.sourceText,
   };
 };
 
@@ -278,10 +348,12 @@ export default {
   AbilityScoreInput,
   ProficienciesInput,
   Features,
-  Spell,
+  SpellOfficial,
   Item,
   NamedEntries,
   SpeedValue,
   SpellSlot,
   ChosenOption,
+  Resource,
+  ResourceItem,
 };

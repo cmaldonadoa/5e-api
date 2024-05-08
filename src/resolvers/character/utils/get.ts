@@ -2,14 +2,13 @@ import {
   Character,
   CharacterAbilityScore,
   CharacterDataSource,
-  CharacterResourceType,
   CharacterSpellSlots,
 } from "../../../__generated__/graphql";
 import { GraphQLError } from "graphql/error";
 import { ApolloServerErrorCode } from "@apollo/server/errors";
-import { json } from "./index";
+import { AbilityScoreKey, ClassLevel, json } from "./index";
 import { queries as classQueries } from "../../data/classes";
-import converters from "./input";
+import inputs from "./input";
 
 const getCharacter = (owner: string, name: string) => {
   const characters = json.get(
@@ -21,7 +20,7 @@ const getCharacter = (owner: string, name: string) => {
     throw new GraphQLError("Character not found", {
       extensions: {
         code: ApolloServerErrorCode.BAD_REQUEST,
-        http: { status: 403 },
+        http: { status: 400 },
       },
     });
 
@@ -32,8 +31,12 @@ const getRefId = (character: Character, name: string) => {
   return character.chosenOptions.find((e) => e.name === name)?.id;
 };
 
-const getChosenOptionId = (character: Character, refId: string) => {
-  return character.chosenOptions.find((e) => e.refId === refId)?.id;
+const getChosenOptionsIds = (character: Character, refId: string) => {
+  return (
+    character.chosenOptions
+      .filter((e) => e.refId === refId)
+      ?.map((e) => e.id) || []
+  );
 };
 
 const getFeatureType = (shortFeature: string) => {
@@ -67,7 +70,7 @@ const getFeatureType = (shortFeature: string) => {
 };
 
 const getAbilityScoreValue = (character: Character, key: string): number => {
-  return character.abilityScores[key].reduce(
+  return character.abilityScores[key as AbilityScoreKey].reduce(
     (result: number, e: CharacterAbilityScore) => result + e.value,
     0
   );
@@ -89,16 +92,18 @@ const getSpellcastingSlots = (character: Character): CharacterSpellSlots => {
     }
   };
 
-  const level = character.classes.reduce((result, e) => {
-    const classLevel = e.level;
-    const classData = classQueries.class(e.name);
-    const subclassData = classQueries.subclass(e.subclassName);
-    return (
-      result +
-      classFactor(classData.multiclassSlotsProgression) * classLevel +
-      classFactor(subclassData?.multiclassSlotsProgression) * classLevel
-    );
-  }, 0);
+  const level = Math.round(
+    character.classes.reduce((result, e) => {
+      const classLevel = e.level;
+      const classData = classQueries.class(e.name);
+      const subclassData = classQueries.subclass(e.subclassName || "");
+      return (
+        result +
+        classFactor(classData?.multiclassSlotsProgression || "") * classLevel +
+        classFactor(subclassData?.multiclassSlotsProgression || "") * classLevel
+      );
+    }, 0)
+  ) as ClassLevel;
 
   const spellSlots = {
     0: {},
@@ -125,20 +130,19 @@ const getSpellcastingSlots = (character: Character): CharacterSpellSlots => {
   };
 
   return Object.fromEntries(
-    Object.entries(spellSlots[level]).map(
-      ([slotLevel, amount]: [string, number]) => [
-        slotLevel,
-        converters.SpellSlot(
-          amount,
-          converters.SourceData(CharacterDataSource.Class, "Spellcasting")
-        ),
-      ]
-    )
+    Object.entries(spellSlots[level]).map(([slotLevel, amount]) => [
+      slotLevel,
+      inputs.SpellSlot(
+        amount,
+        inputs.SourceData(CharacterDataSource.Class, "Spellcasting")
+      ),
+    ])
   );
 };
 
 const getPactSlots = (character: Character): CharacterSpellSlots => {
-  const level = character.classes.find((e) => e.name === "Warlock")?.level || 0;
+  const level = (character.classes.find((e) => e.name === "Warlock")?.level ||
+    0) as ClassLevel;
 
   const pactSlots = {
     0: {},
@@ -168,41 +172,39 @@ const getPactSlots = (character: Character): CharacterSpellSlots => {
     Object.entries(pactSlots[level]).map(
       ([slotLevel, amount]: [string, number]) => [
         slotLevel,
-        converters.SpellSlot(
+        inputs.SpellSlot(
           amount,
-          converters.SourceData(CharacterDataSource.Class, "Pact Magic")
+          inputs.SourceData(CharacterDataSource.Class, "Pact Magic")
         ),
       ]
     )
   );
 };
 
-const getResourceType = (name: string): CharacterResourceType => {
-  switch (name) {
-    case "Ki":
-      return CharacterResourceType.Ki;
-    case "Wild Shape":
-      return CharacterResourceType.WildShape;
-    case "Arcane Shot":
-      return CharacterResourceType.ArcaneShot;
-    case "Sorcery Points":
-      return CharacterResourceType.SorceryPoints;
-    case "Channel Divinity":
-      return CharacterResourceType.ChannelDivinity;
-    case "Psionic Energy Dice":
-      return CharacterResourceType.PsionicEnergyDice;
-    default:
-      return;
-  }
-};
+const getModifier = (score: number): number => (score - 10) / 2;
+
+const getProficiencyBonus = (character: Character): number =>
+  1 +
+  Math.round(
+    character.classes.reduce(
+      (result, characterClass) => result + characterClass.level,
+      0
+    ) / 4
+  );
+
+const getLevel = (character: Character, className: string): ClassLevel =>
+  (character.classes.find((e) => e.name === className)?.level ||
+    0) as ClassLevel;
 
 export default {
   character: getCharacter,
   refId: getRefId,
-  chosenOptionId: getChosenOptionId,
+  chosenOptionsIds: getChosenOptionsIds,
   featureType: getFeatureType,
   abilityScoreValue: getAbilityScoreValue,
   spellcastingSlots: getSpellcastingSlots,
   pactSlots: getPactSlots,
-  resourceType: getResourceType,
+  proficiencyBonus: getProficiencyBonus,
+  modifier: getModifier,
+  level: getLevel,
 };
