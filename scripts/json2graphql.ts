@@ -415,7 +415,7 @@ fs.writeFileSync(
               return;
             }
           }
-          return `${key}: ${value}`;
+          return `${key}: ${key === "internalId" ? value + "!" : value}`;
         })
         .filter(Boolean)
         .join("\n")}\n}`;
