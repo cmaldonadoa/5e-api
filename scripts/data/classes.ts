@@ -25,6 +25,83 @@ function replaceKeys(obj, oldKeys, newKeys) {
   return obj;
 }
 
+function asResource(entries) {
+  const processEntry = <T>(
+    entry,
+    fn: (text: string) => T,
+    reducer: (list: T[]) => T
+  ): T => {
+    if (typeof entry === "string") {
+      return fn(entry);
+    } else {
+      const type = entry.type;
+      if (type === "list") {
+        return reducer(
+          entry.items.map((item) => processEntry(item, fn, reducer))
+        );
+      }
+      if (type === "entries") {
+        return reducer(
+          entry.entries.map((item) => processEntry(item, fn, reducer))
+        );
+      }
+    }
+  };
+
+  const parseUses = (text: string) => {
+    const allowedModifiers = [
+      "Charisma",
+      "Wisdom",
+      "Strength",
+      "Constitution",
+      "Dexterity",
+      "Intelligence",
+      "proficiency bonus",
+    ];
+
+    const shortName = {
+      Charisma: "<$cha_mod$>",
+      Wisdom: "<$wis_mod$>",
+      Strength: "<$str_mod$>",
+      Constitution: "<$con_mod$>",
+      Dexterity: "<$dex_mod$>",
+      Intelligence: "<$int_mod$>",
+      "proficiency bonus": "<$proficiency_bonus$>",
+    };
+
+    const regex = new RegExp(`\\b(${allowedModifiers.join("|")})\\b`);
+    const match = text.match(regex);
+    return match
+      ? text.startsWith("1")
+        ? "1 + " + shortName[match[1]]
+        : shortName[match[1]]
+      : "1";
+  };
+
+  let isTrackable = entries.some((entry) =>
+    processEntry(
+      entry,
+      (text) => text.search(/finish a [\w\s]+rest/) !== -1,
+      (list) => list.reduce((acc, e) => acc && e, true)
+    )
+  );
+
+  if (isTrackable) {
+    let numberOfUses = entries.reduce((acc, entry) => {
+      const processedEntry = processEntry(
+        entry,
+        (text) =>
+          text.match(/a number of times equal to\s*(.*?)[.,]/)
+            ? text.match(/a number of times equal to\s*(.*?)[.,]/)[1]
+            : "",
+        (list) => list.reduce((acc, e) => (e ? e : acc), "")
+      );
+      return processedEntry ? processedEntry : acc;
+    }, "");
+    return parseUses(numberOfUses);
+  }
+}
+
 handleFiles(
   {
     class: (e: any) => ({
@@ -135,11 +212,16 @@ handleFiles(
           typeof feature === "string"
             ? feature.split("|")
             : feature.classFeature.split("|");
+        const gainSubclassFeature = feature.gainSubclassFeature;
+        const gainSubclassFeatureHasContent =
+          feature.gainSubclassFeatureHasContent;
         return {
           featureName,
           className,
           level: +level,
           source: utils.adapt(source),
+          gainSubclassFeature,
+          gainSubclassFeatureHasContent,
         };
       }),
       subclassTitle: e.subclassTitle,
@@ -286,7 +368,7 @@ handleFiles(
     }),
     classFeature: (e: any) => ({
       name: e.name,
-      source: e.name,
+      source: e.source,
       className: e.className,
       classSource: e.classSource,
       level: e.level,
@@ -300,10 +382,11 @@ handleFiles(
         name: utils.asObject(e.consumes).name,
         amount: utils.asObject(e.consumes).amount || (e.consumes && 1),
       }),
+      usesFormula: utils.adapt(asResource(e.entries)),
     }),
     subclassFeature: (e: any) => ({
       name: e.name,
-      source: e.name,
+      source: e.source,
       className: e.className,
       classSource: e.classSource,
       subclassShortName: e.subclassShortName,
@@ -323,6 +406,7 @@ handleFiles(
         amount: utils.asObject(e.consumes).amount || (e.consumes && 1),
       }),
       type: e.type,
+      usesFormula: utils.adapt(asResource(e.entries)),
     }),
     optionalFeature: (e: any) => ({
       name: e.name,
@@ -378,6 +462,7 @@ handleFiles(
             resource: utils.adapt(x.resourceName),
           }))
       ),
+      usesFormula: utils.adapt(asResource(e.entries)),
     }),
   },
   options
