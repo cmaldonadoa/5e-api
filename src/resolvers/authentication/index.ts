@@ -52,6 +52,14 @@ export default {
           },
         });
 
+      if (!process.env.JWT_KEY)
+        throw new GraphQLError("Bad JWT", {
+          extensions: {
+            code: ApolloServerErrorCode.INTERNAL_SERVER_ERROR,
+            http: { status: 500 },
+          },
+        });
+
       return jwt.sign(username, process.env.JWT_KEY);
     },
   },
