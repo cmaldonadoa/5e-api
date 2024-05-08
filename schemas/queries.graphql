@@ -8,9 +8,9 @@ type Query {
     subclasses: [Subclass]
     subclass(name: String!): Subclass
     classFeatures: [ClassFeature]
-    classFeature(name: String!): ClassFeature
+    classFeature(name: String!, level: Int): ClassFeature
     subclassFeatures: [SubclassFeature]
-    subclassFeature(name: String!): SubclassFeature
+    subclassFeature(name: String!, level: Int): SubclassFeature
     optionalFeatures: [OptionalFeature]
     optionalFeature(name: String!): OptionalFeature
     decks: [Deck]
